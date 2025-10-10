@@ -7,33 +7,15 @@
     "outDir": "dist",
     "baseUrl": "src",
     "paths": {
-      "@config/*": [
-        "config/*"
-      ],
-      "@controllers/*": [
-        "controllers/*"
-      ],
-      "@db/*": [
-        "db/*"
-      ],
-      "@middlewares/*": [
-        "middlewares/*"
-      ],
-      "@routes/*": [
-        "routes/*"
-      ],
-      "@schemas/*": [
-        "schemas/*"
-      ],
-      "@services/*": [
-        "services/*"
-      ],
-      "@types/*": [
-        "types/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ]
+      "@config/*": ["config/*"],
+      "@controllers/*": ["controllers/*"],
+      "@db/*": ["db/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@routes/*": ["routes/*"],
+      "@schemas/*": ["schemas/*"],
+      "@services/*": ["services/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
     },
     "declaration": true,
     "strict": true,
@@ -43,11 +25,6 @@
     "resolveJsonModule": true,
     "sourceMap": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

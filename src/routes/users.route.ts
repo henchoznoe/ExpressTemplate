@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 
 import * as usersCtrl from '../controllers/users.controller.js';
 
