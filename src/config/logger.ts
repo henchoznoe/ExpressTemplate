@@ -1,7 +1,7 @@
 import type { Application, Request, Response } from 'express';
 import morgan from 'morgan';
-import { createLogger, format, transports } from 'winston';
 import statuses from 'statuses';
+import { createLogger, format, transports } from 'winston';
 
 export const setupLogger = (app: Application) => {
   morgan.token('statusName', (_: Request, res: Response) => {
@@ -26,9 +26,9 @@ export const setupLogger = (app: Application) => {
 
 const { combine, timestamp, printf, colorize } = format;
 
-const customFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} [${level}] ${message}`;
-});
+const customFormat = printf(
+  ({ level, message, timestamp }) => `${timestamp} [${level}] ${message}`,
+);
 
 export const log = createLogger({
   level: 'info',

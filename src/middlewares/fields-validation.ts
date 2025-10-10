@@ -1,7 +1,6 @@
+import { sendError } from '../utils/http-responses.js';
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError, type ZodType } from 'zod';
-
-import { sendError } from '../utils/http-responses.js';
 
 export const validateFields =
   (schema: ZodType) =>

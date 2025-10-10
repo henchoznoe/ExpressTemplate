@@ -1,5 +1,3 @@
 import * as usersRepository from '../db/users.repository.js';
 
-export const getAllUsers = async () => {
-  return await usersRepository.getAllUsers();
-};
+export const getAllUsers = async () => await usersRepository.getAllUsers();

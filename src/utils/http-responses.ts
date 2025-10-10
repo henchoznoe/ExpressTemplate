@@ -1,6 +1,5 @@
-import type { Response } from 'express';
-
 import type { ResponseType } from '../types/http-responses.js';
+import type { Response } from 'express';
 
 const sendResponse = (
   res: Response,

@@ -7,6 +7,8 @@
     "dev": "tsx watch --env-file=.env -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
     "start": "node -r tsconfig-paths/register dist/index.js",
+    "lint": "eslint src --ext .ts,.js",
+    "lint:fix": "eslint src --ext .ts,.js --fix",
     "format": "prettier --write \"src/**/*.{js,ts,tsx,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,tsx,jsx,json,css,md}\""
   },
@@ -35,6 +37,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
@@ -42,6 +45,14 @@
     "@types/statuses": "^2.0.6",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.4.0",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

@@ -1,7 +1,6 @@
+import app from './app.js';
 import config from '@config/env.js';
 import { log } from '@config/logger.js';
-
-import app from './app.js';
 
 app
   .listen(config.port, () => {
@@ -9,6 +8,7 @@ app
     log.info(`🚀 Express server ready at: http://localhost:${config.port}`);
     log.info(`💻 API docs ready at: http://localhost:${config.port}/api-docs`);
   })
+
   .on('error', (error) => {
     log.error(`❌ Error starting server: ${error.message}`);
   });

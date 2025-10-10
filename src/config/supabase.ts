@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-
 import config from './env.js';
+import { createClient } from '@supabase/supabase-js';
 
 const options = {
   auth: {

@@ -1,9 +1,8 @@
-import type { Application, NextFunction, Request, Response } from 'express';
-
 import usersRouter from '../routes/users.route.js';
 import { sendError, sendSuccess } from '../utils/http-responses.js';
+import type { Application, NextFunction, Request, Response } from 'express';
 
-export const setupRoutes = (app: Application) => {
+export const setupRoutes = (app: Application): void => {
   // Health check route
   app.get('/', (_: Request, res: Response) => {
     sendSuccess(res, 200, 'API is running!', {

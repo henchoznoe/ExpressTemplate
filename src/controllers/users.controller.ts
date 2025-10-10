@@ -1,7 +1,6 @@
-import type { Request, Response } from 'express';
-
 import * as usersService from '../services/users.service.js';
 import { sendError, sendSuccess } from '../utils/http-responses.js';
+import type { Request, Response } from 'express';
 
 export const getAllUsers = async (_: Request, res: Response) => {
   try {
