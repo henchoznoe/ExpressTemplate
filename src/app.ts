@@ -1,10 +1,10 @@
-import type { Application } from 'express';
+import type {Application} from 'express';
 import express from 'express';
 
-import { setupLogger } from './config/logger.js';
-import { setupMiddlewares } from './config/middlewares.js';
-import { setupRoutes } from './config/routes.js';
-import { setupSwagger } from './config/swagger.js';
+import {setupLogger} from './config/logger.js';
+import {setupMiddlewares} from './config/middlewares.js';
+import {setupRoutes} from './config/routes.js';
+import {setupSwagger} from './config/swagger.js';
 
 const app: Application = express();
 
