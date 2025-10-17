@@ -7,11 +7,9 @@
 		"dev": "tsx watch --env-file=.env -r tsconfig-paths/register src/index.ts",
 		"build": "tsc",
 		"start": "node -r tsconfig-paths/register dist/index.js",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint --apply .",
-		"format": "biome format .",
-		"format:check": "biome format --check .",
-		"check": "biome check ."
+		"lint": "biome lint --write",
+		"format": "biome format --write",
+		"check": "biome check --write"
 	},
 	"repository": {
 		"type": "git",
