@@ -9,13 +9,13 @@
 		"start": "node -r tsconfig-paths/register dist/index.js",
 		"lint": "biome lint --write",
 		"format": "biome format --write",
-		"check": "biome check --write"
+		"check": "biome check --write",
+		"prepare": "lefthook install"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/henchoznoe/ExpressTemplate.git"
 	},
-	"keywords": [],
 	"author": "Noé Henchoz",
 	"license": "ISC",
 	"type": "module",
@@ -45,6 +45,7 @@
 		"@types/swagger-jsdoc": "^6.0.4",
 		"@types/swagger-ui-express": "^4.1.8",
 		"globals": "^16.4.0",
+		"lefthook": "^1.13.6",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
