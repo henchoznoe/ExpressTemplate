@@ -5,7 +5,7 @@
 	"homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
 	"scripts": {
 		"dev": "tsx watch --env-file=.env -r tsconfig-paths/register src/index.ts",
-		"build": "tsc",
+		"build": "tsc && tsc-alias",
 		"start": "node -r tsconfig-paths/register dist/index.js",
 		"lint": "biome lint --write",
 		"format": "biome format --write",
@@ -27,6 +27,7 @@
 		"@supabase/supabase-js": "^2.75.1",
 		"compression": "^1.8.1",
 		"cors": "^2.8.5",
+		"dotenv": "^17.2.3",
 		"express": "^5.1.0",
 		"express-rate-limit": "^8.1.0",
 		"helmet": "^8.1.0",
@@ -53,6 +54,7 @@
 		"lefthook": "^1.13.6",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2",
+		"tsc-alias": "^1.8.16",
 		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"

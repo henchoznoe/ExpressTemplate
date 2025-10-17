@@ -59,6 +59,26 @@ Build the project and run the compiled output:
 
 ```bash
 npm run build
+node dist/index.js
+```
+
+---
+
+## Deployment (PM2)
+
+This project expects production environment variables to be provided at runtime. For deployments, I recommend creating the `.env.production` file at the project root containing the same keys as your development `.env`, but with production values. Do NOT commit this file.
+
+1. Build and start with the `production` environment:
+
+```bash
+npm run build
+pm2 start ecosystem.config.js
+```
+
+2. To view logs:
+
+```bash
+pm2 logs express-template
 ```
 
 ---
