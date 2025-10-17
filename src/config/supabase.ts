@@ -1,5 +1,5 @@
+import config from '@config/env.js'
 import { createClient } from '@supabase/supabase-js'
-import config from './env.js'
 
 const options = {
     auth: {

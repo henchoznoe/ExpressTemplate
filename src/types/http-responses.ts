@@ -1,4 +1,4 @@
-export type ResponseType = {
+export interface ResponseType {
     success: boolean
     message: string
     data?: object
