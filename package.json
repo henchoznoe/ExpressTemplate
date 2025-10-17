@@ -23,7 +23,7 @@
 		"url": "https://github.com/henchoznoe/ExpressTemplate/issues"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.74.0",
+		"@supabase/supabase-js": "^2.75.1",
 		"compression": "^1.8.1",
 		"cors": "^2.8.5",
 		"express": "^5.1.0",
