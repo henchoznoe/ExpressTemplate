@@ -1,0 +1,62 @@
+{
+	"name": "expresstemplate",
+	"version": "1.0.0",
+	"description": "A basic Express.js template project using TypeScript.",
+	"homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
+	"scripts": {
+		"dev": "tsx watch --env-file=.env -r tsconfig-paths/register src/index.ts",
+		"build": "tsc && tsc-alias",
+		"start": "node -r tsconfig-paths/register dist/index.js",
+		"lint": "biome lint --write",
+		"format": "biome format --write",
+		"check": "biome check --write",
+		"prepare": "lefthook install"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/henchoznoe/ExpressTemplate.git"
+	},
+	"author": "Noé Henchoz",
+	"license": "ISC",
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/henchoznoe/ExpressTemplate/issues"
+	},
+	"dependencies": {
+		"@asteasolutions/zod-to-openapi": "^8.1.0",
+		"@supabase/supabase-js": "^2.75.1",
+		"compression": "^1.8.1",
+		"cors": "^2.8.5",
+		"dotenv": "^17.2.3",
+		"express": "^5.1.0",
+		"express-rate-limit": "^8.1.0",
+		"helmet": "^8.1.0",
+		"hpp": "^0.2.3",
+		"morgan": "^1.10.1",
+		"statuses": "^2.0.2",
+		"swagger-ui-express": "^5.0.1",
+		"winston": "^3.18.3",
+		"winston-daily-rotate-file": "^5.0.0",
+		"zod": "^4.1.12"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.6",
+		"@types/compression": "^1.8.1",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.3",
+		"@types/hpp": "^0.2.6",
+		"@types/morgan": "^1.9.10",
+		"@types/node": "^24.7.0",
+		"@types/statuses": "^2.0.6",
+		"@types/swagger-jsdoc": "^6.0.4",
+		"@types/swagger-ui-express": "^4.1.8",
+		"globals": "^16.4.0",
+		"lefthook": "^1.13.6",
+		"prettier": "^3.6.2",
+		"ts-node": "^10.9.2",
+		"tsc-alias": "^1.8.16",
+		"tsconfig-paths": "^4.2.0",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3"
+	}
+}
