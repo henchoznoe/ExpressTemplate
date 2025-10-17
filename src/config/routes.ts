@@ -1,6 +1,6 @@
+import usersRouter from '@routes/users.route.js';
+import { sendError, sendSuccess } from '@utils/http-responses.js';
 import type { Application, NextFunction, Request, Response } from 'express';
-import usersRouter from '../routes/users.route.js';
-import { sendError, sendSuccess } from '../utils/http-responses.js';
 
 export const setupRoutes = (app: Application): void => {
 	// Health check route

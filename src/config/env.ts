@@ -1,5 +1,5 @@
+import { log } from '@config/logger.js';
 import { z } from 'zod';
-import { log } from './logger.js';
 
 const envSchema = z.object({
 	NODE_ENV: z

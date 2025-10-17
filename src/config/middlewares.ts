@@ -1,10 +1,10 @@
+import config from '@config/env.js';
+import { sendError } from '@utils/http-responses.js';
 import cors from 'cors';
 import type { Application } from 'express';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import { sendError } from '../utils/http-responses.js';
-import config from './env.js';
 
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_REQUESTS = 200; // Max requests per window per IP
