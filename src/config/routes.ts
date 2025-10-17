@@ -1,6 +1,7 @@
+import { errorLoggerMiddleware } from '@config/logger.js'
 import usersRouter from '@routes/users.route.js'
 import { sendError, sendSuccess } from '@utils/http-responses.js'
-import type { Application, NextFunction, Request, Response } from 'express'
+import type { Application, Request, Response } from 'express'
 
 export const setupRoutes = (app: Application): void => {
     // Health check route
@@ -19,7 +20,5 @@ export const setupRoutes = (app: Application): void => {
     app.use((req: Request, res: Response): void => {
         sendError(res, 404, `Route ${req.path} not found`)
     })
-    app.use((error: Error, _req: Request, res: Response, _next: NextFunction): void => {
-        sendError(res, 500, `Internal Server Error: ${error.message}`)
-    })
+    app.use(errorLoggerMiddleware)
 }
