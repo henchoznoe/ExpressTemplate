@@ -13,10 +13,10 @@
             "@controllers/*": ["controllers/*"],
             "@db/*": ["db/*"],
             "@middlewares/*": ["middlewares/*"],
+            "@my-types/*": ["types/*"],
             "@routes/*": ["routes/*"],
             "@schemas/*": ["schemas/*"],
             "@services/*": ["services/*"],
-            "@types/*": ["types/*"],
             "@utils/*": ["utils/*"]
         },
         "resolveJsonModule": true,

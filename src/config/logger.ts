@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import statuses from 'statuses'
 import { createLogger, format, transports } from 'winston'
 import 'winston-daily-rotate-file'
+import type { AppError } from '@my-types/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 
 const { combine, timestamp, printf, colorize, errors, splat } = format
@@ -77,10 +78,6 @@ export const setupLogger = (app: Application) => {
             },
         }),
     )
-}
-
-interface AppError extends Error {
-    status?: number
 }
 
 export const errorLoggerMiddleware = (err: unknown, _req: Request, res: Response, _: NextFunction) => {

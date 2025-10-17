@@ -8,19 +8,10 @@ export const setupSwagger = (app: Application) => {
         swaggerUi.serve,
         swaggerUi.setup(
             swaggerJSDoc({
-                apis: ['./src/routes/*.ts', './src/routes/*.js'],
+                apis: ['src/routes/**/*.ts', 'dist/routes/**/*.js'],
                 definition: {
-                    components: {
-                        securitySchemes: {
-                            bearerAuth: {
-                                bearerFormat: 'JWT',
-                                scheme: 'bearer',
-                                type: 'http',
-                            },
-                        },
-                    },
                     info: {
-                        description: '...',
+                        description: 'Basic Express Template with TypeScript',
                         title: 'Express Template',
                         version: '1.0.0',
                     },

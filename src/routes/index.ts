@@ -1,6 +1,6 @@
 import { errorLoggerMiddleware } from '@config/logger.js'
 import usersRouter from '@routes/users.route.js'
-import { sendError, sendSuccess } from '@utils/http-responses.js'
+import { sendSuccess } from '@utils/http-responses.js'
 import type { Application, Request, Response } from 'express'
 
 export const setupRoutes = (app: Application): void => {
@@ -16,9 +16,5 @@ export const setupRoutes = (app: Application): void => {
     app.use('/users', usersRouter)
     // ...
 
-    // Errors handling middlewares
-    app.use((req: Request, res: Response): void => {
-        sendError(res, 404, `Route ${req.path} not found`)
-    })
     app.use(errorLoggerMiddleware)
 }
