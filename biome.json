@@ -13,7 +13,7 @@
     },
     "files": {
         "ignoreUnknown": true,
-        "includes": ["**", "!**/package.json", "!**/dist"]
+        "includes": ["**", "!**/package.json", "!**/dist", "!**/logs"]
     },
     "formatter": {
         "enabled": true,
