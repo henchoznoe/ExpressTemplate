@@ -4,7 +4,6 @@ import statuses from 'statuses'
 import { createLogger, format, transports } from 'winston'
 import 'winston-daily-rotate-file'
 import type { AppError } from '@my-types/errors/AppError.js'
-import { sendError } from '@utils/http-responses.js'
 
 const { combine, timestamp, printf, colorize, errors, splat } = format
 
@@ -80,9 +79,17 @@ export const setupLogger = (app: Application) => {
     )
 }
 
-export const errorLoggerMiddleware = (err: unknown, _req: Request, res: Response, _: NextFunction) => {
+export const errorLoggerMiddleware = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
     if (err instanceof Error) {
         const appErr = err as AppError
-        sendError(res, appErr.status || 500, appErr.message)
+        // Log only; response will be handled by globalErrorHandler
+        if (appErr.stack) {
+            log.error(`Unhandled error: ${appErr.message}\n${appErr.stack}`)
+        } else {
+            log.error(`Unhandled error: ${appErr.message}`)
+        }
+    } else {
+        log.error('Unhandled non-Error thrown')
     }
+    return next(err)
 }
