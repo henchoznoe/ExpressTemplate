@@ -8,6 +8,8 @@ A lightweight, production-ready Express.js template written in TypeScript. This 
 
 This repository is a minimal but well-structured Express + TypeScript template intended to bootstrap small APIs or prototypes while keeping sensible defaults for security, validation and observability.
 
+---
+
 ## Features
 
 - **TypeScript-first structure**
@@ -17,6 +19,7 @@ This repository is a minimal but well-structured Express + TypeScript template i
 - **Supabase client wiring** (helper in `src/config/supabase.ts`)
 - **Security middlewares**: helmet, cors, hpp, rate limiting, compression
 - **Centralized error handling**
+- **Docker Ready**: Multi-stage `Dockerfile` and `docker-compose.yml` included
 - **Developer tooling**: `tsx` for dev runner, Biome for linting & formatting
 
 ---
@@ -25,10 +28,11 @@ This repository is a minimal but well-structured Express + TypeScript template i
 
 - Node.js 22+ (LTS recommended)
 - npm (or compatible package manager)
+- Docker
 
 ---
 
-## Getting started
+## Local Development (Without Docker)
 
 1. Clone the repository:
 
@@ -53,33 +57,33 @@ npm run dev
 
 You should see logs like `Express server ready at: http://localhost:3000` depending on your `PORT` value.
 
-### Production build
+## Running with Docker
 
-Build the project and run the compiled output:
+This is the recommended way to run the application in a production-like environment.
 
-```bash
-npm run build
-node dist/index.js
-```
-
----
-
-## Deployment (PM2)
-
-This project expects production environment variables to be provided at runtime. For deployments, I recommend creating the `.env.production` file at the project root containing the same keys as your development `.env`, but with production values. Do NOT commit this file.
-
-1. Build and start with the `production` environment:
+1. **Ensure Docker is running**
+2. **Create your environment file**: Copy `.env.example` to `.env` (if not already done) and fill in the variables.
 
 ```bash
-npm run build
-pm2 start ecosystem.config.js
+cp .env.example .env
+# Now, edit .env with your values
 ```
 
-2. To view logs:
+> Note: The `docker-compose.yml` file is configured to use `PORT=3000` by default. Ensure your `.env` file reflects this.
+
+3. **Build and run the container:**
 
 ```bash
-pm2 logs express-template
+docker compose build
+docker compose up -d
 ```
+
+The API will be accessible at `http://localhost:3000`.
+
+**Useful Docker commands**:
+- `docker compose logs -f`: View live logs from the container
+- `docker compose down`: Stop and remove the container
+- `docker compose build --no-cache`: Force a full rebuild of the image.
 
 ---
 
