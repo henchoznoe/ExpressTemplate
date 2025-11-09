@@ -1,12 +1,12 @@
 {
 	"name": "expresstemplate",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "A basic Express.js template project using TypeScript.",
 	"homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
 	"scripts": {
 		"dev": "tsx watch --env-file=.env -r tsconfig-paths/register src/index.ts",
 		"build": "tsc && tsc-alias",
-		"start": "node -r tsconfig-paths/register dist/index.js",
+		"start": "node dist/index.js",
 		"lint": "biome lint --write",
 		"format": "biome format --write",
 		"check": "biome check --write",
