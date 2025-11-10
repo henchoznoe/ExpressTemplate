@@ -12,7 +12,6 @@ export const getAllUsers = async (_: Request, res: Response, next: NextFunction)
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id
     const user = await usersService.getUserById(userId)
-    if (!user) throw new AppError(`User with ID ${userId} not found`, 404)
     sendSuccess(res, 200, 'User retrieved successfully', user)
 }
 
