@@ -1,15 +1,39 @@
+#
+# Copyright (c) 2025 Noé Henchoz
+# Author: Noé Henchoz
+# File: .editorconfig
+# Title: Editor Configuration
+# Description: Provides consistent editor settings (indentation, charset) for all developers.
+# Last modified: 2025-11-11
+#
+
+# --- Root ---
+# This file is the root-level configuration.
+# EditorConfig will stop searching for .editorconfig files in parent directories.
 root = true
 
+# --- Global Settings ---
+# Apply these settings to all files in the project.
 [*]
+# File encoding
 charset = utf-8
+# Line ending format
 end_of_line = lf
+# Ensure files end with a newline
 insert_final_newline = true
+# Use spaces instead of tabs
 indent_style = space
+# Indent size of 4 spaces
 indent_size = 4
+# Remove trailing whitespace before saving
 trim_trailing_whitespace = true
 
+# --- File-Specific Overrides ---
+
+# For Markdown files, allow trailing whitespace
 [*.md]
 trim_trailing_whitespace = false
 
+# For configuration files, use a 2-space indent for better readability.
 [*.{yml,yaml,json}]
 indent_size = 2
