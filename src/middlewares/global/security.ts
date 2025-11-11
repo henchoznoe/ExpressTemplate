@@ -1,29 +1,81 @@
+/**
+ * @copyright Copyright (c) 2025 Noé Henchoz
+ * @author Noé Henchoz
+ * @file src/middlewares/global/security.ts
+ * @title Security Middlewares Configuration
+ * @description This file aggregates and configures all essential security middlewares.
+ * @last-modified 2025-11-11
+ */
+
+// --- Imports ---
 import config from '@config/env.js'
 import { sendError } from '@utils/http-responses.js'
 import compression from 'compression'
 import cors from 'cors'
-import express from 'express'
+import express, { type Request, type Response } from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 import hpp from 'hpp'
 
-const WINDOW_MS = 15 * 60 * 1000 // 15 minutes
-const MAX_REQUESTS = 200
-const SIZE_LIMIT = '2mb'
+// --- Constants ---
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const RATE_LIMIT_MAX_REQUESTS = 200
+const HTTP_STATUS_TOO_MANY_REQUESTS = 429
+const MSG_TOO_MANY_REQUESTS = 'Too many requests, please try again later.'
+
+// Request body size limit
+const JSON_BODY_SIZE_LIMIT = '2mb'
+
+// --- Helper Functions ---
+
+/**
+ * Custom handler for when the rate limit is exceeded.
+ * Sends a standardized 429 error response.
+ * @param _ - The Express Request object (unused).
+ * @param res - The Express Response object.
+ */
+const handleRateLimitExceeded = (_: Request, res: Response) => {
+    sendError(res, HTTP_STATUS_TOO_MANY_REQUESTS, MSG_TOO_MANY_REQUESTS)
+}
+
+// --- Middleware Configuration ---
+
+/**
+ * An array of configured security middlewares, ready to be applied to the app.
+ * The order in this array is the order they will be applied.
+ */
 export const securityMiddlewares = [
+    // 1. Basic Rate Limiting
+    // Protects against brute-force and DoS attacks by limiting request frequency.
     rateLimit({
-        handler: (_, res) => sendError(res, 429, 'Too many requests, please try again later.'),
-        limit: MAX_REQUESTS,
-        windowMs: WINDOW_MS,
+        handler: handleRateLimitExceeded,
+        limit: RATE_LIMIT_MAX_REQUESTS,
+        windowMs: RATE_LIMIT_WINDOW_MS,
     }),
+
+    // 2. Helmet
+    // Sets various HTTP headers to secure the app (e.g., CSP, X-Content-Type-Options).
     helmet(),
+
+    // 3. HPP (HTTP Parameter Pollution)
+    // Protects against parameter pollution attacks (e.g., ?id=1&id=2).
     hpp(),
-    express.json({ limit: SIZE_LIMIT }),
+
+    // 4. JSON Body Parser
+    // Parses incoming JSON requests with a defined size limit to prevent large payloads.
+    express.json({ limit: JSON_BODY_SIZE_LIMIT }),
+
+    // 5. CORS (Cross-Origin Resource Sharing)
+    // Configures which external domains, methods, and headers are allowed to access the API.
     cors({
         allowedHeaders: config.corsAllowedHeaders,
         methods: config.corsMethods,
         origin: config.corsOrigin,
     }),
+
+    // 6. Compression
+    // Compresses response bodies (e.g., with gzip) for better performance.
     compression(),
 ]

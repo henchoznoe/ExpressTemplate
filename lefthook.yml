@@ -1,3 +1,14 @@
+#
+# Copyright (c) 2025 Noé Henchoz
+# Author: Noé Henchoz
+# File: lefthook.yml
+# Title: Lefthook Git Hooks Configuration
+# Description: Configures Git hooks (pre-commit, pre-push) managed by Lefthook.
+# Last modified: 2025-11-11
+#
+
+# 'pre-commit': Runs before a commit is created.
+# If any command fails, the commit is aborted.
 pre-commit:
   commands:
     biome-fix:
@@ -7,6 +18,8 @@ pre-commit:
     type-check:
       run: npx tsc --noEmit --skipLibCheck
 
+# 'pre-push': Runs before 'git push' is executed.
+# This is a final safeguard to ensure no bad code reaches the remote repository.
 pre-push:
   commands:
     biome-verify:
