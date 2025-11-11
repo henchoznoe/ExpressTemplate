@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import { AppError } from '@my-types/errors/AppError.js'
+import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
 import { ZodError, type ZodType } from 'zod'
 

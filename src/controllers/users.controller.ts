@@ -7,9 +7,9 @@
  * @last-modified 2025-11-11
  */
 
-// --- Imports ---
-import { AppError } from '@my-types/errors/AppError.js'
 import * as usersService from '@services/users.service.js'
+// --- Imports ---
+import { AppError } from '@typings/errors/AppError.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 

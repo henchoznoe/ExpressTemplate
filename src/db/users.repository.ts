@@ -9,8 +9,8 @@
 
 // --- Imports ---
 import { supabase } from '@config/supabase.js'
-import { AppError } from '@my-types/errors/AppError.js'
 import type { CreateUserSchemaType, UpdateUserSchemaType } from '@schemas/users.schema.js'
+import { AppError } from '@typings/errors/AppError.js'
 
 // --- Types ---
 

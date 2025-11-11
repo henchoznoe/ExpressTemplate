@@ -9,7 +9,7 @@
 
 // --- Imports ---
 import { log } from '@config/logger.js'
-import { AppError } from '@my-types/errors/AppError.js'
+import { AppError } from '@typings/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
 
