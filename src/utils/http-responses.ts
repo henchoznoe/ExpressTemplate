@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import type { ResponseType } from '@my-types/http-responses.js'
+import type { ResponseType } from '@typings/http-responses.js'
 import type { Response } from 'express'
 
 // --- Response Senders ---

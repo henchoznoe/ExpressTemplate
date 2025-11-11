@@ -13,7 +13,7 @@ import morgan from 'morgan'
 import statuses from 'statuses'
 import { createLogger, format, transports } from 'winston'
 import 'winston-daily-rotate-file'
-import type { AppError } from '@my-types/errors/AppError.js'
+import type { AppError } from '@typings/errors/AppError.js'
 
 // --- Format Destructuring ---
 const { combine, timestamp, printf, colorize, errors, splat } = format
