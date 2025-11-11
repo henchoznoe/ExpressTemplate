@@ -1,18 +1,38 @@
-# IDE config
-.idea
-.vscode
+#
+# Copyright (c) 2025 Noé Henchoz
+# Author: Noé Henchoz
+# File: .gitignore
+# Title: Git Ignore File
+# Description: Specifies files and directories to exclude from the Git repository.
+# Last modified: 2025-11-11
+#
+
+# --- IDE Config ---
+# Exclude editor-specific configuration and metadata files.
+.idea/
+.vscode/
 .DS_Store
 
-# Node.js dependencies
+# --- Node.js Dependencies ---
+# Exclude the locally installed packages.
+# These should be installed by package managers (e.g., 'npm install') on other machines.
 node_modules/
 
-# Compiled output
+# --- Compiled Output ---
+# Exclude all compiled TypeScript/JavaScript code.
+# This should be generated via a build script (e.g., 'npm run build').
 dist/
 
-# Environment variables
+# --- Environment & Secret Files ---
+# Exclude all sensitive environment files.
 .env
-.env.production
+# Catch all environment-specific files (e.g., .env.production, .env.development)
+.env.*
+# IMPORTANT: Re-include (un-ignore) the example file.
+# This file is a template and should be committed to the repository.
+!.env.example
 
-# Logs
+# --- Logs ---
+# Exclude all log files.
 *.log
 logs/

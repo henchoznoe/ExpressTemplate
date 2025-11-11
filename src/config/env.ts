@@ -1,6 +1,29 @@
+/**
+ * @copyright Copyright (c) 2025 Noé Henchoz
+ * @author Noé Henchoz
+ * @file src/config/env.ts
+ * @title Environment Variable Configuration
+ * @description Validates environment variables using Zod and exports a type-safe config object.
+ * @last-modified 2025-11-11
+ */
+
+// --- Imports ---
 import { log } from '@config/logger.js'
 import { z } from 'zod'
 
+// --- Constants ---
+const EXIT_CODE_FAILURE = 1
+const ERROR_MSG_INVALID_ENV = 'Invalid environment variables :'
+const ERROR_MSG_PORT_INVALID = 'PORT must be a positive integer'
+const ERROR_PATH_SEPARATOR = '.'
+const ERROR_PATH_ROOT = '(root)'
+
+// --- Schema Definition ---
+
+/**
+ * Defines the schema for all required environment variables.
+ * This schema is used to validate `process.env` at application startup.
+ */
 const envSchema = z.object({
     CORS_ALLOWED_HEADERS: z.string().nonempty(),
     CORS_METHODS: z.string().nonempty(),
@@ -11,23 +34,43 @@ const envSchema = z.object({
         .nonempty()
         .transform(val => parseInt(val, 10))
         .refine(val => !Number.isNaN(val) && val > 0, {
-            message: 'PORT must be a positive integer',
+            message: ERROR_MSG_PORT_INVALID,
         }),
     SUPABASE_ANON_KEY: z.string().nonempty(),
     SUPABASE_URL: z.url().nonempty(),
 })
 
-const parsedEnv = envSchema.safeParse(process.env)
-if (!parsedEnv.success) {
-    log.error('Invalid environment variables :')
-    for (const issue of parsedEnv.error.issues) {
-        const path = issue.path.join('.') || '(root)'
+// --- Validation Logic ---
+
+/**
+ * Logs detailed validation errors.
+ * This is called on startup if the environment variables are invalid.
+ * @param error - The ZodSafeParseError containing all validation issues.
+ */
+const logOnInvalidEnv = (error: z.ZodSafeParseError<unknown>['error']) => {
+    log.error(ERROR_MSG_INVALID_ENV)
+    for (const issue of error.issues) {
+        const path = issue.path.join(ERROR_PATH_SEPARATOR) || ERROR_PATH_ROOT
         const message = issue.message
         log.error(`- ${path} : ${message}`)
     }
-    process.exit(1)
 }
 
+// Attempt to parse and validate the environment variables
+const parsedEnv = envSchema.safeParse(process.env)
+
+// If validation fails, log details and exit
+if (!parsedEnv.success) {
+    logOnInvalidEnv(parsedEnv.error)
+    process.exit(EXIT_CODE_FAILURE)
+}
+
+// --- Config Export ---
+
+/**
+ * The type-safe, validated configuration object.
+ * This is the "single source of truth" for all environment-based settings.
+ */
 const config = {
     corsAllowedHeaders: parsedEnv.data.CORS_ALLOWED_HEADERS,
     corsMethods: parsedEnv.data.CORS_METHODS,

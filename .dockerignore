@@ -1,15 +1,35 @@
+#
+# Copyright (c) 2025 Noé Henchoz
+# Author: Noé Henchoz
+# File: .dockerignore
+# Title: Docker Ignore File
+# Description: Specifies files and directories to exclude from the Docker build context
+# Last modified: 2025-11-11
+#
+
+# --- Version Control ---
+# Exclude Git repository data from the build context.
 .git
 .gitignore
 
-node_modules
+# --- Dependencies ---
+# Dependencies are installed during the build stages inside the container.
+node_modules/
 
-dist
+# --- Build Output ---
+# This directory is generated inside the container during the build.
+dist/
 
-.env
-.env.production
-.env.example
+# --- Environment & Secret Files ---
+# NEVER copy environment files or secrets into the image.
+# Use .env* to catch all .env, .env.production, .env.example, etc.
+.env*
 
+# --- Logs ---
+# Exclude application logs from the image.
 logs/
 
+# --- Docker Files ---
+# Exclude the Dockerfiles themselves from the build context.
 Dockerfile
 docker-compose.yml
