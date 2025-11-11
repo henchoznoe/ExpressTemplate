@@ -49,12 +49,12 @@ export const setupRoutes = (app: Application): void => {
  */
 const handleHealthCheck = (_: Request, res: Response) => {
     const healthCheckData = {
-        appVersion: pkg.version,
         environment: config.nodeEnv,
         memory: `${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB`,
-        nodeVersion: process.version,
+        node: process.version,
         timestamp: new Date().toLocaleString(),
         uptime: `${process.uptime().toFixed(0)} seconds`,
+        version: pkg.version,
     }
     sendSuccess(res, 200, MSG_HEALTH_SUCCESS, healthCheckData)
 }
