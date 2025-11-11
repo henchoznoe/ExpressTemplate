@@ -19,6 +19,11 @@ import express from 'express'
 // Create the main Express app instance
 const app = express()
 
+// --- Trust Proxy Setting ---
+// Tell Express that it is behind a proxy (e.g., Docker, Nginx, Traefik).
+// Setting 'trust proxy' to 1 means it will trust the first hop (X-Forwarded-For).
+app.set('trust proxy', 1)
+
 // 1. Core Middlewares
 // Apply security, logging, and body parsing middlewares first.
 setupMiddlewares(app)
