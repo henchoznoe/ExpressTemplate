@@ -4,7 +4,6 @@
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @date 2025-11-01
  * @last-modified 2025-11-11
  */
 

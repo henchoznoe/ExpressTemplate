@@ -4,7 +4,6 @@
  * @file src/index.ts
  * @title Main application entry point
  * @description This file imports the application and starts the HTTP server.
- * @date 2025-11-01
  * @last-modified 2025-11-11
  */
 
