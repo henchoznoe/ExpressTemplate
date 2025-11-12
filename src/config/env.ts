@@ -15,6 +15,7 @@ import { z } from 'zod'
 const EXIT_CODE_FAILURE = 1
 const ERROR_MSG_INVALID_ENV = 'Invalid environment variables :'
 const ERROR_MSG_PORT_INVALID = 'PORT must be a positive integer'
+const ERROR_MSG_SALT_INVALID = 'BCRYPT_SALT_ROUNDS must be a positive integer'
 const ERROR_PATH_SEPARATOR = '.'
 const ERROR_PATH_ROOT = '(root)'
 
@@ -25,9 +26,18 @@ const ERROR_PATH_ROOT = '(root)'
  * This schema is used to validate `process.env` at application startup.
  */
 const envSchema = z.object({
+    BCRYPT_SALT_ROUNDS: z
+        .string()
+        .nonempty()
+        .transform(val => parseInt(val, 10))
+        .refine(val => !Number.isNaN(val) && val > 0, {
+            message: ERROR_MSG_SALT_INVALID,
+        }),
     CORS_ALLOWED_HEADERS: z.string().nonempty(),
     CORS_METHODS: z.string().nonempty(),
     CORS_ORIGIN: z.string().nonempty(),
+    JWT_EXPIRES_IN: z.string().nonempty(),
+    JWT_SECRET: z.string().nonempty(),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     PORT: z
         .string()
@@ -72,9 +82,12 @@ if (!parsedEnv.success) {
  * This is the "single source of truth" for all environment-based settings.
  */
 const config = {
+    bcryptSaltRounds: parsedEnv.data.BCRYPT_SALT_ROUNDS,
     corsAllowedHeaders: parsedEnv.data.CORS_ALLOWED_HEADERS,
     corsMethods: parsedEnv.data.CORS_METHODS,
     corsOrigin: parsedEnv.data.CORS_ORIGIN,
+    jwtExpiresIn: parsedEnv.data.JWT_EXPIRES_IN,
+    jwtSecret: parsedEnv.data.JWT_SECRET,
     nodeEnv: parsedEnv.data.NODE_ENV,
     port: parsedEnv.data.PORT,
     supabaseAnonKey: parsedEnv.data.SUPABASE_ANON_KEY,
