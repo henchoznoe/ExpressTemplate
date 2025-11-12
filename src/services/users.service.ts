@@ -8,7 +8,9 @@
  */
 
 // --- Imports ---
+import config from '@config/env.js'
 import * as usersRepository from '@db/users.repository.js'
+import bcrypt from 'bcrypt'
 import type { CreateUserSchemaType, UpdateUserSchemaType } from '@/schemas/users.schema.js'
 
 // --- Service Functions ---
@@ -28,20 +30,39 @@ export const getUserById = async (id: string) => usersRepository.getUserById(id)
 
 /**
  * Creates a new user in the database.
+ * Hashes the password before storing.
  * @param userData - The user data (name, email, password) matching the schema.
  * @returns A promise that resolves to the newly created user object.
  */
 export const createUser = async (userData: CreateUserSchemaType) => {
-    return usersRepository.createUser(userData)
+    const hashedPassword = await bcrypt.hash(userData.password, config.bcryptSaltRounds)
+    const dataWithHashedPassword = { ...userData, password: hashedPassword }
+    return usersRepository.createUser(dataWithHashedPassword)
 }
 
 /**
  * Updates an existing user's data by their ID.
+ * If a password is provided, it will be hashed.
  * @param userData - The user data to update, including the user's ID.
  * @returns A promise that resolves to the updated user object.
  */
 export const updateUser = async (userData: UpdateUserSchemaType) => {
-    return usersRepository.updateUser(userData)
+    const { id, password, ...rest } = userData
+
+    // Case 1: Password is NOT being updated
+    // Pass the original data (minus the undefined password) to the repo.
+    if (!password) {
+        return usersRepository.updateUser(userData)
+    }
+
+    // Case 2: Password IS being updated
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, config.bcryptSaltRounds)
+
+    // Create the new object to pass to the repository
+    const dataWithHashedPassword = { id, ...rest, password: hashedPassword }
+
+    return usersRepository.updateUser(dataWithHashedPassword)
 }
 
 /**
