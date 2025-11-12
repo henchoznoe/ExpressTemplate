@@ -28,6 +28,7 @@ type SupabaseError = {
 const TABLE_NAME = 'users'
 const COL_ALL = '*'
 const COL_ID = 'id'
+const COL_EMAIL = 'email'
 
 // PostgreSQL Error Codes
 const PG_CODE_UNIQUE_VIOLATION = '23505'
@@ -100,6 +101,23 @@ export const getAllUsers = async () => {
 export const getUserById = async (id: string) => {
     const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL).eq(COL_ID, id).single()
     if (error) handleSupabaseError(error, id)
+    return data
+}
+
+/**
+ * Retrieves a single user by their email address.
+ * IMPORTANT: This select includes the password for auth checking.
+ * DO NOT use this function to send data to the client.
+ * @param email - The email of the user to retrieve.
+ * @returns A promise that resolves to the user object, or null if not found.
+ */
+export const findUserByEmail = async (email: string) => {
+    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL).eq(COL_EMAIL, email).maybeSingle()
+
+    if (error && error.code !== PG_CODE_NO_ROWS_FOUND) {
+        handleSupabaseError(error)
+    }
+
     return data
 }
 

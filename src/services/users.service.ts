@@ -4,7 +4,7 @@
  * @file src/services/users.service.ts
  * @title User Service Logic
  * @description This file contains the business logic for user-related operations.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-12
  */
 
 // --- Imports ---

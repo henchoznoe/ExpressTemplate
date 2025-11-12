@@ -4,7 +4,7 @@
  * @file src/config/env.ts
  * @title Environment Variable Configuration
  * @description Validates environment variables using Zod and exports a type-safe config object.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-12
  */
 
 // --- Imports ---
