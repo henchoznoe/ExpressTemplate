@@ -52,8 +52,9 @@ export const login = async (credentials: LoginSchemaType) => {
     }
 
     // 3. Generate and return the token
-    const token = signToken(user.id)
+    const token = await signToken(user.id)
 
-    // 4. Remove password from user object before returning
-    return { token, user }
+    // 4. Remove password from user object before returning and add token
+    const { password: _, ...userWithoutPassword } = user
+    return { ...userWithoutPassword, token }
 }
