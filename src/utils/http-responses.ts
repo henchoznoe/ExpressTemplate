@@ -20,7 +20,7 @@ import type { Response } from 'express'
  * @param message - A descriptive message for the client.
  * @param data - An optional data object to include in the response.
  */
-export const sendSuccess = (res: Response, status: number, message: string, data: object = {}) => {
+export const sendSuccess = (res: Response, status: number, message: string, data: object | null = {}) => {
     res.status(status).json({ data, message, success: true } as ResponseType)
 }
 
@@ -31,6 +31,6 @@ export const sendSuccess = (res: Response, status: number, message: string, data
  * @param message - A descriptive error message for the client.
  * @param data - An optional object containing error details (e.g., validation issues).
  */
-export const sendError = (res: Response, status: number, message: string, data: object = {}) => {
+export const sendError = (res: Response, status: number, message: string, data: object | null = {}) => {
     res.status(status).json({ data, message, success: false } as ResponseType)
 }

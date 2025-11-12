@@ -28,6 +28,9 @@ type SupabaseError = {
 const TABLE_NAME = 'users'
 const COL_ALL = '*'
 const COL_ID = 'id'
+const COL_EMAIL = 'email'
+const COL_NAME = 'name'
+const COL_ALL_WITHOUT_PASSWORD = `${COL_ID}, ${COL_NAME}, ${COL_EMAIL}`
 
 // PostgreSQL Error Codes
 const PG_CODE_UNIQUE_VIOLATION = '23505'
@@ -86,7 +89,7 @@ const handleSupabaseError = (error: SupabaseError, contextId?: string): never =>
  * @returns A promise that resolves to an array of all users.
  */
 export const getAllUsers = async () => {
-    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL)
+    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL_WITHOUT_PASSWORD)
     if (error) handleSupabaseError(error)
     return data
 }
@@ -98,8 +101,25 @@ export const getAllUsers = async () => {
  * @throws {AppError} (via handleSupabaseError) if the user is not found.
  */
 export const getUserById = async (id: string) => {
-    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL).eq(COL_ID, id).single()
+    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL_WITHOUT_PASSWORD).eq(COL_ID, id).single()
     if (error) handleSupabaseError(error, id)
+    return data
+}
+
+/**
+ * Retrieves a single user by their email address.
+ * IMPORTANT: This select includes the password for auth checking.
+ * DO NOT use this function to send data to the client.
+ * @param email - The email of the user to retrieve.
+ * @returns A promise that resolves to the user object, or null if not found.
+ */
+export const findUserByEmail = async (email: string) => {
+    const { data, error } = await supabase.from(TABLE_NAME).select(COL_ALL).eq(COL_EMAIL, email).maybeSingle()
+
+    if (error && error.code !== PG_CODE_NO_ROWS_FOUND) {
+        handleSupabaseError(error)
+    }
+
     return data
 }
 
@@ -110,7 +130,7 @@ export const getUserById = async (id: string) => {
  * @throws {AppError} (via handleSupabaseError) if the email is already in use.
  */
 export const createUser = async (userData: CreateUserSchemaType) => {
-    const { data, error } = await supabase.from(TABLE_NAME).insert(userData).select().single()
+    const { data, error } = await supabase.from(TABLE_NAME).insert(userData).select(COL_ALL_WITHOUT_PASSWORD).single()
     if (error) handleSupabaseError(error)
     return data
 }
@@ -123,7 +143,12 @@ export const createUser = async (userData: CreateUserSchemaType) => {
  */
 export const updateUser = async (userData: UpdateUserSchemaType) => {
     const { id, ...updateData } = userData
-    const { data, error } = await supabase.from(TABLE_NAME).update(updateData).eq(COL_ID, id).select().single()
+    const { data, error } = await supabase
+        .from(TABLE_NAME)
+        .update(updateData)
+        .eq(COL_ID, id)
+        .select(COL_ALL_WITHOUT_PASSWORD)
+        .single()
     if (error) handleSupabaseError(error, id)
     return data
 }
@@ -135,7 +160,12 @@ export const updateUser = async (userData: UpdateUserSchemaType) => {
  * @throws {AppError} (via handleSupabaseError) if the user is not found.
  */
 export const deleteUser = async (id: string) => {
-    const { data, error } = await supabase.from(TABLE_NAME).delete().eq(COL_ID, id).select().single()
+    const { data, error } = await supabase
+        .from(TABLE_NAME)
+        .delete()
+        .eq(COL_ID, id)
+        .select(COL_ALL_WITHOUT_PASSWORD)
+        .single()
     if (error) handleSupabaseError(error, id)
     return data
 }
