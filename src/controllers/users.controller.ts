@@ -7,8 +7,8 @@
  * @last-modified 2025-11-11
  */
 
-import * as usersService from '@services/users.service.js'
 // --- Imports ---
+import * as usersService from '@services/users.service.js'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'

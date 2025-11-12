@@ -10,6 +10,7 @@
 // --- Imports ---
 import config from '@config/env.js'
 import { errorLoggerMiddleware } from '@config/logger.js'
+import authRouter from '@routes/auth.route.js'
 import usersRouter from '@routes/users.route.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Application, Request, Response } from 'express'
@@ -18,6 +19,7 @@ import pkg from '../../package.json' with { type: 'json' }
 // --- Constants ---
 const ROUTE_HEALTH_CHECK = '/'
 const ROUTE_USERS = '/users'
+const ROUTE_AUTH = '/auth'
 const MSG_HEALTH_SUCCESS = 'Health check successful'
 
 // --- Route Setup ---
@@ -31,6 +33,7 @@ export const setupRoutes = (app: Application): void => {
     app.get(ROUTE_HEALTH_CHECK, handleHealthCheck)
 
     // API routes
+    app.use(ROUTE_AUTH, authRouter)
     app.use(ROUTE_USERS, usersRouter)
     // ... (Future routes can be added here)
 
