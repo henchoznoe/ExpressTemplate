@@ -73,7 +73,8 @@ export const createUser = async (req: Request, res: Response) => {
  * @param res - The Express Response object.
  */
 export const updateUser = async (req: Request, res: Response) => {
-    const updatedUser = await usersService.updateUser(req.body)
+    const userId = req.params[PARAM_ID]
+    const updatedUser = await usersService.updateUser(userId, req.body)
     sendSuccess(res, 200, MSG_USER_UPDATED, updatedUser)
 }
 

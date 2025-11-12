@@ -141,15 +141,14 @@ export const createUser = async (userData: CreateUserSchemaType) => {
  * @returns A promise that resolves to the updated user object.
  * @throws {AppError} (via handleSupabaseError) if the user is not found.
  */
-export const updateUser = async (userData: UpdateUserSchemaType) => {
-    const { id, ...updateData } = userData
+export const updateUser = async (userId: string, userData: UpdateUserSchemaType) => {
     const { data, error } = await supabase
         .from(TABLE_NAME)
-        .update(updateData)
-        .eq(COL_ID, id)
+        .update(userData)
+        .eq(COL_ID, userId)
         .select(COL_ALL_WITHOUT_PASSWORD)
         .single()
-    if (error) handleSupabaseError(error, id)
+    if (error) handleSupabaseError(error, userId)
     return data
 }
 

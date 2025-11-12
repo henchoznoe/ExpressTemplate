@@ -46,13 +46,13 @@ export const createUser = async (userData: CreateUserSchemaType) => {
  * @param userData - The user data to update, including the user's ID.
  * @returns A promise that resolves to the updated user object.
  */
-export const updateUser = async (userData: UpdateUserSchemaType) => {
-    const { id, password, ...rest } = userData
+export const updateUser = async (userId: string, userData: UpdateUserSchemaType) => {
+    const { password, ...rest } = userData
 
     // Case 1: Password is NOT being updated
     // Pass the original data (minus the undefined password) to the repo.
     if (!password) {
-        return usersRepository.updateUser(userData)
+        return usersRepository.updateUser(userId, userData)
     }
 
     // Case 2: Password IS being updated
@@ -60,9 +60,9 @@ export const updateUser = async (userData: UpdateUserSchemaType) => {
     const hashedPassword = await bcrypt.hash(password, config.bcryptSaltRounds)
 
     // Create the new object to pass to the repository
-    const dataWithHashedPassword = { id, ...rest, password: hashedPassword }
+    const dataWithHashedPassword = { ...rest, password: hashedPassword }
 
-    return usersRepository.updateUser(dataWithHashedPassword)
+    return usersRepository.updateUser(userId, dataWithHashedPassword)
 }
 
 /**

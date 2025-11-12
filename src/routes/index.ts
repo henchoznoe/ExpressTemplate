@@ -9,7 +9,6 @@
 
 // --- Imports ---
 import config from '@config/env.js'
-import { errorLoggerMiddleware } from '@config/logger.js'
 import authRouter from '@routes/auth.route.js'
 import usersRouter from '@routes/users.route.js'
 import { sendSuccess } from '@utils/http-responses.js'
@@ -36,10 +35,6 @@ export const setupRoutes = (app: Application): void => {
     app.use(ROUTE_AUTH, authRouter)
     app.use(ROUTE_USERS, usersRouter)
     // ... (Future routes can be added here)
-
-    // Error logging middleware (must be after all routes)
-    // This catches errors passed from route handlers via next()
-    app.use(errorLoggerMiddleware)
 }
 
 // --- Route Handlers ---

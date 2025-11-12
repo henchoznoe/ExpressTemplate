@@ -21,13 +21,11 @@ const MIN_PASSWORD_LENGTH = 6
 const ERROR_MSG_INVALID_EMAIL = 'Invalid email address'
 const ERROR_MSG_NAME_MIN_LENGTH = `Name must be at least ${MIN_NAME_LENGTH} characters long`
 const ERROR_MSG_PASSWORD_MIN_LENGTH = `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`
-const ERROR_MSG_INVALID_USER_ID = 'Invalid user ID'
 
 // OpenAPI metadata
 const OPENAPI_DESC_EMAIL = 'User email'
 const OPENAPI_DESC_FULL_NAME = 'Full name'
 const OPENAPI_DESC_PASSWORD = 'Password'
-const OPENAPI_DESC_USER_ID = 'User ID'
 const OPENAPI_SCHEMA_NAME_CREATE = 'CreateUser'
 const OPENAPI_SCHEMA_NAME_UPDATE = 'UpdateUser'
 
@@ -67,7 +65,6 @@ export type CreateUserSchemaType = zod.infer<typeof CreateUserSchema>
 export const UpdateUserSchema = zod
     .object({
         email: z.email(ERROR_MSG_INVALID_EMAIL).optional().openapi({ description: OPENAPI_DESC_EMAIL }),
-        id: z.uuid(ERROR_MSG_INVALID_USER_ID).openapi({ description: OPENAPI_DESC_USER_ID }),
         name: z
             .string()
             .min(MIN_NAME_LENGTH, ERROR_MSG_NAME_MIN_LENGTH)
