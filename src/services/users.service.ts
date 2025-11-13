@@ -4,7 +4,7 @@
  * @file src/services/users.service.ts
  * @title User Service Logic
  * @description This file contains the business logic for user-related operations.
- * @last-modified 2025-11-12
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -12,8 +12,6 @@ import config from '@config/env.js'
 import * as usersRepository from '@db/users.repository.js'
 import bcrypt from 'bcrypt'
 import type { CreateUserSchemaType, UpdateUserSchemaType } from '@/schemas/users.schema.js'
-
-// --- Service Functions ---
 
 /**
  * Retrieves a list of all users.
@@ -43,6 +41,7 @@ export const createUser = async (userData: CreateUserSchemaType) => {
 /**
  * Updates an existing user's data by their ID.
  * If a password is provided, it will be hashed.
+ * @param userId - The UUID of the user to update.
  * @param userData - The user data to update, including the user's ID.
  * @returns A promise that resolves to the updated user object.
  */

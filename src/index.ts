@@ -4,7 +4,7 @@
  * @file src/index.ts
  * @title Main application entry point
  * @description This file imports the application and starts the HTTP server.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -14,20 +14,13 @@ import app from '@/app.js'
 
 // --- Constants ---
 
-/**
- * Standard exit code for unrecoverable failure.
- */
+// Standard exit code for unrecoverable failure.
 const EXIT_CODE_FAILURE = 1
-
-/**
- * Log messages for server startup.
- */
+// Log messages for server startup.
 const APP_STARTED_LOG = `⚠️ App running in ${config.nodeEnv} mode`
 const APP_URL_LOG = `🚀 Express server ready at: http://localhost:${config.port}`
 const DOC_URL_LOG = `💻 API docs ready at: http://localhost:${config.port}/api-docs`
 const APP_ERROR_PREFIX = '❌ Server failed to start:'
-
-// --- Server Startup ---
 
 /**
  * Starts the Express server and binds the success and error handlers.
@@ -55,8 +48,6 @@ const onServerError = (error: Error) => {
     log.error(`${APP_ERROR_PREFIX} ${error.message}`)
     process.exit(EXIT_CODE_FAILURE)
 }
-
-// --- Execution ---
 
 // Run the application
 main()

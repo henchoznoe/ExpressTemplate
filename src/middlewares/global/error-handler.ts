@@ -4,7 +4,7 @@
  * @file src/middlewares/global/error-handler.ts
  * @title Global Error Handlers
  * @description Configures and provides the final error handling middlewares (404 and 500).
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -21,8 +21,6 @@ const MSG_INTERNAL_SERVER_ERROR = 'Internal Server Error'
 const MSG_UNKNOWN_ERROR_TYPE = 'Unknown error type'
 const MSG_ROUTE_NOT_FOUND_PREFIX = 'Route not found:'
 
-// --- Error Handling Setup ---
-
 /**
  * Mounts the final error handling middlewares onto the Express app.
  * IMPORTANT: This must be mounted after all other routes and middlewares.
@@ -37,8 +35,6 @@ export const setupErrorHandler = (app: Application) => {
     // Catches all errors passed via next(error).
     app.use(globalErrorHandler)
 }
-
-// --- Middleware Handlers ---
 
 /**
  * Middleware to handle requests for routes that do not exist (404).

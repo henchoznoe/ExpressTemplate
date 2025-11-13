@@ -4,7 +4,7 @@
  * @file src/config/swagger.ts
  * @title Swagger/OpenAPI Setup
  * @description Configures and mounts the Swagger UI for API documentation.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -19,8 +19,6 @@ const API_DOCS_ROUTE = '/api-docs'
 const API_TITLE = 'Express TypeScript API'
 const API_DESCRIPTION = 'Basic Express Template'
 const API_OPENAPI_VERSION = '3.0.0'
-
-// --- Swagger Setup ---
 
 /**
  * Generates the OpenAPI specification and mounts the Swagger UI middleware.

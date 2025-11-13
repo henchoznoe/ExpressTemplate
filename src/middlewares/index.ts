@@ -4,15 +4,13 @@
  * @file src/middlewares/index.ts
  * @title Core Middleware Orchestrator
  * @description This file exports a single function to apply all core middlewares to the Express app.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
 import { applyRequestLogger } from '@middlewares/global/request-logger.js'
 import { securityMiddlewares } from '@middlewares/global/security.js'
 import type { Application } from 'express'
-
-// --- Middleware Setup ---
 
 /**
  * Applies all core middlewares to the Express application instance.

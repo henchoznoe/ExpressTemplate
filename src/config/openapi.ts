@@ -4,7 +4,7 @@
  * @file src/config/openapi.ts
  * @title OpenAPI Registry
  * @description This file registers all API paths and schemas for OpenAPI documentation.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -49,8 +49,6 @@ const RESP_400 = 'Validation error'
 const RESP_404 = 'User not found'
 const RESP_500 = 'Internal server error'
 
-// --- Registry Setup ---
-
 /**
  * The OpenAPI registry instance.
  * It holds all registered paths and component definitions (from Zod schemas).
@@ -93,7 +91,7 @@ registry.registerPath({
     },
 })
 
-// Register PUT /users
+// Register PATCH /users/{id}
 registry.registerPath({
     description: DESC_UPDATE,
     method: METHOD_PUT,
@@ -119,5 +117,4 @@ registry.registerPath({
     },
 })
 
-// --- Export ---
 export default registry

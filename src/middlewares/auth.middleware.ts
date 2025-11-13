@@ -4,7 +4,7 @@
  * @file src/middlewares/auth.middleware.ts
  * @title Authentication Middleware
  * @description Middleware to protect routes by validating JWT.
- * @last-modified 2025-11-12
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -19,8 +19,6 @@ const HTTP_STATUS_UNAUTHORIZED = 401
 const MSG_NO_TOKEN = 'Access denied. No token provided.'
 const MSG_INVALID_TOKEN = 'Invalid token.'
 const MSG_USER_NOT_FOUND = 'User belonging to this token no longer exists.'
-
-// --- Middleware Setup ---
 
 /**
  * Middleware to protect routes.

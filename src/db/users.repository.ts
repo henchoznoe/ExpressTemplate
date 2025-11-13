@@ -4,7 +4,7 @@
  * @file src/db/users.repository.ts
  * @title User Database Repository
  * @description This file contains all database access logic for the 'users' table.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -12,11 +12,6 @@ import { supabase } from '@config/supabase.js'
 import type { CreateUserSchemaType, UpdateUserSchemaType } from '@schemas/users.schema.js'
 import { AppError } from '@typings/errors/AppError.js'
 
-// --- Types ---
-
-/**
- * Represents the minimal structure of a Supabase/PostgREST error.
- */
 type SupabaseError = {
     code: string
     message: string
@@ -45,8 +40,6 @@ const HTTP_STATUS_INTERNAL_ERROR = 500
 const MSG_EMAIL_IN_USE = 'Email address already in use.'
 const MSG_RESOURCE_NOT_FOUND_PREFIX = 'Resource'
 const MSG_RESOURCE_NOT_FOUND_SUFFIX = 'not found.'
-
-// --- Error Handling ---
 
 /**
  * Creates a "Not Found" error message, specifying the ID if provided.
@@ -81,8 +74,6 @@ const handleSupabaseError = (error: SupabaseError, contextId?: string): never =>
             throw new AppError(error.message, HTTP_STATUS_INTERNAL_ERROR)
     }
 }
-
-// --- Repository Functions ---
 
 /**
  * Retrieves all users from the database.

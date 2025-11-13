@@ -4,7 +4,7 @@
  * @file src/controllers/auth.controller.ts
  * @title Auth Route Controllers
  * @description HTTP request handlers for authentication routes.
- * @last-modified 2025-11-12
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -17,7 +17,14 @@ import type { Request, Response } from 'express'
 // Success Messages
 const MSG_LOGIN_SUCCESS = 'Login successful'
 
-// --- Controller Functions ---
+/**
+ * Controller to handle user register.
+ * @param _req
+ * @param _res
+ */
+export const register = async (_req: Request, _res: Response) => {
+    // TODO
+}
 
 /**
  * Controller to handle user login.

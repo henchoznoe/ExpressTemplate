@@ -4,7 +4,7 @@
  * @file src/middlewares/validations/validate-fields.ts
  * @title Zod Validation Middleware
  * @description Provides a factory function to create Zod validation middlewares.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -16,8 +16,6 @@ import { ZodError, type ZodType } from 'zod'
 const HTTP_STATUS_BAD_REQUEST = 400
 const ZOD_ERROR_SEPARATOR = ', '
 const MSG_UNKNOWN_VALIDATION_ERROR = 'Unknown validation error'
-
-// --- Middleware Factory ---
 
 /**
  * Factory function that creates an Express middleware for validating
@@ -43,8 +41,6 @@ export const validateFields = (schema: ZodType) => {
         }
     }
 }
-
-// --- Error Handling ---
 
 /**
  * Parses a validation error (Zod or otherwise) and formats it as an AppError.

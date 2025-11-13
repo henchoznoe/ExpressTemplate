@@ -4,7 +4,7 @@
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -13,8 +13,6 @@ import { setupErrorHandler } from '@middlewares/global/error-handler.js'
 import { setupMiddlewares } from '@middlewares/index.js'
 import { setupRoutes } from '@routes/index.js'
 import express from 'express'
-
-// --- Application Setup ---
 
 // Create the main Express app instance
 const app = express()
@@ -40,5 +38,4 @@ setupRoutes(app)
 // Mount the global error handlers (e.g., 404, 500).
 setupErrorHandler(app)
 
-// --- Export ---
 export default app

@@ -4,14 +4,12 @@
  * @file src/utils/http-responses.ts
  * @title HTTP Response Utilities
  * @description Provides standardized helper functions for sending success and error JSON responses.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
 import type { ResponseType } from '@typings/http-responses.js'
 import type { Response } from 'express'
-
-// --- Response Senders ---
 
 /**
  * Sends a standardized success response.

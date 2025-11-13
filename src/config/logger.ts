@@ -4,7 +4,7 @@
  * @file src/config/logger.ts
  * @title Logger Configuration
  * @description Configures the Winston logger, Morgan request logger, and error logging middleware.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -53,8 +53,6 @@ const HTTP_SERVER_ERROR = 500
 // Error logging messages
 const MSG_UNHANDLED_ERROR = 'Unhandled error:'
 const MSG_UNHANDLED_NON_ERROR = 'Unhandled non-Error thrown'
-
-// --- Winston Transport Definitions ---
 
 /**
  * Custom format for console logs, including colorization and stack traces.
@@ -121,8 +119,6 @@ const winstonErrorFileTransport = new transports.DailyRotateFile({
     zippedArchive: true,
 })
 
-// --- Winston Logger Instance ---
-
 /**
  * The main Winston logger instance.
  * Exported for use throughout the application for manual logging.
@@ -133,8 +129,6 @@ export const log = createLogger({
     level: CONSOLE_LOG_LEVEL,
     transports: [winstonConsoleTransport, winstonAppFileTransport, winstonErrorFileTransport],
 })
-
-// --- Morgan Request Logger Setup ---
 
 /**
  * Defines custom tokens for Morgan to use in log formats.
@@ -190,8 +184,6 @@ export const setupLogger = (app: Application) => {
         }),
     )
 }
-
-// --- Error Logger Middleware ---
 
 /**
  * An Express error handling middleware that logs unhandled errors.

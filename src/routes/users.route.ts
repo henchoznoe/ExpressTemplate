@@ -4,7 +4,7 @@
  * @file src/routes/users.route.ts
  * @title User API Routes
  * @description This file defines all API routes related to user management.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -22,7 +22,7 @@ const usersRouter = Router()
 // --- Public routes ---
 
 // POST /users
-// Create a new user. Applies validation middleware first.
+// Create a new user.
 usersRouter.post('/', validateFields(CreateUserSchema), usersCtrl.createUser)
 
 // --- Protected routes ---
@@ -38,13 +38,12 @@ usersRouter.get('/', usersCtrl.getAllUsers)
 // Get a single user by their ID
 usersRouter.get('/:id', usersCtrl.getUserById)
 
-// PUT /users
-// Update an existing user. Applies validation middleware first.
-usersRouter.put('/', validateFields(UpdateUserSchema), usersCtrl.updateUser)
+// PATCH /users
+// Update a user by their ID
+usersRouter.patch('/:id', validateFields(UpdateUserSchema), usersCtrl.updateUser)
 
 // DELETE /users/:id
 // Delete a user by their ID
 usersRouter.delete('/:id', usersCtrl.deleteUser)
 
-// --- Export ---
 export default usersRouter

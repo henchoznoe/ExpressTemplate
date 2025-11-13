@@ -4,10 +4,8 @@
  * @file src/types/http-responses.ts
  * @title Standard API Response Type
  * @description Defines the structure for all standardized JSON API responses.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
-
-// --- Type Definition ---
 
 /**
  * Defines the standardized JSON structure for API responses.
@@ -20,7 +18,7 @@ export interface ResponseType {
     success: boolean
 
     /**
-     * A human-readable message for the client (e.g., "User created successfully" or "User not found").
+     * A human-readable message for the client.
      */
     message: string
 

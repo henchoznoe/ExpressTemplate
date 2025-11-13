@@ -4,7 +4,7 @@
  * @file src/middlewares/global/security.ts
  * @title Security Middlewares Configuration
  * @description This file aggregates and configures all essential security middlewares.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -28,8 +28,6 @@ const MSG_TOO_MANY_REQUESTS = 'Too many requests, please try again later.'
 // Request body size limit
 const JSON_BODY_SIZE_LIMIT = '2mb'
 
-// --- Helper Functions ---
-
 /**
  * Custom handler for when the rate limit is exceeded.
  * Sends a standardized 429 error response.
@@ -39,8 +37,6 @@ const JSON_BODY_SIZE_LIMIT = '2mb'
 const handleRateLimitExceeded = (_: Request, res: Response) => {
     sendError(res, HTTP_STATUS_TOO_MANY_REQUESTS, MSG_TOO_MANY_REQUESTS)
 }
-
-// --- Middleware Configuration ---
 
 /**
  * An array of configured security middlewares, ready to be applied to the app.

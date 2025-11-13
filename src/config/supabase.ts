@@ -4,7 +4,7 @@
  * @file src/config/supabase.ts
  * @title Supabase Client Singleton
  * @description Initializes and exports the singleton Supabase client instance.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -30,8 +30,6 @@ const SUPABASE_CLIENT_OPTIONS = {
         persistSession: true,
     },
 }
-
-// --- Client Initialization ---
 
 /**
  * The singleton Supabase client instance.

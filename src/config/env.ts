@@ -4,7 +4,7 @@
  * @file src/config/env.ts
  * @title Environment Variable Configuration
  * @description Validates environment variables using Zod and exports a type-safe config object.
- * @last-modified 2025-11-12
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -18,8 +18,6 @@ const ERROR_MSG_PORT_INVALID = 'PORT must be a positive integer'
 const ERROR_MSG_SALT_INVALID = 'BCRYPT_SALT_ROUNDS must be a positive integer'
 const ERROR_PATH_SEPARATOR = '.'
 const ERROR_PATH_ROOT = '(root)'
-
-// --- Schema Definition ---
 
 /**
  * Defines the schema for all required environment variables.
@@ -50,8 +48,6 @@ const envSchema = z.object({
     SUPABASE_URL: z.url().nonempty(),
 })
 
-// --- Validation Logic ---
-
 /**
  * Logs detailed validation errors.
  * This is called on startup if the environment variables are invalid.
@@ -74,8 +70,6 @@ if (!parsedEnv.success) {
     logOnInvalidEnv(parsedEnv.error)
     process.exit(EXIT_CODE_FAILURE)
 }
-
-// --- Config Export ---
 
 /**
  * The type-safe, validated configuration object.

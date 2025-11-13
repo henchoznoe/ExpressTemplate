@@ -11,12 +11,9 @@
 
 // Default HTTP status code to use if none is provided.
 const DEFAULT_ERROR_STATUS = 500
-
 // Default flag for operational errors.
 // Assumes errors are operational (e.g., user error) unless specified otherwise.
 const DEFAULT_OPERATIONAL_FLAG = true
-
-// --- Class Definition ---
 
 /**
  * Custom error class for handling "operational" errors.

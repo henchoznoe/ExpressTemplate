@@ -4,7 +4,7 @@
  * @file src/controllers/users.controller.ts
  * @title User Route Controllers
  * @description This file contains the HTTP request handlers for all user-related routes.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
@@ -28,8 +28,6 @@ const MSG_NO_USERS_FOUND = 'No users found'
 // Request Parameter Keys
 const PARAM_ID = 'id'
 
-// --- Controller Functions ---
-
 /**
  * Controller to get all users.
  * @param _req - The Express Request object (unused).
@@ -37,12 +35,9 @@ const PARAM_ID = 'id'
  */
 export const getAllUsers = async (_req: Request, res: Response) => {
     const users = await usersService.getAllUsers()
-
-    // This is business logic: an empty list is not a DB error, but we treat it as 404.
     if (!users || users.length === 0) {
         throw new AppError(MSG_NO_USERS_FOUND, 404)
     }
-
     sendSuccess(res, 200, MSG_USERS_RETRIEVED, users)
 }
 

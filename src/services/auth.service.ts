@@ -4,7 +4,7 @@
  * @file src/services/auth.service.ts
  * @title Authentication Service Logic
  * @description Handles login logic, password verification, and JWT generation.
- * @last-modified 2025-11-12
+ * @last-modified 2025-11-13
  */
 
 // --- Imports ---
