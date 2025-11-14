@@ -9,6 +9,7 @@
 
 // --- Imports ---
 import config from '@config/env.js'
+import { handleJsonSyntaxError } from '@middlewares/global/json-syntax-handler.js'
 import { sendError } from '@utils/http-responses.js'
 import compression from 'compression'
 import cors from 'cors'
@@ -62,6 +63,7 @@ export const securityMiddlewares = [
     // 4. JSON Body Parser
     // Parses incoming JSON requests with a defined size limit to prevent large payloads.
     express.json({ limit: JSON_BODY_SIZE_LIMIT }),
+    handleJsonSyntaxError,
 
     // 5. CORS (Cross-Origin Resource Sharing)
     // Configures which external domains, methods, and headers are allowed to access the API.
