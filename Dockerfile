@@ -4,7 +4,7 @@
 # File: Dockerfile
 # Title: Application Dockerfile
 # Description: Multi-stage Dockerfile for building and running the Node.js application.
-# Last modified: 2025-11-11
+# Last modified: 2025-11-14
 #
 
 # --- Constants ---
@@ -26,7 +26,6 @@ RUN npm install --ignore-scripts
 
 # Copy all files for the build
 COPY . .
-
 # Run the build script
 RUN npm run build
 
@@ -47,13 +46,25 @@ RUN npm install --omit=dev --ignore-scripts
 # Copy the built code from the 'builder' stage.
 COPY --from=builder /app/dist ./dist
 
+# Create the logs directory so that the 'node' user owns it.
+# This ensures Winston has write permissions, even with volume mounts.
+RUN mkdir -p logs
+
+# Change ownership of all application files to the non-root 'node' user.
+# This user is included by default in the 'node:alpine' base image.
+RUN chown -R node:node /app
+
 # Set environment variables for production.
 ENV NODE_ENV=production
 ENV PORT=${PORT}
 
+# Switch to the non-root 'node' user for security.
+USER node
+
 # Expose the port defined by the variable.
+# Ports > 1024 can be exposed by non-root users.
 EXPOSE ${PORT}
 
 # Define the command to run the application.
-# This uses the 'start' script from package.json.
+# This will now be executed as the 'node' user.
 CMD ["npm", "start"]
