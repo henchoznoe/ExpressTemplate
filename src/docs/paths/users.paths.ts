@@ -12,6 +12,7 @@ import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 
 // --- Constants ---
+const TAGS_USERS = ['users']
 
 // Paths
 const PATH_USERS = '/users'
@@ -61,6 +62,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
+        tags: TAGS_USERS,
     })
 
     // Register GET /users/{id}
@@ -74,6 +76,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
+        tags: TAGS_USERS,
     })
 
     // Register POST /users
@@ -81,7 +84,15 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         description: DESC_CREATE,
         method: METHOD_POST,
         path: PATH_USERS,
-        request: { body: { content: { [MIME_TYPE_JSON]: { schema: CreateUserSchema } } } },
+        request: {
+            body: {
+                content: {
+                    [MIME_TYPE_JSON]: {
+                        schema: CreateUserSchema,
+                    },
+                },
+            },
+        },
         responses: {
             201: { description: RESP_201_CREATED },
             400: { description: RESP_400 },
@@ -89,6 +100,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             409: { description: RESP_409_EMAIL },
             500: { description: RESP_500 },
         },
+        tags: TAGS_USERS,
     })
 
     // Register PATCH /users/{id}
@@ -96,7 +108,15 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         description: DESC_UPDATE,
         method: METHOD_PATCH,
         path: PATH_USERS_ID,
-        request: { body: { content: { [MIME_TYPE_JSON]: { schema: UpdateUserSchema } } } },
+        request: {
+            body: {
+                content: {
+                    [MIME_TYPE_JSON]: {
+                        schema: UpdateUserSchema,
+                    },
+                },
+            },
+        },
         responses: {
             200: { description: RESP_200_UPDATED },
             400: { description: RESP_400 },
@@ -105,6 +125,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             409: { description: RESP_409_EMAIL },
             500: { description: RESP_500 },
         },
+        tags: TAGS_USERS,
     })
 
     // Register DELETE /users/{id}
@@ -118,5 +139,6 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
+        tags: TAGS_USERS,
     })
 }
