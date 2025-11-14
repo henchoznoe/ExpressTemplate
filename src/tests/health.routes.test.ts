@@ -1,10 +1,10 @@
 /**
  * @copyright Copyright (c) 2025 Noé Henchoz
  * @author Noé Henchoz
- * @file src/tests/health.test.ts
+ * @file src/tests/health.routes.test.ts
  * @title Health Check Integration Test
  * @description Integration test for the (GET /) health check endpoint.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -14,7 +14,7 @@ import pkg from '../../package.json' with { type: 'json' }
 
 // --- Constants ---
 
-// The supertest request agent initialized with the Express app.
+// The supertest request agent
 const request = supertest(app)
 // The API route to be tested.
 const ROUTE_TO_TEST = '/'

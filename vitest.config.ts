@@ -4,7 +4,7 @@
  * @file vitest.config.ts
  * @title Vitest Configuration
  * @description Configures the Vitest test runner for the project.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -15,9 +15,12 @@ import { defineConfig } from 'vitest/config'
 
 /**
  * Path to the global setup file for Vitest.
- * This file runs before all tests (e.g., to load .env files).
+ * This file runs before all tests (e..g, to load .env files).
  */
-const SETUP_FILE_PATH = './src/tests/setup.ts'
+const SETUP_FILES = [
+    './src/tests/setup.ts', // 1. Load environment variables FIRST
+    './src/tests/teardown.ts', // 2. Register the global teardown hook
+]
 
 // --- Vitest Configuration ---
 
@@ -38,6 +41,6 @@ export default defineConfig({
          * A list of files to run before any tests are executed.
          * Used here to load environment variables.
          */
-        setupFiles: [SETUP_FILE_PATH],
+        setupFiles: SETUP_FILES, // <-- Changement ici
     },
 })
