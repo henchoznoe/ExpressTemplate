@@ -8,12 +8,11 @@
  */
 
 // --- Imports ---
-import type { Application, NextFunction, Request, Response } from 'express'
+import type { Application, Request, Response } from 'express'
 import morgan from 'morgan'
 import statuses from 'statuses'
 import { createLogger, format, transports } from 'winston'
 import 'winston-daily-rotate-file'
-import type { AppError } from '@typings/errors/AppError.js'
 
 // --- Format Destructuring ---
 const { combine, timestamp, printf, colorize, errors, splat } = format
@@ -49,10 +48,6 @@ const MSG_UNKNOWN_STATUS = 'Unknown Status'
 // HTTP Status Codes for logging logic
 const HTTP_CLIENT_ERROR = 400
 const HTTP_SERVER_ERROR = 500
-
-// Error logging messages
-const MSG_UNHANDLED_ERROR = 'Unhandled error:'
-const MSG_UNHANDLED_NON_ERROR = 'Unhandled non-Error thrown'
 
 /**
  * Custom format for console logs, including colorization and stack traces.
@@ -183,30 +178,4 @@ export const setupLogger = (app: Application) => {
             },
         }),
     )
-}
-
-/**
- * An Express error handling middleware that logs unhandled errors.
- * This middleware only logs. It passes the error to the next
- * error handler (i.e., `globalErrorHandler`) to send the response.
- * @param err - The error object.
- * @param _req - The Express Request object (unused).
- * @param _res - The Express Response object (unused).
- * @param next - The Express NextFunction.
- */
-export const errorLoggerMiddleware = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
-    if (err instanceof Error) {
-        // We check for AppError here to potentially log differently, but we must log all errors
-        const appErr = err as AppError
-        if (appErr.stack) {
-            log.error(`${MSG_UNHANDLED_ERROR} ${appErr.message}\n${appErr.stack}`)
-        } else {
-            log.error(`${MSG_UNHANDLED_ERROR} ${appErr.message}`)
-        }
-    } else {
-        log.error(MSG_UNHANDLED_NON_ERROR, err)
-    }
-
-    // Pass the error to the next error handler (globalErrorHandler)
-    return next(err)
 }
