@@ -11,28 +11,47 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 import { z } from 'zod/v4'
 
+// --- Constants ---
+const NAME_MIN = 1
+const NAME_MAX = 100
+const PASSWORD_MIN = 1
+const PASSWORD_MAX = 100
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9])[\s\S]*$/
+
+const MAIL_INVALID = 'Invalid email address'
+const NAME_MIN_ERR = 'Name is required'
+const NAME_MAX_ERR = `Name must be ≤ ${NAME_MAX} characters`
+const PASSWORD_MIN_ERR = `Password must be at least ${PASSWORD_MIN} characters`
+const PASSWORD_MAX_ERR = `Password must be ≤ ${PASSWORD_MAX} characters`
+const PASSWORD_INVALID =
+    'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+
+const OPENAPI_EMAIL = 'Email'
+const OPENAPI_NAME = 'Name'
+const OPENAPI_PASSWORD = 'Password'
+const OPENAPI_LOGIN = 'LoginRequest'
+const OPENAPI_REGISTER = 'RegisterRequest'
+
 // Extend Zod with OpenAPI capabilities
 extendZodWithOpenApi(z)
 
 export const EmailSchema = z
-    .preprocess(
-        val => (typeof val === 'string' ? val.trim().toLowerCase() : val),
-        z.email({ error: 'Invalid email address' }),
-    )
-    .openapi('Email')
+    .preprocess(val => (typeof val === 'string' ? val.trim().toLowerCase() : val), z.email({ error: MAIL_INVALID }))
+    .openapi(OPENAPI_EMAIL)
 
 export const NameSchema = z
     .string()
     .trim()
-    .min(1, { error: 'Name is required' })
-    .max(100, { error: `Name must be ≤ 100 characters` })
-    .openapi('Name')
+    .min(NAME_MIN, { error: NAME_MIN_ERR })
+    .max(NAME_MAX, { error: NAME_MAX_ERR })
+    .openapi(OPENAPI_NAME)
 
 export const PasswordSchema = z
     .string()
-    .min(8, { error: `Password must be at least 8 characters` })
-    .regex(/^[\s\S]*$/, { error: 'Password invalid' })
-    .openapi('Password')
+    .min(PASSWORD_MIN, { error: PASSWORD_MIN_ERR })
+    .max(PASSWORD_MAX, { error: PASSWORD_MAX_ERR })
+    .regex(PASSWORD_REGEX, { error: PASSWORD_INVALID })
+    .openapi(OPENAPI_PASSWORD)
 
 export const RegisterSchema = z
     .object({
@@ -41,7 +60,7 @@ export const RegisterSchema = z
         password: PasswordSchema,
     })
     .strict()
-    .openapi('RegisterRequest')
+    .openapi(OPENAPI_REGISTER)
 
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>
 
@@ -51,6 +70,6 @@ export const LoginSchema = z
         password: PasswordSchema,
     })
     .strict()
-    .openapi('LoginRequest')
+    .openapi(OPENAPI_LOGIN)
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>
