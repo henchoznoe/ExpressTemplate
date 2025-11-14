@@ -9,7 +9,7 @@
 
 // --- Imports ---
 import * as authCtrl from '@controllers/auth.controller.js'
-import { validateFields } from '@middlewares/validations/validate-fields.js'
+import { validateFields } from '@middlewares/route/validations/validate-fields.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 

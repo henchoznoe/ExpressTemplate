@@ -1,7 +1,7 @@
 /**
  * @copyright Copyright (c) 2025 Noé Henchoz
  * @author Noé Henchoz
- * @file src/config/openapi.ts
+ * @file src/config/openapi-registry.ts
  * @title OpenAPI Registry
  * @description This file registers all API paths and schemas for OpenAPI documentation.
  * @last-modified 2025-11-14

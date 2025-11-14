@@ -9,8 +9,8 @@
 
 // --- Imports ---
 import * as usersCtrl from '@controllers/users.controller.js'
-import { protect } from '@middlewares/auth.middleware.js'
-import { validateFields } from '@middlewares/validations/validate-fields.js'
+import { protect } from '@middlewares/route/auth.middleware.js'
+import { validateFields } from '@middlewares/route/validations/validate-fields.js'
 import { Router } from 'express'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 

@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import { setupSwagger } from '@config/swagger.js'
+import { setupSwagger } from '@docs/swagger.js'
 import { setupErrorHandler } from '@middlewares/global/error-handler.js'
 import { setupMiddlewares } from '@middlewares/index.js'
 import { setupRoutes } from '@routes/index.js'

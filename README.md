@@ -111,7 +111,7 @@ The following npm scripts are available (from `package.json`):
 - `src/`
     - `index.ts` — App entry (starts the HTTP server)
     - `app.ts` — Express app setup, middlewares and routes mounting
-    - `config/` — App configuration (`env.ts`, `logger.ts`, `supabase.ts`, `openapi.ts`)
+    - `config/` — App configuration (`env.ts`, `logger.ts`, `supabase.ts`, `openapi-registry.ts`)
     - `controllers/` — HTTP handlers (logic for routes)
     - `db/` — Database access / repositories
     - `middlewares/` — Global and validation middlewares
