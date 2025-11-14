@@ -3,9 +3,7 @@
  * @author Noé Henchoz
  * @file src/dependencies.ts
  * @title Dependency Injector
- * @description
- * Instantiates and wires up all application dependencies (repositories, services).
- * This is the single source of truth for dependency injection.
+ * @description Instantiates and wires up all application dependencies (repositories, services).
  * @last-modified 2025-11-14
  */
 

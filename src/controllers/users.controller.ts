@@ -7,10 +7,10 @@
  * @last-modified 2025-11-14
  */
 
+// --- Imports ---
 import { AppError } from '@typings/errors/AppError.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
-// --- Imports ---
 import { userService } from '@/dependencies.js'
 
 // --- Constants ---
@@ -21,10 +21,8 @@ const MSG_USER_RETRIEVED = 'User retrieved successfully'
 const MSG_USER_CREATED = 'User created successfully'
 const MSG_USER_UPDATED = 'User updated successfully'
 const MSG_USER_DELETED = 'User deleted successfully'
-
 // Error Messages
 const MSG_NO_USERS_FOUND = 'No users found'
-
 // Request Parameter Keys
 const PARAM_ID = 'id'
 

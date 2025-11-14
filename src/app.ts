@@ -4,7 +4,7 @@
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -14,12 +14,10 @@ import { setupMiddlewares } from '@middlewares/index.js'
 import { setupRoutes } from '@routes/index.js'
 import express from 'express'
 
-// Create the main Express app instance
 const app = express()
 
-// --- Trust Proxy Setting ---
+// 0. Trust Proxy
 // Tell Express that it is behind a proxy (e.g., Docker, Nginx, Traefik).
-// Setting 'trust proxy' to 1 means it will trust the first hop (X-Forwarded-For).
 app.set('trust proxy', 1)
 
 // 1. Core Middlewares

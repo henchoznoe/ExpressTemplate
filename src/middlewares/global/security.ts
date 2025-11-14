@@ -25,7 +25,6 @@ const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const RATE_LIMIT_MAX_REQUESTS = 200
 const HTTP_STATUS_TOO_MANY_REQUESTS = 429
 const MSG_TOO_MANY_REQUESTS = 'Too many requests, please try again later.'
-
 // Request body size limit
 const JSON_BODY_SIZE_LIMIT = '2mb'
 

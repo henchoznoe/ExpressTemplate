@@ -26,32 +26,26 @@ const PASSWORD_MAX_ERR = `Password must be ≤ ${PASSWORD_MAX} characters`
 const PASSWORD_INVALID =
     'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
 
-const OPENAPI_EMAIL = 'Email'
-const OPENAPI_NAME = 'Name'
-const OPENAPI_PASSWORD = 'Password'
-const OPENAPI_LOGIN = 'LoginRequest'
-const OPENAPI_REGISTER = 'RegisterRequest'
-
 // Extend Zod with OpenAPI capabilities
 extendZodWithOpenApi(z)
 
 export const EmailSchema = z
     .preprocess(val => (typeof val === 'string' ? val.trim().toLowerCase() : val), z.email({ error: MAIL_INVALID }))
-    .openapi(OPENAPI_EMAIL)
+    .openapi('Email')
 
 export const NameSchema = z
     .string()
     .trim()
     .min(NAME_MIN, { error: NAME_MIN_ERR })
     .max(NAME_MAX, { error: NAME_MAX_ERR })
-    .openapi(OPENAPI_NAME)
+    .openapi('Name')
 
 export const PasswordSchema = z
     .string()
     .min(PASSWORD_MIN, { error: PASSWORD_MIN_ERR })
     .max(PASSWORD_MAX, { error: PASSWORD_MAX_ERR })
     .regex(PASSWORD_REGEX, { error: PASSWORD_INVALID })
-    .openapi(OPENAPI_PASSWORD)
+    .openapi('Password')
 
 export const RegisterSchema = z
     .object({
@@ -60,7 +54,7 @@ export const RegisterSchema = z
         password: PasswordSchema,
     })
     .strict()
-    .openapi(OPENAPI_REGISTER)
+    .openapi('RegisterRequest')
 
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>
 
@@ -70,6 +64,6 @@ export const LoginSchema = z
         password: PasswordSchema,
     })
     .strict()
-    .openapi(OPENAPI_LOGIN)
+    .openapi('LoginRequest')
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>

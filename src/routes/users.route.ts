@@ -4,7 +4,7 @@
  * @file src/routes/users.route.ts
  * @title User API Routes
  * @description This file defines all API routes related to user management.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -16,7 +16,6 @@ import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 
 // --- Router Setup ---
 
-// Create a new Express router instance for user-related routes
 const usersRouter = Router()
 
 // --- Public routes ---

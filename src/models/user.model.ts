@@ -7,9 +7,7 @@
  * @last-modified 2025-11-14
  */
 
-/**
- * Represents the public-facing data for a User.
- */
+// Represents the public-facing data for a User.
 export interface User {
     id: string
     name: string
@@ -18,10 +16,7 @@ export interface User {
     updated_at: string | Date
 }
 
-/**
- * Represents a User including internal data (e.g., hashed password).
- * To be used only by internal services like authentication.
- */
+// Represents a User including internal data (e.g., hashed password).
 export interface UserWithPassword extends User {
     password: string
 }

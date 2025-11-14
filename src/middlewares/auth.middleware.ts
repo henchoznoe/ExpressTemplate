@@ -27,9 +27,7 @@ const MSG_USER_NOT_FOUND = 'User belonging to this token no longer exists.'
 export const protect = async (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
     const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
-    if (!token) {
-        throw new AppError(MSG_NO_TOKEN, HTTP_STATUS_UNAUTHORIZED)
-    }
+    if (!token) throw new AppError(MSG_NO_TOKEN, HTTP_STATUS_UNAUTHORIZED)
     let payload: { id: string }
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
@@ -38,9 +36,7 @@ export const protect = async (req: Request, _res: Response, next: NextFunction) 
         throw new AppError(MSG_INVALID_TOKEN, HTTP_STATUS_UNAUTHORIZED)
     }
     const currentUser = await usersRepository.getUserById(payload.id)
-    if (!currentUser) {
-        throw new AppError(MSG_USER_NOT_FOUND, HTTP_STATUS_UNAUTHORIZED)
-    }
+    if (!currentUser) throw new AppError(MSG_USER_NOT_FOUND, HTTP_STATUS_UNAUTHORIZED)
     req.user = { id: currentUser.id }
     next()
 }

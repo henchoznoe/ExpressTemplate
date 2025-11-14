@@ -4,34 +4,67 @@
  * @file src/schemas/users.schema.ts
  * @title User Validation Schemas
  * @description Defines Zod schemas for validating user-related request bodies (create, update).
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
-import zod, { z } from 'zod'
+import { z } from 'zod/v4'
+
+// --- Constants ---
+const NAME_MIN = 1
+const NAME_MAX = 100
+const PASSWORD_MIN = 1
+const PASSWORD_MAX = 100
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9])[\s\S]*$/
+
+const MAIL_INVALID = 'Invalid email address'
+const NAME_MIN_ERR = 'Name is required'
+const NAME_MAX_ERR = `Name must be ≤ ${NAME_MAX} characters`
+const PASSWORD_MIN_ERR = `Password must be at least ${PASSWORD_MIN} characters`
+const PASSWORD_MAX_ERR = `Password must be ≤ ${PASSWORD_MAX} characters`
+const PASSWORD_INVALID =
+    'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
 
 // Extend Zod with OpenAPI capabilities
 extendZodWithOpenApi(z)
 
-/**
- * Schema for validating the request body when creating a new user.
- */
-export const CreateUserSchema = z.object({
-    email: z.email(),
-    name: z.string().nonempty(),
-    password: z.string().nonempty(),
-})
+export const EmailSchema = z
+    .preprocess(val => (typeof val === 'string' ? val.trim().toLowerCase() : val), z.email({ error: MAIL_INVALID }))
+    .openapi('Email')
 
-export type CreateUserSchemaType = zod.infer<typeof CreateUserSchema>
+export const NameSchema = z
+    .string()
+    .trim()
+    .min(NAME_MIN, { error: NAME_MIN_ERR })
+    .max(NAME_MAX, { error: NAME_MAX_ERR })
+    .openapi('Name')
 
-/**
- * Schema for validating the request body when updating an existing user.
- */
-export const UpdateUserSchema = zod.object({
-    email: z.email().optional(),
-    name: z.string().optional(),
-    password: z.string().optional(),
-})
+export const PasswordSchema = z
+    .string()
+    .min(PASSWORD_MIN, { error: PASSWORD_MIN_ERR })
+    .max(PASSWORD_MAX, { error: PASSWORD_MAX_ERR })
+    .regex(PASSWORD_REGEX, { error: PASSWORD_INVALID })
+    .openapi('Password')
 
-export type UpdateUserSchemaType = zod.infer<typeof UpdateUserSchema>
+export const CreateUserSchema = z
+    .object({
+        email: EmailSchema,
+        name: NameSchema,
+        password: PasswordSchema,
+    })
+    .strict()
+    .openapi('CreateUserRequest')
+
+export type CreateUserSchemaType = z.infer<typeof CreateUserSchema>
+
+export const UpdateUserSchema = z
+    .object({
+        email: EmailSchema.optional(),
+        name: NameSchema.optional(),
+        password: PasswordSchema.optional(),
+    })
+    .strict()
+    .openapi('UpdateUserRequest')
+
+export type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>

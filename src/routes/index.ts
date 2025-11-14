@@ -28,7 +28,6 @@ const MSG_HEALTH_SUCCESS = 'Health check successful'
 export const setupRoutes = (app: Application): void => {
     // Health check route
     app.get(ROUTE_HEALTH_CHECK, handleHealthCheck)
-
     // API routes
     app.use(ROUTE_AUTH, authRouter)
     app.use(ROUTE_USERS, usersRouter)

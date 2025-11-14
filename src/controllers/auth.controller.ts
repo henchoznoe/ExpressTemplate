@@ -7,9 +7,9 @@
  * @last-modified 2025-11-14
  */
 
+// --- Imports ---
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
-// --- Imports ---
 import { authService } from '@/dependencies.js'
 
 // --- Constants ---

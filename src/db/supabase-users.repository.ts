@@ -26,7 +26,9 @@ const COL_ALL = '*'
 const COL_ID = 'id'
 const COL_EMAIL = 'email'
 const COL_NAME = 'name'
-const COL_ALL_WITHOUT_PASSWORD = `${COL_ID}, ${COL_NAME}, ${COL_EMAIL}, created_at, updated_at`
+const COL_CREATED_AT = 'created_at'
+const COL_UPDATED_AT = 'updated_at'
+const COL_ALL_WITHOUT_PASSWORD = `${COL_ID}, ${COL_NAME}, ${COL_EMAIL}, ${COL_CREATED_AT}, ${COL_UPDATED_AT}`
 
 // PostgreSQL Error Codes
 const PG_CODE_UNIQUE_VIOLATION = '23505'
@@ -87,8 +89,6 @@ export class SupabaseUsersRepository implements IUserRepository {
     }
 
     async createUser(userData: CreateUserPersistence): Promise<User | null> {
-        // !! MODIFICATION IMPORTANTE !!
-        // On ne retourne plus le mot de passe
         const { data, error } = await supabase
             .from(TABLE_NAME)
             .insert(userData)

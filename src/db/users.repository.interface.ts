@@ -35,14 +35,9 @@ export type UpdateUserPersistence = {
  */
 export interface IUserRepository {
     getAllUsers(): Promise<User[] | null>
-
     getUserById(id: string): Promise<User | null>
-
     findUserByEmail(email: string): Promise<UserWithPassword | null>
-
     createUser(data: CreateUserPersistence): Promise<User | null>
-
     updateUser(userId: string, data: UpdateUserPersistence): Promise<User | null>
-
     deleteUser(id: string): Promise<User | null>
 }

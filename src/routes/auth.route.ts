@@ -13,8 +13,11 @@ import { validateFields } from '@middlewares/validations/validate-fields.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 
-// Create a new Express router instance for auth-related routes
+// --- Router Setup ---
+
 const authRouter = Router()
+
+// --- Public routes ---
 
 // POST /auth/register
 // Register a new user.

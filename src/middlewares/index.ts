@@ -4,7 +4,7 @@
  * @file src/middlewares/index.ts
  * @title Core Middleware Orchestrator
  * @description This file exports a single function to apply all core middlewares to the Express app.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -20,12 +20,7 @@ import type { Application } from 'express'
  */
 export const setupMiddlewares = (app: Application) => {
     // 1. Security Middlewares
-    // Apply core security protections (CORS, Helmet, Rate Limiter, etc.) first.
-    for (const middleware of securityMiddlewares) {
-        app.use(middleware)
-    }
-
+    for (const middleware of securityMiddlewares) app.use(middleware)
     // 2. Request Logger
-    // Apply the request logger (Morgan) after security.
     applyRequestLogger(app)
 }

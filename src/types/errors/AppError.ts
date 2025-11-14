@@ -4,7 +4,7 @@
  * @file src/types/errors/AppError.ts
  * @title Custom Application Error Class
  * @description Defines a custom Error class for handling operational errors.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-14
  */
 
 // --- Constants ---
@@ -12,7 +12,6 @@
 // Default HTTP status code to use if none is provided.
 const DEFAULT_ERROR_STATUS = 500
 // Default flag for operational errors.
-// Assumes errors are operational (e.g., user error) unless specified otherwise.
 const DEFAULT_OPERATIONAL_FLAG = true
 
 /**
