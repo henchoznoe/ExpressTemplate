@@ -140,7 +140,7 @@ http://localhost:3000/api-docs
 
 - The project uses **Winston** with daily rotate files; logs are stored in `logs/` (`-app.log` and `-error.log`).
 - Centralized error handling middleware (`src/middlewares/global/error-handler.ts`) leverages **Express 5's native async error handling**.
-- The database repository (`src/db/users.repository.ts`) intelligently translates database-specific errors (e.g., unique constraints) into
+- The database repository (`src/db/supabase-users.repository.ts`) intelligently translates database-specific errors (e.g., unique constraints) into
   custom `AppError` classes, ensuring clean 4xx/5xx responses.
 
 ---
