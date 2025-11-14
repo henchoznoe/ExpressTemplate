@@ -4,7 +4,7 @@
  * @file src/controllers/auth.controller.ts
  * @title Auth Route Controllers
  * @description HTTP request handlers for authentication routes.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -16,14 +16,16 @@ import type { Request, Response } from 'express'
 
 // Success Messages
 const MSG_LOGIN_SUCCESS = 'Login successful'
+const MSG_REGISTER_SUCCESS = 'Registration successful'
 
 /**
  * Controller to handle user register.
- * @param _req
- * @param _res
+ * @param req - The Express Request object (body is validated by middleware).
+ * @param res - The Express Response object.
  */
-export const register = async (_req: Request, _res: Response) => {
-    // TODO
+export const register = async (req: Request, res: Response) => {
+    const userWithToken = await authService.register(req.body)
+    sendSuccess(res, 201, MSG_REGISTER_SUCCESS, userWithToken)
 }
 
 /**

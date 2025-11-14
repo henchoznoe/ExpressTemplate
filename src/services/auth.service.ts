@@ -4,13 +4,13 @@
  * @file src/services/auth.service.ts
  * @title Authentication Service Logic
  * @description Handles login logic, password verification, and JWT generation.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
 import config from '@config/env.js'
 import * as usersRepository from '@db/users.repository.js'
-import type { LoginSchemaType } from '@schemas/auth.schema.js'
+import type { LoginSchemaType, RegisterSchemaType } from '@schemas/auth.schema.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import jwt, { type SignOptions } from 'jsonwebtoken'
@@ -18,6 +18,8 @@ import jwt, { type SignOptions } from 'jsonwebtoken'
 // --- Constants ---
 const HTTP_STATUS_UNAUTHORIZED = 401
 const MSG_INVALID_CREDENTIALS = 'Invalid email or password'
+const HTTP_STATUS_INTERNAL_ERROR = 500
+const MSG_REGISTRATION_FAILED = 'User registration failed'
 
 /**
  * Generates a signed JWT for a given user ID.
@@ -42,19 +44,26 @@ const signToken = async (userId: string) => {
  */
 export const login = async (credentials: LoginSchemaType) => {
     const { email, password } = credentials
-
-    // 1. Find the user by email (includes the password hash)
     const user = await usersRepository.findUserByEmail(email)
-
-    // 2. Check if user exists AND password is correct
     if (!user || !(await bcrypt.compare(password, user.password))) {
         throw new AppError(MSG_INVALID_CREDENTIALS, HTTP_STATUS_UNAUTHORIZED)
     }
-
-    // 3. Generate and return the token
     const token = await signToken(user.id)
-
-    // 4. Remove password from user object before returning and add token
     const { password: _, ...userWithoutPassword } = user
     return { ...userWithoutPassword, token }
+}
+
+/**
+ * Creates a new user and returns the user object with a JWT.
+ * @param credentials - The user's name, email, and password.
+ * @returns A promise that resolves to an object containing the new user and JWT.
+ * @throws {AppError} if email is already in use (handled by repository).
+ */
+export const register = async (credentials: RegisterSchemaType) => {
+    const newUser = await usersRepository.createUser(credentials)
+    if (!newUser) {
+        throw new AppError(MSG_REGISTRATION_FAILED, HTTP_STATUS_INTERNAL_ERROR)
+    }
+    const token = await signToken(newUser.id)
+    return { ...newUser, token }
 }

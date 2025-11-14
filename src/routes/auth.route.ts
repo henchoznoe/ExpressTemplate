@@ -4,22 +4,21 @@
  * @file src/routes/auth.route.ts
  * @title Auth API Routes
  * @description Defines all API routes related to authentication (login, etc.).
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
 import * as authCtrl from '@controllers/auth.controller.js'
 import { validateFields } from '@middlewares/validations/validate-fields.js'
-import { LoginSchema } from '@schemas/auth.schema.js'
+import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 
 // Create a new Express router instance for auth-related routes
 const authRouter = Router()
 
-// TODO
 // POST /auth/register
 // Register a new user.
-// authRouter.post('/register', validateFields(RegisterSchema), authCtrl.register)
+authRouter.post('/register', validateFields(RegisterSchema), authCtrl.register)
 
 // POST /auth/login
 // Log in a user and get a token.
