@@ -4,14 +4,14 @@
  * @file src/controllers/users.controller.ts
  * @title User Route Controllers
  * @description This file contains the HTTP request handlers for all user-related routes.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
-// --- Imports ---
-import * as usersService from '@services/users.service.js'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
+// --- Imports ---
+import { userService } from '@/dependencies.js'
 
 // --- Constants ---
 
@@ -34,7 +34,7 @@ const PARAM_ID = 'id'
  * @param res - The Express Response object.
  */
 export const getAllUsers = async (_req: Request, res: Response) => {
-    const users = await usersService.getAllUsers()
+    const users = await userService.getAllUsers()
     if (!users || users.length === 0) {
         throw new AppError(MSG_NO_USERS_FOUND, 404)
     }
@@ -48,7 +48,7 @@ export const getAllUsers = async (_req: Request, res: Response) => {
  */
 export const getUserById = async (req: Request, res: Response) => {
     const userId = req.params[PARAM_ID]
-    const user = await usersService.getUserById(userId)
+    const user = await userService.getUserById(userId)
     sendSuccess(res, 200, MSG_USER_RETRIEVED, user)
 }
 
@@ -58,7 +58,7 @@ export const getUserById = async (req: Request, res: Response) => {
  * @param res - The Express Response object.
  */
 export const createUser = async (req: Request, res: Response) => {
-    const newUser = await usersService.createUser(req.body)
+    const newUser = await userService.createUser(req.body)
     sendSuccess(res, 201, MSG_USER_CREATED, newUser)
 }
 
@@ -69,7 +69,7 @@ export const createUser = async (req: Request, res: Response) => {
  */
 export const updateUser = async (req: Request, res: Response) => {
     const userId = req.params[PARAM_ID]
-    const updatedUser = await usersService.updateUser(userId, req.body)
+    const updatedUser = await userService.updateUser(userId, req.body)
     sendSuccess(res, 200, MSG_USER_UPDATED, updatedUser)
 }
 
@@ -80,6 +80,6 @@ export const updateUser = async (req: Request, res: Response) => {
  */
 export const deleteUser = async (req: Request, res: Response) => {
     const userId = req.params[PARAM_ID]
-    const deletedUser = await usersService.deleteUser(userId)
+    const deletedUser = await userService.deleteUser(userId)
     sendSuccess(res, 200, MSG_USER_DELETED, deletedUser)
 }
