@@ -121,7 +121,7 @@ export const findUserByEmail = async (email: string) => {
  * @throws {AppError} (via handleSupabaseError) if the email is already in use.
  */
 export const createUser = async (userData: CreateUserSchemaType) => {
-    const { data, error } = await supabase.from(TABLE_NAME).insert(userData).select(COL_ALL_WITHOUT_PASSWORD).single()
+    const { data, error } = await supabase.from(TABLE_NAME).insert(userData).select(COL_ALL).single()
     if (error) handleSupabaseError(error)
     return data
 }

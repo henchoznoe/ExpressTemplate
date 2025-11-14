@@ -60,10 +60,13 @@ export const login = async (credentials: LoginSchemaType) => {
  * @throws {AppError} if email is already in use (handled by repository).
  */
 export const register = async (credentials: RegisterSchemaType) => {
-    const newUser = await usersRepository.createUser(credentials)
+    const hashedPassword = await bcrypt.hash(credentials.password, config.bcryptSaltRounds)
+    const dataWithHashedPassword = { ...credentials, password: hashedPassword }
+    const newUser = await usersRepository.createUser(dataWithHashedPassword)
     if (!newUser) {
         throw new AppError(MSG_REGISTRATION_FAILED, HTTP_STATUS_INTERNAL_ERROR)
     }
     const token = await signToken(newUser.id)
-    return { ...newUser, token }
+    const { password: _, ...userWithoutPassword } = newUser
+    return { ...userWithoutPassword, token }
 }
