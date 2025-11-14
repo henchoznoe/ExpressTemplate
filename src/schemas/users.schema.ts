@@ -16,7 +16,6 @@ extendZodWithOpenApi(z)
 
 /**
  * Schema for validating the request body when creating a new user.
- * // TODO : Migrate to Zod v4
  */
 export const CreateUserSchema = z.object({
     email: z.email(),
@@ -27,9 +26,7 @@ export const CreateUserSchema = z.object({
 export type CreateUserSchemaType = zod.infer<typeof CreateUserSchema>
 
 /**
- * Schema for validating the request body when **updating** an existing user.
- * All fields are optional, but the 'id' is required for the operation.
- * // TODO : Migrate to Zod v4
+ * Schema for validating the request body when updating an existing user.
  */
 export const UpdateUserSchema = zod.object({
     email: z.email().optional(),
