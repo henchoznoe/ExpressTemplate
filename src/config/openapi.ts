@@ -4,7 +4,7 @@
  * @file src/config/openapi.ts
  * @title OpenAPI Registry
  * @description This file registers all API paths and schemas for OpenAPI documentation.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-14
  */
 
 // --- Imports ---
@@ -15,12 +15,15 @@ import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 
 // Paths
 const PATH_USERS = '/users'
-const PATH_USERS_ID = '/users/{id}'
+const PATH_USERS_ID = `${PATH_USERS}/{id}`
+const PATH_AUTH = '/auth'
+const PATH_AUTH_REGISTER = `${PATH_AUTH}/register`
+const PATH_AUTH_LOGIN = `${PATH_AUTH}/login`
 
 // Methods
 const METHOD_GET = 'get'
 const METHOD_POST = 'post'
-const METHOD_PUT = 'put'
+const METHOD_PATCH = 'patch'
 const METHOD_DELETE = 'delete'
 
 // Content Type
@@ -28,11 +31,14 @@ const MIME_TYPE_JSON = 'application/json'
 
 // Status Codes
 const STATUS_200 = 200
+const STATUS_201 = 201
 const STATUS_400 = 400
 const STATUS_404 = 404
 const STATUS_500 = 500
 
 // Descriptions
+const DESC_REGISTER = 'Register a new user'
+const DESC_LOGIN = 'Log in a user'
 const DESC_GET_ALL = 'Get all users'
 const DESC_GET_BY_ID = 'Get a user by ID'
 const DESC_CREATE = 'Create a new user'
@@ -45,6 +51,7 @@ const RESP_200_DETAILS = 'User details'
 const RESP_200_CREATED = 'User created successfully'
 const RESP_200_UPDATED = 'User updated successfully'
 const RESP_200_DELETED = 'User deleted successfully'
+const RESP_200_LOGIN = 'Login successful'
 const RESP_400 = 'Validation error'
 const RESP_404 = 'User not found'
 const RESP_500 = 'Internal server error'
@@ -54,6 +61,30 @@ const RESP_500 = 'Internal server error'
  * It holds all registered paths and component definitions (from Zod schemas).
  */
 const registry = new OpenAPIRegistry()
+
+// Register POST /auth/register
+registry.registerPath({
+    description: DESC_REGISTER,
+    method: METHOD_POST,
+    path: PATH_AUTH_REGISTER,
+    responses: {
+        [STATUS_201]: { description: RESP_200_CREATED },
+        [STATUS_400]: { description: RESP_400 },
+        [STATUS_500]: { description: RESP_500 },
+    },
+})
+
+// Register POST /auth/login
+registry.registerPath({
+    description: DESC_LOGIN,
+    method: METHOD_POST,
+    path: PATH_AUTH_LOGIN,
+    responses: {
+        [STATUS_200]: { description: RESP_200_LOGIN },
+        [STATUS_400]: { description: RESP_400 },
+        [STATUS_500]: { description: RESP_500 },
+    },
+})
 
 // Register GET /users
 registry.registerPath({
@@ -94,7 +125,7 @@ registry.registerPath({
 // Register PATCH /users/{id}
 registry.registerPath({
     description: DESC_UPDATE,
-    method: METHOD_PUT,
+    method: METHOD_PATCH,
     path: PATH_USERS,
     request: { body: { content: { [MIME_TYPE_JSON]: { schema: UpdateUserSchema } } } },
     responses: {
