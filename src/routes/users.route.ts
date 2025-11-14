@@ -18,12 +18,6 @@ import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 
 const usersRouter = Router()
 
-// --- Public routes ---
-
-// POST /users
-// Create a new user.
-usersRouter.post('/', validateFields(CreateUserSchema), usersCtrl.createUser)
-
 // --- Protected routes ---
 
 // Protect all routes below this line with authentication
@@ -36,6 +30,10 @@ usersRouter.get('/', usersCtrl.getAllUsers)
 // GET /users/:id
 // Get a single user by their ID
 usersRouter.get('/:id', usersCtrl.getUserById)
+
+// POST /users
+// Create a new user.
+usersRouter.post('/', validateFields(CreateUserSchema), usersCtrl.createUser)
 
 // PATCH /users
 // Update a user by their ID
