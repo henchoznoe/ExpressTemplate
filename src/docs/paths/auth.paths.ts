@@ -28,6 +28,7 @@ const DESC_LOGIN = 'Log in a user'
 const RESP_201_REGISTER = 'Registration successful'
 const RESP_200_LOGIN = 'Login successful'
 const RESP_400 = 'Validation error'
+const RESP_401_LOGIN = 'Invalid email or password'
 const RESP_409_EMAIL = 'Email already in use'
 const RESP_500 = 'Internal server error'
 
@@ -57,6 +58,7 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
         responses: {
             200: { description: RESP_200_LOGIN },
             400: { description: RESP_400 },
+            401: { description: RESP_401_LOGIN },
             500: { description: RESP_500 },
         },
     })
