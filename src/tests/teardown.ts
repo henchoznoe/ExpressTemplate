@@ -3,21 +3,18 @@
  * @author Noé Henchoz
  * @file src/tests/teardown.ts
  * @title Vitest Global Teardown
- * @description Provides a global afterAll hook to clean up resources (e.g., DB connection).
- * @last-modified 2025-11-14
+ * @description Provides a global afterAll hook to clean up resources.
+ * @last-modified 2025-11-15
  */
 
 // --- Imports ---
-import { supabase } from '@config/supabase.js'
 import { afterAll } from 'vitest'
 
 // --- Global Teardown ---
 
 /**
- * After all tests have run, destroy the Supabase client connection.
- * This allows the Vitest process to exit gracefully.
+ * After all tests have run, clean up resources.
  */
 afterAll(async () => {
-    await supabase.auth.signOut()
-    await supabase.removeAllChannels()
+    // Nothing to do for the moment
 })

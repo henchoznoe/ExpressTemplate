@@ -4,16 +4,16 @@
  * @file src/dependencies.ts
  * @title Dependency Injector
  * @description Instantiates and wires up all application dependencies (repositories, services).
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-15
  */
 
 // --- 1. Import Concrete Implementations ---
-import { SupabaseUsersRepository } from '@db/supabase-users.repository.js'
+import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
 import { AuthService } from '@services/auth.service.js'
 import { UserService } from '@services/users.service.js'
 
 // --- 2. Instantiate Repositories ---
-export const usersRepository = new SupabaseUsersRepository()
+export const usersRepository = new PrismaUsersRepository()
 
 // --- 3. Instantiate Services (Injecting Repos) ---
 export const userService = new UserService(usersRepository)

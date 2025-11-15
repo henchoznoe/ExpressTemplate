@@ -7,7 +7,6 @@
  * @last-modified 2025-11-14
  */
 
-import { supabase } from '@config/supabase.js'
 import supertest from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import app from '@/app.js'
@@ -17,8 +16,8 @@ const request = supertest(app)
 
 // --- Test Suite Setup ---
 
-let authToken = ''
-let mainUserId = ''
+const authToken = ''
+const mainUserId = ''
 
 const mainUser = {
     email: 'user-routes@test.com',
@@ -32,23 +31,6 @@ const secondaryUser = {
     password: 'Password123!',
 }
 let secondaryUserId = ''
-
-beforeAll(async () => {
-    await request.post('/auth/register').send(mainUser)
-
-    const response = await request.post('/auth/login').send({
-        email: mainUser.email,
-        password: mainUser.password,
-    })
-
-    authToken = response.body.data.token
-    mainUserId = response.body.data.id
-})
-
-afterAll(async () => {
-    const { error } = await supabase.from('users').delete().in('email', [mainUser.email, secondaryUser.email])
-    if (error) console.error('Error cleaning up users test users:', error)
-})
 
 // --- Test Suite ---
 

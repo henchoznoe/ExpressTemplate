@@ -33,3 +33,5 @@ services:
         # to a ./logs directory on the host machine.
         volumes:
             - ./logs:/app/logs
+        # TODO
+        command: sh -c "npm run db:deploy && npm start"

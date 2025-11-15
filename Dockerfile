@@ -4,7 +4,7 @@
 # File: Dockerfile
 # Title: Application Dockerfile
 # Description: Multi-stage Dockerfile for building and running the Node.js application.
-# Last modified: 2025-11-14
+# Last modified: 2025-11-15
 #
 
 # --- Constants ---
@@ -18,11 +18,15 @@ FROM node:22-alpine AS builder
 # Set the working directory inside the container.
 WORKDIR /app
 
-# Copy package files first to leverage Docker caching.
+# Copy package files and Prisma schema first to leverage Docker caching.
 COPY package*.json ./
+COPY prisma/schema.prisma ./
 
 # Install ALL dependencies (including devDependencies) needed for the build.
 RUN npm install --ignore-scripts
+
+# Generate Prisma Client
+RUN npx prisma generate
 
 # Copy all files for the build
 COPY . .
@@ -45,6 +49,8 @@ RUN npm install --omit=dev --ignore-scripts
 
 # Copy the built code from the 'builder' stage.
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Create the logs directory so that the 'node' user owns it.
 # This ensures Winston has write permissions, even with volume mounts.

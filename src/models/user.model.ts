@@ -4,7 +4,7 @@
  * @file src/models/user.model.ts
  * @title User Domain Models
  * @description Defines the core User data structures for the application.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-15
  */
 
 // Represents the public-facing data for a User.
@@ -12,8 +12,8 @@ export interface User {
     id: string
     name: string
     email: string
-    created_at: string | Date
-    updated_at: string | Date
+    createdAt: Date
+    updatedAt: Date
 }
 
 // Represents a User including internal data (e.g., hashed password).

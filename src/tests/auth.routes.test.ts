@@ -7,7 +7,6 @@
  * @last-modified 2025-11-14
  */
 
-import { supabase } from '@config/supabase.js'
 import supertest from 'supertest'
 import app from '@/app.js'
 
@@ -27,12 +26,6 @@ const testUserInvalid = {
     email: 'not-an-email',
     password: 'weak',
 }
-
-// Clean up the test user from the database after all tests
-afterAll(async () => {
-    const { error } = await supabase.from('users').delete().eq('email', testUser.email)
-    if (error) console.error('Error cleaning up auth test user:', error)
-})
 
 // --- Test Suite ---
 
