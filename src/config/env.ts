@@ -14,8 +14,12 @@ import { z } from 'zod'
 // --- Constants ---
 const EXIT_CODE_FAILURE = 1
 const ERROR_MSG_INVALID_ENV = 'Invalid environment variables :'
-const ERROR_MSG_PORT_INVALID = 'PORT must be a positive integer'
-const ERROR_MSG_SALT_INVALID = 'BCRYPT_SALT_ROUNDS must be a positive integer'
+const ERROR_MSG_NOT_PROVIDED = 'must be provided'
+const ERROR_MSG_IS_EMPTY = "can't be empty"
+const ERROR_MSG_POSITIVE_INTEGER = 'must be a positive integer'
+const ERROR_MSG_URL = 'must be a valid URL'
+const ERROR_MSG_JWT = 'must start with ey'
+const ERROR_MSG_APP_MODE = 'must be development, production or test'
 const ERROR_PATH_SEPARATOR = '.'
 const ERROR_PATH_ROOT = '(root)'
 
@@ -25,27 +29,26 @@ const ERROR_PATH_ROOT = '(root)'
  */
 const envSchema = z.object({
     BCRYPT_SALT_ROUNDS: z
-        .string()
-        .nonempty()
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY })
         .transform(val => parseInt(val, 10))
-        .refine(val => !Number.isNaN(val) && val > 0, {
-            message: ERROR_MSG_SALT_INVALID,
-        }),
-    CORS_ALLOWED_HEADERS: z.string().nonempty(),
-    CORS_METHODS: z.string().nonempty(),
-    CORS_ORIGIN: z.string().nonempty(),
-    JWT_EXPIRES_IN: z.string().nonempty(),
-    JWT_SECRET: z.string().nonempty(),
-    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+        .refine(val => !Number.isNaN(val) && val > 0, { error: ERROR_MSG_POSITIVE_INTEGER }),
+    CORS_ALLOWED_HEADERS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
+    CORS_METHODS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
+    CORS_ORIGIN: z.union([z.url({ error: ERROR_MSG_URL }), z.literal('*')]),
+    JWT_EXPIRES_IN: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
+    JWT_SECRET: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
+    NODE_ENV: z.enum(['development', 'production', 'test'], { error: ERROR_MSG_APP_MODE }).default('development'),
     PORT: z
-        .string()
-        .nonempty()
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY })
         .transform(val => parseInt(val, 10))
-        .refine(val => !Number.isNaN(val) && val > 0, {
-            message: ERROR_MSG_PORT_INVALID,
-        }),
-    SUPABASE_ANON_KEY: z.string().nonempty(),
-    SUPABASE_URL: z.url().nonempty(),
+        .refine(val => !Number.isNaN(val) && val > 0, { error: ERROR_MSG_POSITIVE_INTEGER }),
+    SUPABASE_ANON_KEY: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY })
+        .refine(val => val.startsWith('ey'), { error: ERROR_MSG_JWT }),
+    SUPABASE_URL: z.url({ error: ERROR_MSG_URL }),
 })
 
 /**
@@ -53,7 +56,7 @@ const envSchema = z.object({
  * This is called on startup if the environment variables are invalid.
  * @param error - The ZodSafeParseError containing all validation issues.
  */
-const logOnInvalidEnv = (error: z.ZodSafeParseError<unknown>['error']) => {
+const logOnInvalidEnv = (error: z.ZodSafeParseError<z.infer<typeof envSchema>>['error']) => {
     log.error(ERROR_MSG_INVALID_ENV)
     for (const issue of error.issues) {
         const path = issue.path.join(ERROR_PATH_SEPARATOR) || ERROR_PATH_ROOT
