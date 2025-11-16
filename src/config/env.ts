@@ -19,6 +19,7 @@ const ERROR_MSG_IS_EMPTY = "can't be empty"
 const ERROR_MSG_POSITIVE_INTEGER = 'must be a positive integer'
 const ERROR_MSG_URL = 'must be a valid URL'
 const ERROR_MSG_APP_MODE = 'must be development, production or test'
+const ERROR_MSG_ORIGIN = 'cannot be "*" in production'
 const ERROR_PATH_SEPARATOR = '.'
 const ERROR_PATH_ROOT = '(root)'
 
@@ -34,7 +35,9 @@ const envSchema = z.object({
         .refine(val => !Number.isNaN(val) && val > 0, { error: ERROR_MSG_POSITIVE_INTEGER }),
     CORS_ALLOWED_HEADERS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
     CORS_METHODS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    CORS_ORIGIN: z.union([z.url({ error: ERROR_MSG_URL }), z.literal('*')]),
+    CORS_ORIGIN: z
+        .union([z.url({ message: ERROR_MSG_URL }), z.literal('*')])
+        .refine(val => process.env.NODE_ENV === 'development' || val !== '*', { message: ERROR_MSG_ORIGIN }),
     DATABASE_URL: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
     DIRECT_URL: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
     JWT_EXPIRES_IN: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),

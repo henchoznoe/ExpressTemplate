@@ -21,7 +21,7 @@ import hpp from 'hpp'
 // --- Constants ---
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
-const RATE_LIMIT_MAX_REQUESTS = 200
+const RATE_LIMIT_MAX_REQUESTS_GENERAL = 200
 const HTTP_STATUS_TOO_MANY_REQUESTS = 429
 const MSG_TOO_MANY_REQUESTS = 'Too many requests, please try again later.'
 const JSON_BODY_SIZE_LIMIT = '2mb'
@@ -32,7 +32,7 @@ const JSON_BODY_SIZE_LIMIT = '2mb'
  * @param _ - The Express Request object (unused).
  * @param res - The Express Response object.
  */
-const handleRateLimitExceeded = (_: Request, res: Response) => {
+export const handleRateLimitExceeded = (_: Request, res: Response) => {
     sendError(res, HTTP_STATUS_TOO_MANY_REQUESTS, MSG_TOO_MANY_REQUESTS)
 }
 
@@ -45,7 +45,7 @@ export const securityMiddlewares = [
     // Protects against brute-force and DoS attacks by limiting request frequency.
     rateLimit({
         handler: handleRateLimitExceeded,
-        limit: RATE_LIMIT_MAX_REQUESTS,
+        limit: RATE_LIMIT_MAX_REQUESTS_GENERAL,
         windowMs: RATE_LIMIT_WINDOW_MS,
     }),
 
