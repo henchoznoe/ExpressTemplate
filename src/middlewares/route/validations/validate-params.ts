@@ -15,17 +15,20 @@ import type { ZodError, ZodObject } from 'zod'
 // --- Constants ---
 const HTTP_STATUS_BAD_REQUEST = 400
 
-const formatValidationErrors = (error: ZodError): string => {
-    const firstIssue = error.issues[0]
-    return firstIssue?.message || 'Invalid URL parameters'
+const formatValidationErrors = (error: ZodError): object[] => {
+    return error.issues.map(issue => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+    }))
 }
 
 export const validateParams = <T extends ZodObject>(schema: T) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.params)
         if (!result.success) {
-            const errorMessage = formatValidationErrors(result.error as ZodError)
-            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST)
+            const errorDetails = formatValidationErrors(result.error as ZodError)
+            const errorMessage = (errorDetails[0] as { message: string })?.message || 'Invalid URL parameters'
+            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, { issues: errorDetails })
         }
         req.params = { ...req.params, ...result.data }
         next()

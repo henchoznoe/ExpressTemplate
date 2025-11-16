@@ -54,7 +54,7 @@ export const globalErrorHandler = (err: unknown, _req: Request, res: Response, _
     // These are expected errors (e.g., "User not found") and we can safely send the message.
     if (err instanceof AppError) {
         log.warn(`Operational error: ${err.message}`)
-        return sendError(res, err.status, err.message)
+        return sendError(res, err.status, err.message, err.data)
     }
 
     // Case 2: Programming Error (Standard Error)

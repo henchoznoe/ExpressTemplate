@@ -15,17 +15,20 @@ import type { ZodError, ZodObject } from 'zod'
 // --- Constants ---
 const HTTP_STATUS_BAD_REQUEST = 400
 
-const formatValidationErrors = (error: ZodError): string => {
-    const firstIssue = error.issues[0]
-    return firstIssue?.message || 'Invalid request body'
+const formatValidationErrors = (error: ZodError): object[] => {
+    return error.issues.map(issue => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+    }))
 }
 
 export const validateBody = (schema: ZodObject) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body)
         if (!result.success) {
-            const errorMessage = formatValidationErrors(result.error)
-            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST)
+            const errorDetails = formatValidationErrors(result.error)
+            const errorMessage = (errorDetails[0] as { message: string })?.message || 'Invalid request body'
+            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, { issues: errorDetails })
         }
         req.body = result.data
         next()
