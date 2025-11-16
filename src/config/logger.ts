@@ -4,7 +4,7 @@
  * @file src/config/logger.ts
  * @title Logger Configuration
  * @description Configures the Winston logger, Morgan request logger, and error logging middleware.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-16
  */
 
 // --- Imports ---
@@ -140,27 +140,34 @@ const defineMorganTokens = () => {
     morgan.token(MORGAN_TOKEN_IP, (req: Request) => req.ip)
 }
 
-/**
- * A write stream for Morgan that pipes messages to the Winston logger.
- * It intelligently routes messages to log.error, log.warn, or log.info
- * based on the HTTP status code.
- * @param message - The log message from Morgan.
- */
-const logMorganStream = (message: string) => {
-    try {
-        const statusCode = parseInt(message.split('[')[1].split(' - ')[0], 10)
+// Add these stream objects right after the defineMorganTokens function
 
-        if (statusCode >= HTTP_SERVER_ERROR) {
-            log.error(message.trim())
-        } else if (statusCode >= HTTP_CLIENT_ERROR) {
-            log.warn(message.trim())
-        } else {
-            log.info(message.trim())
-        }
-    } catch (_) {
-        // Fallback in case parsing fails
-        log.info(message.trim())
-    }
+/**
+ * A simple stream interface for piping Morgan output to Winston.
+ */
+interface WinstonStream {
+    write: (message: string) => void
+}
+
+/**
+ * Stream to pipe Morgan's output to Winston's info level.
+ */
+const infoStream: WinstonStream = {
+    write: (message: string) => log.info(message.trim()),
+}
+
+/**
+ * Stream to pipe Morgan's output to Winston's warn level.
+ */
+const warnStream: WinstonStream = {
+    write: (message: string) => log.warn(message.trim()),
+}
+
+/**
+ * Stream to pipe Morgan's output to Winston's error level.
+ */
+const errorStream: WinstonStream = {
+    write: (message: string) => log.error(message.trim()),
 }
 
 /**
@@ -170,12 +177,31 @@ const logMorganStream = (message: string) => {
 export const setupLogger = (app: Application) => {
     defineMorganTokens()
 
+    // 1. Log all successful responses (2xx, 3xx) to info
     app.use(
         morgan(MORGAN_FORMAT, {
-            stream: {
-                // Pipe Morgan's output through our custom Winston logger
-                write: logMorganStream,
-            },
+            // Log only if status code is less than 400
+            skip: (_: Request, res: Response) => res.statusCode >= HTTP_CLIENT_ERROR,
+            stream: infoStream,
+        }),
+    )
+
+    // 2. Log client errors (4xx) to warn
+    app.use(
+        morgan(MORGAN_FORMAT, {
+            // Log only if status code is 4xx
+            skip: (_: Request, res: Response) =>
+                res.statusCode < HTTP_CLIENT_ERROR || res.statusCode >= HTTP_SERVER_ERROR,
+            stream: warnStream,
+        }),
+    )
+
+    // 3. Log server errors (5xx) to error
+    app.use(
+        morgan(MORGAN_FORMAT, {
+            // Log only if status code is 500 or higher
+            skip: (_: Request, res: Response) => res.statusCode < HTTP_SERVER_ERROR,
+            stream: errorStream,
         }),
     )
 }
