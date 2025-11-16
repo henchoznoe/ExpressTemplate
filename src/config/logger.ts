@@ -13,6 +13,7 @@ import morgan from 'morgan'
 import statuses from 'statuses'
 import { createLogger, format, transports } from 'winston'
 import 'winston-daily-rotate-file'
+import config from '@config/env.js'
 
 // --- Format Destructuring ---
 const { combine, timestamp, printf, colorize, errors, splat } = format
@@ -29,7 +30,7 @@ const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 const DATE_PATTERN = 'YYYY-MM-DD'
 
 // Console logging
-const CONSOLE_LOG_LEVEL = process.env.NODE_ENV === 'development' ? LOG_LEVEL_DEV : LOG_LEVEL_DEFAULT
+const CONSOLE_LOG_LEVEL = config.nodeEnv === 'development' ? LOG_LEVEL_DEV : LOG_LEVEL_DEFAULT
 
 // File transport settings
 const FILE_LOG_LEVEL = 'info'
