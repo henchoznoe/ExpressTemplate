@@ -14,7 +14,7 @@ import { validateBody } from '@middlewares/route/validations/validate-body.js'
 import { validateParams } from '@middlewares/route/validations/validate-params.js'
 import { IdParamSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
-import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
+import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
 // --- Router Setup ---
 

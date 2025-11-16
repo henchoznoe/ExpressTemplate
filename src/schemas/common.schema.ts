@@ -14,7 +14,7 @@ import { z } from 'zod/v4'
 // --- Constants ---
 const NAME_MIN = 1
 const NAME_MAX = 100
-const PASSWORD_MIN = 1
+const PASSWORD_MIN = 8
 const PASSWORD_MAX = 100
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9])[\s\S]*$/
 

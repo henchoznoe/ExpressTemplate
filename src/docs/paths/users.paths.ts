@@ -4,12 +4,12 @@
  * @file src/docs/paths/users.paths.ts
  * @title User OpenAPI Path Definitions
  * @description Registers all user-related API paths for OpenAPI documentation.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-16
  */
 
 // --- Imports ---
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
-import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
+import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
 // --- Constants ---
 const TAGS_USERS = ['users']

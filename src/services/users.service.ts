@@ -12,7 +12,7 @@ import config from '@config/env.js'
 import type { CreateUserPersistence, IUserRepository, UpdateUserPersistence } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
 import bcrypt from 'bcrypt'
-import type { CreateUserSchemaType, UpdateUserSchemaType } from '@/schemas/users.schema.js'
+import type { CreateUserSchemaType, UpdateUserSchemaType } from '@/schemas/auth.schema.js'
 
 export class UserService {
     constructor(private usersRepository: IUserRepository) {}

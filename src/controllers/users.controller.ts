@@ -8,7 +8,6 @@
  */
 
 // --- Imports ---
-import { AppError } from '@typings/errors/AppError.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { userService } from '@/dependencies.js'
@@ -21,8 +20,7 @@ const MSG_USER_RETRIEVED = 'User retrieved successfully'
 const MSG_USER_CREATED = 'User created successfully'
 const MSG_USER_UPDATED = 'User updated successfully'
 const MSG_USER_DELETED = 'User deleted successfully'
-// Error Messages
-const MSG_NO_USERS_FOUND = 'No users found'
+
 // Request Parameter Keys
 const PARAM_ID = 'id'
 
@@ -33,10 +31,7 @@ const PARAM_ID = 'id'
  */
 export const getAllUsers = async (_req: Request, res: Response) => {
     const users = await userService.getAllUsers()
-    if (!users || users.length === 0) {
-        throw new AppError(MSG_NO_USERS_FOUND, 404)
-    }
-    sendSuccess(res, 200, MSG_USERS_RETRIEVED, users)
+    sendSuccess(res, 200, MSG_USERS_RETRIEVED, users || [])
 }
 
 /**
