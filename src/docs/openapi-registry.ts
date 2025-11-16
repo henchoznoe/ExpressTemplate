@@ -21,5 +21,6 @@ const registry = new OpenAPIRegistry()
 // Register all path definitions
 registerAuthPaths(registry)
 registerUserPaths(registry)
+// ... register other paths as needed
 
 export default registry

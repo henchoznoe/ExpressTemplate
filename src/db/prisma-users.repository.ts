@@ -15,9 +15,6 @@ import { AppError } from '@typings/errors/AppError.js'
 
 // --- Constants ---
 
-// HTTP Status Codes
-const HTTP_STATUS_NOT_FOUND = 404
-
 // Error Messages
 const MSG_RESOURCE_NOT_FOUND_PREFIX = 'Resource'
 const MSG_RESOURCE_NOT_FOUND_SUFFIX = 'not found.'
@@ -53,7 +50,7 @@ export class PrismaUsersRepository implements IUserRepository {
         })
         // findUnique returns null if not found, it doesn't throw.
         if (!user) {
-            throw new AppError(this.createNotFoundMessage(id), HTTP_STATUS_NOT_FOUND)
+            throw new AppError(this.createNotFoundMessage(id), 404)
         }
         return user
     }
@@ -86,4 +83,6 @@ export class PrismaUsersRepository implements IUserRepository {
             where: { id },
         })
     }
+
+    // Additional repository methods can be added here as needed.
 }

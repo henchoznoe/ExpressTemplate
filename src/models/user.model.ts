@@ -4,7 +4,7 @@
  * @file src/models/user.model.ts
  * @title User Domain Models
  * @description Defines the core User data structures for the application.
- * @last-modified 2025-11-15
+ * @last-modified 2025-11-16
  */
 
 // Represents the public-facing data for a User.
@@ -20,3 +20,5 @@ export interface User {
 export interface UserWithPassword extends User {
     password: string
 }
+
+// Additional domain models related to User can be added here as needed.

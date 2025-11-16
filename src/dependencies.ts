@@ -18,3 +18,4 @@ export const usersRepository = new PrismaUsersRepository()
 // --- 3. Instantiate Services (Injecting Repos) ---
 export const userService = new UserService(usersRepository)
 export const authService = new AuthService(usersRepository, userService)
+// Additional services can be instantiated and exported here as needed

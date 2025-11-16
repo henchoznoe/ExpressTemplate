@@ -33,5 +33,5 @@ services:
         # to a ./logs directory on the host machine.
         volumes:
             - ./logs:/app/logs
-        # TODO
+        # Command to run when the container starts.
         command: sh -c "npm run db:deploy && npm start"

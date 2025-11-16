@@ -4,13 +4,15 @@
  * @file src/routes/users.route.ts
  * @title User API Routes
  * @description This file defines all API routes related to user management.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-16
  */
 
 // --- Imports ---
 import * as usersCtrl from '@controllers/users.controller.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
-import { validateFields } from '@middlewares/route/validations/validate-fields.js'
+import { validateBody } from '@middlewares/route/validations/validate-body.js'
+import { validateParams } from '@middlewares/route/validations/validate-params.js'
+import { IdParamSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
 
@@ -29,18 +31,18 @@ usersRouter.get('/', usersCtrl.getAllUsers)
 
 // GET /users/:id
 // Get a single user by their ID
-usersRouter.get('/:id', usersCtrl.getUserById)
+usersRouter.get('/:id', validateParams(IdParamSchema), usersCtrl.getUserById)
 
 // POST /users
 // Create a new user.
-usersRouter.post('/', validateFields(CreateUserSchema), usersCtrl.createUser)
+usersRouter.post('/', validateBody(CreateUserSchema), usersCtrl.createUser)
 
 // PATCH /users
 // Update a user by their ID
-usersRouter.patch('/:id', validateFields(UpdateUserSchema), usersCtrl.updateUser)
+usersRouter.patch('/:id', validateParams(IdParamSchema), validateBody(UpdateUserSchema), usersCtrl.updateUser)
 
 // DELETE /users/:id
 // Delete a user by their ID
-usersRouter.delete('/:id', usersCtrl.deleteUser)
+usersRouter.delete('/:id', validateParams(IdParamSchema), usersCtrl.deleteUser)
 
 export default usersRouter

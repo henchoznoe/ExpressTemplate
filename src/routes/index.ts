@@ -4,7 +4,7 @@
  * @file src/routes/index.ts
  * @title Main Application Router
  * @description This file sets up all application routes, including the health check.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-16
  */
 
 import { handleHealthCheck } from '@controllers/health.controller.js'
@@ -17,6 +17,7 @@ import type { Application } from 'express'
 const ROUTE_HEALTH_CHECK = '/'
 const ROUTE_USERS = '/users'
 const ROUTE_AUTH = '/auth'
+// Additional route constants can be defined here
 
 /**
  * Mounts all application routes onto the Express app instance.
@@ -28,5 +29,5 @@ export const setupRoutes = (app: Application): void => {
     // API routes
     app.use(ROUTE_AUTH, authRouter)
     app.use(ROUTE_USERS, usersRouter)
-    // ... (Future routes can be added here)
+    // Additional routes can be mounted here
 }
