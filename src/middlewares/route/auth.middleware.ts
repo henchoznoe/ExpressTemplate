@@ -26,14 +26,16 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
     const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
     if (!token) throw new AppError(MSG_NO_TOKEN, 401)
 
-    let payload: { id: string }
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
-        payload = decoded as { id: string }
+
+        if (typeof decoded !== 'object' || decoded === null || !('id' in decoded) || typeof decoded.id !== 'string') {
+            throw new AppError(MSG_INVALID_TOKEN, 401)
+        }
+
+        req.user = { id: decoded.id }
+        next()
     } catch (_) {
         throw new AppError(MSG_INVALID_TOKEN, 401)
     }
-
-    req.user = { id: payload.id }
-    next()
 }
