@@ -34,11 +34,11 @@ export type UpdateUserPersistence = {
  * Any class implementing this must provide these methods.
  */
 export interface IUserRepository {
-    getAllUsers(): Promise<User[] | null>
-    getUserById(id: string): Promise<User | null>
+    getAllUsers(): Promise<User[]>
+    getUserById(id: string): Promise<User>
     findUserByEmail(email: string): Promise<UserWithPassword | null>
-    createUser(data: CreateUserPersistence): Promise<User | null>
-    updateUser(userId: string, data: UpdateUserPersistence): Promise<User | null>
-    deleteUser(id: string): Promise<User | null>
+    createUser(data: CreateUserPersistence): Promise<User>
+    updateUser(userId: string, data: UpdateUserPersistence): Promise<User>
+    deleteUser(id: string): Promise<User>
     // Additional methods can be added as needed
 }

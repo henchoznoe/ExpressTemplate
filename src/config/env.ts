@@ -27,35 +27,60 @@ const ERROR_PATH_ROOT = '(root)'
  * Defines the schema for all required environment variables.
  * This schema is used to validate `process.env` at application startup.
  */
-const envSchema = z.object({
+const EnvSchema = z.object({
     BCRYPT_SALT_ROUNDS: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY })
         .transform(val => parseInt(val, 10))
-        .refine(val => !Number.isNaN(val) && val > 0, { error: ERROR_MSG_POSITIVE_INTEGER }),
-    CORS_ALLOWED_HEADERS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    CORS_METHODS: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
+        .refine(val => !Number.isNaN(val) && val > 0, {
+            error: ERROR_MSG_POSITIVE_INTEGER,
+        }),
+    CORS_ALLOWED_HEADERS: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    CORS_METHODS: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
     CORS_ORIGIN: z
         .union([z.url({ message: ERROR_MSG_URL }), z.literal('*')])
-        .refine(val => process.env.NODE_ENV === 'development' || val !== '*', { message: ERROR_MSG_ORIGIN }),
-    DATABASE_URL: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    DIRECT_URL: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    JWT_EXPIRES_IN: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    JWT_SECRET: z.string({ error: ERROR_MSG_NOT_PROVIDED }).min(1, { error: ERROR_MSG_IS_EMPTY }),
-    NODE_ENV: z.enum(['development', 'production', 'test'], { error: ERROR_MSG_APP_MODE }).default('development'),
+        .refine(val => process.env.NODE_ENV === 'development' || val !== '*', {
+            message: ERROR_MSG_ORIGIN,
+        }),
+    DATABASE_URL: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    DIRECT_URL: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    JWT_EXPIRES_IN: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    JWT_SECRET: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    NODE_ENV: z
+        .enum(['development', 'production', 'test'], {
+            error: ERROR_MSG_APP_MODE,
+        })
+        .default('development'),
     PORT: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY })
         .transform(val => parseInt(val, 10))
-        .refine(val => !Number.isNaN(val) && val > 0, { error: ERROR_MSG_POSITIVE_INTEGER }),
+        .refine(val => !Number.isNaN(val) && val > 0, {
+            error: ERROR_MSG_POSITIVE_INTEGER,
+        }),
 })
+type EnvSchemaType = z.infer<typeof EnvSchema>
 
 /**
  * Logs detailed validation errors.
  * This is called on startup if the environment variables are invalid.
  * @param error - The ZodSafeParseError containing all validation issues.
  */
-const logOnInvalidEnv = (error: z.ZodSafeParseError<z.infer<typeof envSchema>>['error']) => {
+const logOnInvalidEnv = (
+    error: z.ZodSafeParseError<EnvSchemaType>['error'],
+) => {
     log.error(ERROR_MSG_INVALID_ENV)
     for (const issue of error.issues) {
         const path = issue.path.join(ERROR_PATH_SEPARATOR) || ERROR_PATH_ROOT
@@ -65,7 +90,7 @@ const logOnInvalidEnv = (error: z.ZodSafeParseError<z.infer<typeof envSchema>>['
 }
 
 // Attempt to parse and validate the environment variables
-const parsedEnv = envSchema.safeParse(process.env)
+const parsedEnv = EnvSchema.safeParse(process.env)
 
 // If validation fails, log details and exit
 if (!parsedEnv.success) {

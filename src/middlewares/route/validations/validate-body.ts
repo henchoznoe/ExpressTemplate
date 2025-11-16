@@ -27,8 +27,12 @@ export const validateBody = (schema: ZodObject) => {
         const result = schema.safeParse(req.body)
         if (!result.success) {
             const errorDetails = formatValidationErrors(result.error)
-            const errorMessage = (errorDetails[0] as { message: string })?.message || 'Invalid request body'
-            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, { issues: errorDetails })
+            const errorMessage =
+                (errorDetails[0] as { message: string })?.message ||
+                'Invalid request body'
+            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, {
+                issues: errorDetails,
+            })
         }
         req.body = result.data
         next()

@@ -5,7 +5,7 @@
   "homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsup src/index.ts --format esm --dts --splitting --sourcemap --out-dir dist --clean",
+    "build": "tsup src/index.ts --format esm --splitting --sourcemap --out-dir dist --clean",
     "start": "node dist/index.js",
     "db:deploy": "prisma migrate deploy",
     "lint": "biome lint --write",

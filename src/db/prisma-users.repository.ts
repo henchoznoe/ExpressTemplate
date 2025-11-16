@@ -9,7 +9,11 @@
 
 // --- Imports ---
 import { prisma } from '@config/prisma.js'
-import type { CreateUserPersistence, IUserRepository, UpdateUserPersistence } from '@db/users.repository.interface.js'
+import type {
+    CreateUserPersistence,
+    IUserRepository,
+    UpdateUserPersistence,
+} from '@db/users.repository.interface.js'
 import type { User, UserWithPassword } from '@models/user.model.js'
 import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
@@ -38,13 +42,13 @@ export class PrismaUsersRepository implements IUserRepository {
         return `${MSG_RESOURCE_NOT_FOUND_PREFIX}${idInfo} ${MSG_RESOURCE_NOT_FOUND_SUFFIX}`
     }
 
-    async getAllUsers(): Promise<User[] | null> {
+    async getAllUsers(): Promise<User[]> {
         return prisma.user.findMany({
             select: userSelect,
         })
     }
 
-    async getUserById(id: string): Promise<User | null> {
+    async getUserById(id: string): Promise<User> {
         const user = await prisma.user.findUnique({
             select: userSelect,
             where: { id },
@@ -63,7 +67,7 @@ export class PrismaUsersRepository implements IUserRepository {
         })
     }
 
-    async createUser(userData: CreateUserPersistence): Promise<User | null> {
+    async createUser(userData: CreateUserPersistence): Promise<User> {
         try {
             return await prisma.user.create({
                 data: userData,
@@ -79,7 +83,10 @@ export class PrismaUsersRepository implements IUserRepository {
         }
     }
 
-    async updateUser(userId: string, userData: UpdateUserPersistence): Promise<User | null> {
+    async updateUser(
+        userId: string,
+        userData: UpdateUserPersistence,
+    ): Promise<User> {
         try {
             return await prisma.user.update({
                 data: userData,
@@ -99,7 +106,7 @@ export class PrismaUsersRepository implements IUserRepository {
         }
     }
 
-    async deleteUser(id: string): Promise<User | null> {
+    async deleteUser(id: string): Promise<User> {
         try {
             return await prisma.user.delete({
                 select: userSelect,

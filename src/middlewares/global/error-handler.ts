@@ -34,10 +34,11 @@ export const setupErrorHandler = (app: Application) => {
 /**
  * Middleware to handle requests for routes that do not exist (404).
  * @param req - The Express Request object.
- * @param res - The Express Response object.
+ * @param _ - The Express Response object (unused).
+ * @param next - The Express NextFunction to pass control to the next middleware.
  */
-const handleNotFound = (req: Request, res: Response) => {
-    sendError(res, 404, `${MSG_ROUTE_NOT_FOUND_PREFIX} ${req.path}`)
+const handleNotFound = (req: Request, _: Response, next: NextFunction) => {
+    next(new AppError(`${MSG_ROUTE_NOT_FOUND_PREFIX}: ${req.path}`, 404))
 }
 
 /**
@@ -49,7 +50,12 @@ const handleNotFound = (req: Request, res: Response) => {
  * @param res - The Express Response object.
  * @param _next - The Express NextFunction (unused, but required for Express to see this as an error handler).
  */
-export const globalErrorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+export const globalErrorHandler = (
+    err: unknown,
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
+) => {
     // Case 1: Operational Error (AppError)
     // These are expected errors (e.g., "User not found") and we can safely send the message.
     if (err instanceof AppError) {

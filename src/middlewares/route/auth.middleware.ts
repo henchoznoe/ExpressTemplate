@@ -23,13 +23,20 @@ const MSG_INVALID_TOKEN = 'Invalid token.'
  */
 export const protect = (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
+    const token = authHeader?.startsWith('Bearer ')
+        ? authHeader.split(' ')[1]
+        : undefined
     if (!token) throw new AppError(MSG_NO_TOKEN, 401)
 
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
 
-        if (typeof decoded !== 'object' || decoded === null || !('id' in decoded) || typeof decoded.id !== 'string') {
+        if (
+            typeof decoded !== 'object' ||
+            decoded === null ||
+            !('id' in decoded) ||
+            typeof decoded.id !== 'string'
+        ) {
             throw new AppError(MSG_INVALID_TOKEN, 401)
         }
 

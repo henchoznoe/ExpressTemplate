@@ -7,6 +7,11 @@
 # Last modified: 2025-11-11
 #
 
+# --- IDE & Editor Files ---
+# Exclude common IDE and editor configuration files.
+.vscode/
+.idea/
+
 # --- Version Control ---
 # Exclude Git repository data from the build context.
 .git

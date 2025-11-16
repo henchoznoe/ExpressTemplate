@@ -9,7 +9,11 @@
 
 // --- Imports ---
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
-import { EmailSchema, NameSchema, PasswordSchema } from '@schemas/common.schema.js'
+import {
+    EmailSchema,
+    NameSchema,
+    PasswordSchema,
+} from '@schemas/common.schema.js'
 import { z } from 'zod'
 
 // Extend Zod with OpenAPI capabilities

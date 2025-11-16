@@ -26,9 +26,15 @@ export const validateParams = <T extends ZodObject>(schema: T) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.params)
         if (!result.success) {
-            const errorDetails = formatValidationErrors(result.error as ZodError)
-            const errorMessage = (errorDetails[0] as { message: string })?.message || 'Invalid URL parameters'
-            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, { issues: errorDetails })
+            const errorDetails = formatValidationErrors(
+                result.error as ZodError,
+            )
+            const errorMessage =
+                (errorDetails[0] as { message: string })?.message ||
+                'Invalid URL parameters'
+            throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, {
+                issues: errorDetails,
+            })
         }
         req.params = { ...req.params, ...result.data }
         next()

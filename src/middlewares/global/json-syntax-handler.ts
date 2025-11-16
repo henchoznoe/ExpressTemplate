@@ -22,8 +22,18 @@ const MSG_INVALID_JSON = 'Invalid JSON: The request body is malformed.'
  * @param _res - The Express Response object (unused).
  * @param next - The Express NextFunction to pass control to the next middleware.
  */
-export const handleJsonSyntaxError = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
-    if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+export const handleJsonSyntaxError = (
+    err: unknown,
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+) => {
+    if (
+        err instanceof SyntaxError &&
+        'status' in err &&
+        err.status === 400 &&
+        'body' in err
+    ) {
         return next(new AppError(MSG_INVALID_JSON, 400))
     }
     return next(err)

@@ -9,8 +9,14 @@
 
 // --- Imports ---
 import config from '@config/env.js'
-import type { CreateUserPersistence, IUserRepository } from '@db/users.repository.interface.js'
-import type { LoginSchemaType, RegisterSchemaType } from '@schemas/auth.schema.js'
+import type {
+    CreateUserPersistence,
+    IUserRepository,
+} from '@db/users.repository.interface.js'
+import type {
+    LoginSchemaType,
+    RegisterSchemaType,
+} from '@schemas/auth.schema.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import jwt, { type SignOptions } from 'jsonwebtoken'
@@ -44,7 +50,10 @@ export class AuthService {
     }
 
     async register(credentials: RegisterSchemaType) {
-        const hashedPassword = await bcrypt.hash(credentials.password, config.bcryptSaltRounds)
+        const hashedPassword = await bcrypt.hash(
+            credentials.password,
+            config.bcryptSaltRounds,
+        )
         const persistenceData: CreateUserPersistence = {
             ...credentials,
             password: hashedPassword,

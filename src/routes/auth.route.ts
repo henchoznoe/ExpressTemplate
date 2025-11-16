@@ -33,10 +33,20 @@ const authRouter = Router()
 
 // POST /auth/register
 // Register a new user.
-authRouter.post('/register', authRateLimiter, validateBody(RegisterSchema), authCtrl.register)
+authRouter.post(
+    '/register',
+    authRateLimiter,
+    validateBody(RegisterSchema),
+    authCtrl.register,
+)
 
 // POST /auth/login
 // Log in a user and get a token.
-authRouter.post('/login', authRateLimiter, validateBody(LoginSchema), authCtrl.login)
+authRouter.post(
+    '/login',
+    authRateLimiter,
+    validateBody(LoginSchema),
+    authCtrl.login,
+)
 
 export default authRouter

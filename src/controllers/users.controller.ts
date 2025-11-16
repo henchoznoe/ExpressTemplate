@@ -21,9 +21,6 @@ const MSG_USER_CREATED = 'User created successfully'
 const MSG_USER_UPDATED = 'User updated successfully'
 const MSG_USER_DELETED = 'User deleted successfully'
 
-// Request Parameter Keys
-const PARAM_ID = 'id'
-
 /**
  * Controller to get all users.
  * @param _req - The Express Request object (unused).
@@ -40,7 +37,7 @@ export const getAllUsers = async (_req: Request, res: Response) => {
  * @param res - The Express Response object.
  */
 export const getUserById = async (req: Request, res: Response) => {
-    const userId = req.params[PARAM_ID]
+    const userId = req.params.id
     const user = await userService.getUserById(userId)
     sendSuccess(res, 200, MSG_USER_RETRIEVED, user)
 }
@@ -61,7 +58,7 @@ export const createUser = async (req: Request, res: Response) => {
  * @param res - The Express Response object.
  */
 export const updateUser = async (req: Request, res: Response) => {
-    const userId = req.params[PARAM_ID]
+    const userId = req.params.id
     const updatedUser = await userService.updateUser(userId, req.body)
     sendSuccess(res, 200, MSG_USER_UPDATED, updatedUser)
 }
@@ -72,7 +69,7 @@ export const updateUser = async (req: Request, res: Response) => {
  * @param res - The Express Response object.
  */
 export const deleteUser = async (req: Request, res: Response) => {
-    const userId = req.params[PARAM_ID]
+    const userId = req.params.id
     const deletedUser = await userService.deleteUser(userId)
     sendSuccess(res, 200, MSG_USER_DELETED, deletedUser)
 }

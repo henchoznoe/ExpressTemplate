@@ -39,7 +39,12 @@ usersRouter.post('/', validateBody(CreateUserSchema), usersCtrl.createUser)
 
 // PATCH /users
 // Update a user by their ID
-usersRouter.patch('/:id', validateParams(IdParamSchema), validateBody(UpdateUserSchema), usersCtrl.updateUser)
+usersRouter.patch(
+    '/:id',
+    validateParams(IdParamSchema),
+    validateBody(UpdateUserSchema),
+    usersCtrl.updateUser,
+)
 
 // DELETE /users/:id
 // Delete a user by their ID

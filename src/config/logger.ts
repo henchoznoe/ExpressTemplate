@@ -29,7 +29,8 @@ const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 const DATE_PATTERN = 'YYYY-MM-DD'
 
 // Console logging
-const CONSOLE_LOG_LEVEL = process.env.NODE_ENV === 'development' ? LOG_LEVEL_DEV : LOG_LEVEL_DEFAULT
+const CONSOLE_LOG_LEVEL =
+    process.env.NODE_ENV === 'development' ? LOG_LEVEL_DEV : LOG_LEVEL_DEFAULT
 
 // File transport settings
 const FILE_LOG_LEVEL = 'info'
@@ -58,7 +59,9 @@ const winstonConsoleFormat = combine(
     errors({ stack: true }),
     splat(),
     printf(({ level, message, timestamp, stack }) =>
-        stack ? `${timestamp} [${level}] ${message}\n${stack}` : `${timestamp} [${level}] ${message}`,
+        stack
+            ? `${timestamp} [${level}] ${message}\n${stack}`
+            : `${timestamp} [${level}] ${message}`,
     ),
 )
 
@@ -74,7 +77,9 @@ const winstonConsoleTransport = new transports.Console({
  */
 const winstonFileFormat = combine(
     timestamp({ format: TIMESTAMP_FORMAT }),
-    printf(({ timestamp, level, message }) => `${timestamp} [${level}] ${message}`),
+    printf(
+        ({ timestamp, level, message }) => `${timestamp} [${level}] ${message}`,
+    ),
 )
 
 /**
@@ -97,7 +102,9 @@ const winstonErrorFileFormat = combine(
     timestamp({ format: TIMESTAMP_FORMAT }),
     errors({ stack: true }), // Include stack traces in error logs
     printf(({ timestamp, level, message, stack }) =>
-        stack ? `${timestamp} [${level}] ${message}\n${stack}` : `${timestamp} [${level}] ${message}`,
+        stack
+            ? `${timestamp} [${level}] ${message}\n${stack}`
+            : `${timestamp} [${level}] ${message}`,
     ),
 )
 
@@ -120,9 +127,17 @@ const winstonErrorFileTransport = new transports.DailyRotateFile({
  */
 export const log = createLogger({
     exitOnError: false, // Do not exit on handled exceptions
-    format: combine(errors({ stack: true }), splat(), timestamp({ format: TIMESTAMP_FORMAT })),
+    format: combine(
+        errors({ stack: true }),
+        splat(),
+        timestamp({ format: TIMESTAMP_FORMAT }),
+    ),
     level: CONSOLE_LOG_LEVEL,
-    transports: [winstonConsoleTransport, winstonAppFileTransport, winstonErrorFileTransport],
+    transports: [
+        winstonConsoleTransport,
+        winstonAppFileTransport,
+        winstonErrorFileTransport,
+    ],
 })
 
 /**
@@ -181,7 +196,8 @@ export const setupLogger = (app: Application) => {
     app.use(
         morgan(MORGAN_FORMAT, {
             // Log only if status code is less than 400
-            skip: (_: Request, res: Response) => res.statusCode >= HTTP_CLIENT_ERROR,
+            skip: (_: Request, res: Response) =>
+                res.statusCode >= HTTP_CLIENT_ERROR,
             stream: infoStream,
         }),
     )
@@ -191,7 +207,8 @@ export const setupLogger = (app: Application) => {
         morgan(MORGAN_FORMAT, {
             // Log only if status code is 4xx
             skip: (_: Request, res: Response) =>
-                res.statusCode < HTTP_CLIENT_ERROR || res.statusCode >= HTTP_SERVER_ERROR,
+                res.statusCode < HTTP_CLIENT_ERROR ||
+                res.statusCode >= HTTP_SERVER_ERROR,
             stream: warnStream,
         }),
     )
@@ -200,7 +217,8 @@ export const setupLogger = (app: Application) => {
     app.use(
         morgan(MORGAN_FORMAT, {
             // Log only if status code is 500 or higher
-            skip: (_: Request, res: Response) => res.statusCode < HTTP_SERVER_ERROR,
+            skip: (_: Request, res: Response) =>
+                res.statusCode < HTTP_SERVER_ERROR,
             stream: errorStream,
         }),
     )

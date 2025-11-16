@@ -72,4 +72,4 @@ EXPOSE ${PORT}
 
 # Define the command to run the application.
 # This will now be executed as the 'node' user.
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
