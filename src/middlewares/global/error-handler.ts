@@ -4,12 +4,11 @@
  * @file src/middlewares/global/error-handler.ts
  * @title Global Error Handlers
  * @description Configures and provides the final error handling middlewares (404 and 500).
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-16
  */
 
 // --- Imports ---
 import { log } from '@config/logger.js'
-import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
@@ -56,20 +55,6 @@ export const globalErrorHandler = (err: unknown, _req: Request, res: Response, _
     if (err instanceof AppError) {
         log.warn(`Operational error: ${err.message}`)
         return sendError(res, err.status, err.message)
-    }
-
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2002') {
-            const message = 'Email address already in use.'
-            log.warn(`Prisma error (P2002): ${message}`)
-            return sendError(res, 409, message)
-        }
-        if (err.code === 'P2025') {
-            const message = 'Resource not found.'
-            log.warn(`Prisma error (P2025): ${message}`)
-            return sendError(res, 404, message)
-        }
-        // Additional Prisma error codes can be handled here as needed
     }
 
     // Case 2: Programming Error (Standard Error)

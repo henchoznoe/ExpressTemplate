@@ -12,21 +12,20 @@ import config from '@config/env.js'
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { usersRepository } from '@/dependencies.js'
 
 // --- Constants ---
 const MSG_NO_TOKEN = 'Access denied. No token provided.'
 const MSG_INVALID_TOKEN = 'Invalid token.'
-const MSG_USER_NOT_FOUND = 'User belonging to this token no longer exists.'
 
 /**
  * Middleware to protect routes.
  * Verifies the JWT and attaches the user ID to the request object.
  */
-export const protect = async (req: Request, _res: Response, next: NextFunction) => {
+export const protect = (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
     const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : undefined
     if (!token) throw new AppError(MSG_NO_TOKEN, 401)
+
     let payload: { id: string }
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
@@ -34,8 +33,7 @@ export const protect = async (req: Request, _res: Response, next: NextFunction) 
     } catch (_) {
         throw new AppError(MSG_INVALID_TOKEN, 401)
     }
-    const currentUser = await usersRepository.getUserById(payload.id)
-    if (!currentUser) throw new AppError(MSG_USER_NOT_FOUND, 401)
-    req.user = { id: currentUser.id }
+
+    req.user = { id: payload.id }
     next()
 }

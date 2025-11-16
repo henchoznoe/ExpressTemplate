@@ -11,6 +11,7 @@
 import { prisma } from '@config/prisma.js'
 import type { CreateUserPersistence, IUserRepository, UpdateUserPersistence } from '@db/users.repository.interface.js'
 import type { User, UserWithPassword } from '@models/user.model.js'
+import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 
 // --- Constants ---
@@ -63,25 +64,56 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async createUser(userData: CreateUserPersistence): Promise<User | null> {
-        return prisma.user.create({
-            data: userData,
-            select: userSelect,
-        })
+        try {
+            return await prisma.user.create({
+                data: userData,
+                select: userSelect,
+            })
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                if (e.code === 'P2002') {
+                    throw new AppError('Email address already in use.', 409)
+                }
+            }
+            throw e // Re-throw unexpected errors
+        }
     }
 
     async updateUser(userId: string, userData: UpdateUserPersistence): Promise<User | null> {
-        return prisma.user.update({
-            data: userData,
-            select: userSelect,
-            where: { id: userId },
-        })
+        try {
+            return await prisma.user.update({
+                data: userData,
+                select: userSelect,
+                where: { id: userId },
+            })
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                if (e.code === 'P2025') {
+                    throw new AppError(this.createNotFoundMessage(userId), 404)
+                }
+                if (e.code === 'P2002') {
+                    throw new AppError('Email address already in use.', 409)
+                }
+            }
+            throw e
+        }
     }
 
     async deleteUser(id: string): Promise<User | null> {
-        return prisma.user.delete({
-            select: userSelect,
-            where: { id },
-        })
+        try {
+            return await prisma.user.delete({
+                select: userSelect,
+                where: { id },
+            })
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                if (e.code === 'P2025') {
+                    // Record to delete not found
+                    throw new AppError(this.createNotFoundMessage(id), 404)
+                }
+            }
+            throw e
+        }
     }
 
     // Additional repository methods can be added here as needed.
