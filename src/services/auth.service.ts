@@ -9,9 +9,8 @@
 
 // --- Imports ---
 import config from '@config/env.js'
-import type { IUserRepository } from '@db/users.repository.interface.js'
+import type { CreateUserPersistence, IUserRepository } from '@db/users.repository.interface.js'
 import type { LoginSchemaType, RegisterSchemaType } from '@schemas/auth.schema.js'
-import type { UserService } from '@services/users.service.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import jwt, { type SignOptions } from 'jsonwebtoken'
@@ -21,10 +20,7 @@ const MSG_INVALID_CREDENTIALS = 'Invalid email or password'
 const MSG_REGISTRATION_FAILED = 'User registration failed'
 
 export class AuthService {
-    constructor(
-        private usersRepository: IUserRepository,
-        private userService: UserService,
-    ) {}
+    constructor(private usersRepository: IUserRepository) {}
 
     private async signToken(userId: string): Promise<string> {
         return jwt.sign(
@@ -48,7 +44,12 @@ export class AuthService {
     }
 
     async register(credentials: RegisterSchemaType) {
-        const newUser = await this.userService.createUser(credentials)
+        const hashedPassword = await bcrypt.hash(credentials.password, config.bcryptSaltRounds)
+        const persistenceData: CreateUserPersistence = {
+            ...credentials,
+            password: hashedPassword,
+        }
+        const newUser = await this.usersRepository.createUser(persistenceData)
         if (!newUser) {
             throw new AppError(MSG_REGISTRATION_FAILED, 500)
         }

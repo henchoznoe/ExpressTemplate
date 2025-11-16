@@ -4,7 +4,7 @@
  * @file src/dependencies.ts
  * @title Dependency Injector
  * @description Instantiates and wires up all application dependencies (repositories, services).
- * @last-modified 2025-11-15
+ * @last-modified 2025-11-16
  */
 
 // --- 1. Import Concrete Implementations ---
@@ -17,5 +17,5 @@ export const usersRepository = new PrismaUsersRepository()
 
 // --- 3. Instantiate Services (Injecting Repos) ---
 export const userService = new UserService(usersRepository)
-export const authService = new AuthService(usersRepository, userService)
+export const authService = new AuthService(usersRepository)
 // Additional services can be instantiated and exported here as needed
