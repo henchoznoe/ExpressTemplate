@@ -87,4 +87,6 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
         },
         tags: TAGS_AUTH,
     })
+
+    // Additional auth-related paths can be registered here
 }

@@ -141,4 +141,6 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         },
         tags: TAGS_USERS,
     })
+
+    // Additional user-related paths can be registered here
 }

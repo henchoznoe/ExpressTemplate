@@ -4,7 +4,7 @@
  * @file src/services/users.service.ts
  * @title User Service Logic
  * @description Contains the business logic for user operations.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-16
  */
 
 // --- Imports ---
@@ -47,4 +47,6 @@ export class UserService {
     async deleteUser(id: string): Promise<User | null> {
         return this.usersRepository.deleteUser(id)
     }
+
+    // Additional user-related methods can be added here
 }

@@ -9,13 +9,12 @@
 
 // --- Imports ---
 import { log } from '@config/logger.js'
+import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
 
 // --- Constants ---
-const HTTP_STATUS_NOT_FOUND = 404
-const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500
 
 const MSG_INTERNAL_SERVER_ERROR = 'Internal Server Error'
 const MSG_UNKNOWN_ERROR_TYPE = 'Unknown error type'
@@ -28,11 +27,8 @@ const MSG_ROUTE_NOT_FOUND_PREFIX = 'Route not found:'
  */
 export const setupErrorHandler = (app: Application) => {
     // 1. 404 Handler
-    // Catches any request that didn't match a previously defined route.
     app.use(handleNotFound)
-
     // 2. Global Error Handler
-    // Catches all errors passed via next(error).
     app.use(globalErrorHandler)
 }
 
@@ -42,7 +38,7 @@ export const setupErrorHandler = (app: Application) => {
  * @param res - The Express Response object.
  */
 const handleNotFound = (req: Request, res: Response) => {
-    sendError(res, HTTP_STATUS_NOT_FOUND, `${MSG_ROUTE_NOT_FOUND_PREFIX} ${req.path}`)
+    sendError(res, 404, `${MSG_ROUTE_NOT_FOUND_PREFIX} ${req.path}`)
 }
 
 /**
@@ -62,15 +58,28 @@ export const globalErrorHandler = (err: unknown, _req: Request, res: Response, _
         return sendError(res, err.status, err.message)
     }
 
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+            const message = 'Email address already in use.'
+            log.warn(`Prisma error (P2002): ${message}`)
+            return sendError(res, 409, message)
+        }
+        if (err.code === 'P2025') {
+            const message = 'Resource not found.'
+            log.warn(`Prisma error (P2025): ${message}`)
+            return sendError(res, 404, message)
+        }
+        // Additional Prisma error codes can be handled here as needed
+    }
+
     // Case 2: Programming Error (Standard Error)
     // These are unexpected errors. We log the full stack but send a generic message.
     if (err instanceof Error) {
         log.error(`Unexpected error: ${err.message}\n${err.stack}`)
     } else {
         // Case 3: Unknown error type
-        // The error is not even an Error object (e.g., throw "string").
         log.error(MSG_UNKNOWN_ERROR_TYPE, err)
     }
 
-    sendError(res, HTTP_STATUS_INTERNAL_SERVER_ERROR, MSG_INTERNAL_SERVER_ERROR)
+    sendError(res, 500, MSG_INTERNAL_SERVER_ERROR)
 }

@@ -40,4 +40,5 @@ export interface IUserRepository {
     createUser(data: CreateUserPersistence): Promise<User | null>
     updateUser(userId: string, data: UpdateUserPersistence): Promise<User | null>
     deleteUser(id: string): Promise<User | null>
+    // Additional methods can be added as needed
 }

@@ -9,7 +9,7 @@
 
 // --- Imports ---
 import * as authCtrl from '@controllers/auth.controller.js'
-import { validateFields } from '@middlewares/route/validations/validate-fields.js'
+import { validateBody } from '@middlewares/route/validations/validate-body.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 
@@ -21,10 +21,10 @@ const authRouter = Router()
 
 // POST /auth/register
 // Register a new user.
-authRouter.post('/register', validateFields(RegisterSchema), authCtrl.register)
+authRouter.post('/register', validateBody(RegisterSchema), authCtrl.register)
 
 // POST /auth/login
 // Log in a user and get a token.
-authRouter.post('/login', validateFields(LoginSchema), authCtrl.login)
+authRouter.post('/login', validateBody(LoginSchema), authCtrl.login)
 
 export default authRouter
