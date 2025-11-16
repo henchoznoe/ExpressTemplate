@@ -25,9 +25,6 @@ COPY prisma/schema.prisma ./
 # Install ALL dependencies (including devDependencies) needed for the build.
 RUN npm install --ignore-scripts
 
-# Generate Prisma Client
-RUN npx prisma generate
-
 # Copy all files for the build
 COPY . .
 # Run the build script
@@ -50,7 +47,9 @@ RUN npm install --omit=dev --ignore-scripts
 # Copy the built code from the 'builder' stage.
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
+# Generate Prisma Client
+RUN npx prisma generate
 
 # Create the logs directory so that the 'node' user owns it.
 # This ensures Winston has write permissions, even with volume mounts.
