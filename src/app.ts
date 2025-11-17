@@ -4,10 +4,9 @@
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { setupSwagger } from '@docs/swagger.js'
 import { setupErrorHandler } from '@middlewares/global/error-handler.js'
 import { setupMiddlewares } from '@middlewares/index.js'

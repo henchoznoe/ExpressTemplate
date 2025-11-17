@@ -11,6 +11,7 @@ import type { PaginationSchemaType } from '@schemas/common.schema.js'
 import type { UserService } from '@services/users.service.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const MSG_USERS_RETRIEVED = 'Users retrieved successfully'
@@ -27,29 +28,29 @@ export class UserController {
         const skip = (page - 1) * limit
         const take = limit
         const users = await this.userService.getAllUsers({ skip, take })
-        sendSuccess(res, 200, MSG_USERS_RETRIEVED, users || [])
+        sendSuccess(res, StatusCodes.OK, MSG_USERS_RETRIEVED, users || [])
     }
 
     getUserById = async (req: Request, res: Response) => {
         const userId = req.params.id
         const user = await this.userService.getUserById(userId)
-        sendSuccess(res, 200, MSG_USER_RETRIEVED, user)
+        sendSuccess(res, StatusCodes.OK, MSG_USER_RETRIEVED, user)
     }
 
     createUser = async (req: Request, res: Response) => {
         const newUser = await this.userService.createUser(req.body)
-        sendSuccess(res, 201, MSG_USER_CREATED, newUser)
+        sendSuccess(res, StatusCodes.CREATED, MSG_USER_CREATED, newUser)
     }
 
     updateUser = async (req: Request, res: Response) => {
         const userId = req.params.id
         const updatedUser = await this.userService.updateUser(userId, req.body)
-        sendSuccess(res, 200, MSG_USER_UPDATED, updatedUser)
+        sendSuccess(res, StatusCodes.OK, MSG_USER_UPDATED, updatedUser)
     }
 
     deleteUser = async (req: Request, res: Response) => {
         const userId = req.params.id
         const deletedUser = await this.userService.deleteUser(userId)
-        sendSuccess(res, 200, MSG_USER_DELETED, deletedUser)
+        sendSuccess(res, StatusCodes.OK, MSG_USER_DELETED, deletedUser)
     }
 }

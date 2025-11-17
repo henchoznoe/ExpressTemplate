@@ -4,10 +4,9 @@
  * @file src/services/auth.service.ts
  * @title Authentication Service Logic
  * @description Handles login, registration, and JWT generation.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import type {
     CreateUserDto,
@@ -19,6 +18,7 @@ import type {
 } from '@schemas/auth.schema.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
+import { StatusCodes } from 'http-status-codes'
 import jwt, { type SignOptions } from 'jsonwebtoken'
 
 // --- Constants ---
@@ -42,7 +42,10 @@ export class AuthService {
         const { email, password } = credentials
         const user = await this.usersRepository.findUserByEmail(email)
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            throw new AppError(MSG_INVALID_CREDENTIALS, 401)
+            throw new AppError(
+                MSG_INVALID_CREDENTIALS,
+                StatusCodes.UNAUTHORIZED,
+            )
         }
         const token = await this.signToken(user.id)
         const { password: _, ...userWithoutPassword } = user
@@ -60,7 +63,10 @@ export class AuthService {
         }
         const newUser = await this.usersRepository.createUser(persistenceData)
         if (!newUser) {
-            throw new AppError(MSG_REGISTRATION_FAILED, 500)
+            throw new AppError(
+                MSG_REGISTRATION_FAILED,
+                StatusCodes.INTERNAL_SERVER_ERROR,
+            )
         }
         const token = await this.signToken(newUser.id)
         return { ...newUser, token }

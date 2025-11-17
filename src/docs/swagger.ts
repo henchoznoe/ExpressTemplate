@@ -4,10 +4,9 @@
  * @file src/config/swagger.ts
  * @title Swagger/OpenAPI Setup
  * @description Configures and mounts the Swagger UI for API documentation.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi'
 import { registry } from '@docs/openapi-registry.js'
 import type { Application } from 'express'

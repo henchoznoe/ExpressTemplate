@@ -4,7 +4,7 @@
  * @file src/types/http-responses.ts
  * @title Standard API Response Type
  * @description Defines the structure for all standardized JSON API responses.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-17
  */
 
 /**

@@ -4,10 +4,9 @@
  * @file src/config/logger.ts
  * @title Logger Configuration
  * @description Configures the Winston logger, Morgan request logger, and error logging middleware.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import type { Application, Request, Response } from 'express'
 import morgan from 'morgan'
 import statuses from 'statuses'
@@ -18,35 +17,23 @@ import 'winston-daily-rotate-file'
 const { combine, timestamp, printf, colorize, errors, splat } = format
 
 // --- Constants ---
-
-// Log levels
 const LOG_LEVEL_DEFAULT = 'info'
 const LOG_LEVEL_DEV = 'debug'
 const LOG_LEVEL_ERROR = 'error'
-
-// Date/Time formats
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 const DATE_PATTERN = 'YYYY-MM-DD'
-
-// Console logging
 const CONSOLE_LOG_LEVEL =
     process.env.NODE_ENV === 'development' ? LOG_LEVEL_DEV : LOG_LEVEL_DEFAULT
-
-// File transport settings
 const FILE_LOG_LEVEL = 'info'
 const FILE_MAX_SIZE = '20m'
 const FILE_MAX_FILES_APP = '14d'
 const FILE_MAX_FILES_ERROR = '30d'
 const FILE_PATH_APP = 'logs/%DATE%-app.log'
 const FILE_PATH_ERROR = 'logs/%DATE%-error.log'
-
-// Morgan request logging
 const MORGAN_TOKEN_STATUS = 'statusName'
 const MORGAN_TOKEN_IP = 'clientIp'
 const MORGAN_FORMAT = ':method :url [:statusName] [:clientIp]'
 const MSG_UNKNOWN_STATUS = 'Unknown Status'
-
-// HTTP Status Codes for logging logic
 const HTTP_CLIENT_ERROR = 400
 const HTTP_SERVER_ERROR = 500
 

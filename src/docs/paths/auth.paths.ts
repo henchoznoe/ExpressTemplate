@@ -4,31 +4,21 @@
  * @file src/docs/paths/auth.paths.ts
  * @title Auth OpenAPI Path Definitions
  * @description Registers all authentication-related API paths for OpenAPI documentation.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import { ROUTE_AUTH, TAG_AUTH } from '@routes/paths.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
+import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
-
-// Paths
 const PATH_AUTH_REGISTER = `${ROUTE_AUTH}/register`
 const PATH_AUTH_LOGIN = `${ROUTE_AUTH}/login`
-
-// Methods
 const METHOD_POST = 'post'
-
-// Content Type
 const MIME_TYPE_JSON = 'application/json'
-
-// Descriptions
 const DESC_REGISTER = 'Register a new user'
 const DESC_LOGIN = 'Log in a user'
-
-// Response Descriptions
 const RESP_201_REGISTER = 'Registration successful'
 const RESP_200_LOGIN = 'Login successful'
 const RESP_400 = 'Validation error'
@@ -56,15 +46,15 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
             },
         },
         responses: {
-            201: { description: RESP_201_REGISTER },
-            400: { description: RESP_400 },
-            409: { description: RESP_409_EMAIL },
-            500: { description: RESP_500 },
+            [StatusCodes.CREATED]: { description: RESP_201_REGISTER },
+            [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
+            [StatusCodes.CONFLICT]: { description: RESP_409_EMAIL },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_AUTH,
     })
 
-    // Register POST /auth/login
+    // Login POST /auth/login
     registry.registerPath({
         description: DESC_LOGIN,
         method: METHOD_POST,
@@ -79,10 +69,10 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
             },
         },
         responses: {
-            200: { description: RESP_200_LOGIN },
-            400: { description: RESP_400 },
-            401: { description: RESP_401_LOGIN },
-            500: { description: RESP_500 },
+            [StatusCodes.OK]: { description: RESP_200_LOGIN },
+            [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401_LOGIN },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_AUTH,
     })

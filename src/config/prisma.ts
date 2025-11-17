@@ -4,10 +4,9 @@
  * @file src/config/prisma.ts
  * @title Prisma Client Singleton
  * @description Initializes and exports the singleton Prisma client instance.
- * @last-modified 2025-11-15
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { PrismaClient } from '@prisma/client'
 
 // --- Singleton ---

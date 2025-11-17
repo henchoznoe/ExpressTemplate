@@ -4,7 +4,7 @@
  * @file src/dependencies.ts
  * @title Dependency Injector
  * @description Instantiates and wires up all application dependencies (repositories, services).
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
 // --- 1. Import Concrete Implementations ---

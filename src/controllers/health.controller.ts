@@ -4,13 +4,13 @@
  * @file src/controllers/health.controller.ts
  * @title Health Check Controller
  * @description HTTP request handler for the health check route.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 import pkg from '../../package.json' with { type: 'json' }
 
 // --- Constants ---
@@ -31,5 +31,5 @@ export const handleHealthCheck = (_: Request, res: Response) => {
         uptime: `${process.uptime().toFixed(0)} seconds`,
         version: pkg.version,
     }
-    sendSuccess(res, 200, MSG_HEALTH_SUCCESS, healthCheckData)
+    sendSuccess(res, StatusCodes.OK, MSG_HEALTH_SUCCESS, healthCheckData)
 }

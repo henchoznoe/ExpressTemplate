@@ -9,9 +9,11 @@
 
 import { UserController } from '@controllers/users.controller.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
-import { validateBody } from '@middlewares/route/validations/validate-body.js'
-import { validateParams } from '@middlewares/route/validations/validate-params.js'
-import { validateQuery } from '@middlewares/route/validations/validate-query.js'
+import {
+    validateBody,
+    validateParams,
+    validateQuery,
+} from '@middlewares/route/validate-request.js'
 import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
 import { IdParamSchema, PaginationSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'

@@ -4,7 +4,7 @@
  * @file src/models/user.model.ts
  * @title User Domain Models
  * @description Defines the core User data structures for the application derived from the Prisma schema.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
 import type { User as PrismaUser } from '@prisma/client'

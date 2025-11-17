@@ -10,12 +10,13 @@
 import { config } from '@config/env.js'
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
+import { StatusCodes } from 'http-status-codes'
+import jwt from 'jsonwebtoken'
 
 // --- Constants ---
 const MSG_NO_TOKEN = 'Access denied. No token provided.'
 const MSG_INVALID_TOKEN = 'Invalid token.'
-const MSG_TOKEN_EXPIRED = 'Token expired.'
+//const MSG_TOKEN_EXPIRED = 'Token expired.'
 
 /**
  * Middleware to protect routes.
@@ -26,7 +27,8 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
     const token = authHeader?.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : undefined
-    if (!token) return next(new AppError(MSG_NO_TOKEN, 401))
+    if (!token)
+        return next(new AppError(MSG_NO_TOKEN, StatusCodes.UNAUTHORIZED))
 
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
@@ -37,18 +39,18 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
             !('id' in decoded) ||
             typeof decoded.id !== 'string'
         ) {
-            throw new AppError(MSG_INVALID_TOKEN, 401)
+            throw new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED)
         }
 
         req.user = { id: decoded.id }
         next()
-    } catch (error) {
-        if (error instanceof TokenExpiredError) {
-            return next(new AppError(MSG_TOKEN_EXPIRED, 401))
-        }
-        if (error instanceof JsonWebTokenError) {
-            return next(new AppError(MSG_INVALID_TOKEN, 401))
-        }
-        return next(new AppError(MSG_INVALID_TOKEN, 401))
+    } catch (_error) {
+        /*if (error instanceof TokenExpiredError) {
+            return next(new AppError(MSG_TOKEN_EXPIRED, StatusCodes.UNAUTHORIZED))
+        }*/
+        /*if (error instanceof JsonWebTokenError) {
+            return next(new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED))
+        }*/
+        return next(new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED))
     }
 }

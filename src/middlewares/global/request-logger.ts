@@ -4,10 +4,9 @@
  * @file src/middlewares/global/request-logger.ts
  * @title Request Logger Middleware
  * @description Applies the Morgan/Winston request logger to the Express app.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { setupLogger } from '@config/logger.js'
 import type { Application } from 'express'
 

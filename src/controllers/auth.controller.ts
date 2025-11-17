@@ -10,6 +10,7 @@
 import type { AuthService } from '@services/auth.service.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const MSG_LOGIN_SUCCESS = 'Login successful'
@@ -23,7 +24,12 @@ export class AuthController {
      */
     register = async (req: Request, res: Response) => {
         const userWithToken = await this.authService.register(req.body)
-        sendSuccess(res, 201, MSG_REGISTER_SUCCESS, userWithToken)
+        sendSuccess(
+            res,
+            StatusCodes.CREATED,
+            MSG_REGISTER_SUCCESS,
+            userWithToken,
+        )
     }
 
     /**
@@ -31,6 +37,6 @@ export class AuthController {
      */
     login = async (req: Request, res: Response) => {
         const userWithToken = await this.authService.login(req.body)
-        sendSuccess(res, 200, MSG_LOGIN_SUCCESS, userWithToken)
+        sendSuccess(res, StatusCodes.OK, MSG_LOGIN_SUCCESS, userWithToken)
     }
 }

@@ -4,19 +4,15 @@
  * @file src/index.ts
  * @title Main application entry point
  * @description This file imports the application and starts the HTTP server.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
 import { app } from '@/app.js'
 
 // --- Constants ---
-
-// Standard exit code for unrecoverable failure.
 const EXIT_CODE_FAILURE = 1
-// Log messages for server startup.
 const APP_URL_LOG = `🚀 Server ready at: \t\thttp://localhost:${config.port}`
 const DOC_URL_LOG = `📗 API docs ready at: \thttp://localhost:${config.port}/api-docs`
 const APP_STARTED_LOG = `🔄 Environment : \t\t${config.nodeEnv.toUpperCase()}`

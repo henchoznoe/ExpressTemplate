@@ -4,12 +4,12 @@
  * @file src/middlewares/global/json-syntax-handler.ts
  * @title JSON Syntax Error Handler
  * @description Middleware to handle JSON syntax errors.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const MSG_INVALID_JSON = 'Invalid JSON: The request body is malformed.'
@@ -31,10 +31,10 @@ export const handleJsonSyntaxError = (
     if (
         err instanceof SyntaxError &&
         'status' in err &&
-        err.status === 400 &&
+        err.status === StatusCodes.BAD_REQUEST &&
         'body' in err
     ) {
-        return next(new AppError(MSG_INVALID_JSON, 400))
+        return next(new AppError(MSG_INVALID_JSON, StatusCodes.BAD_REQUEST))
     }
     return next(err)
 }

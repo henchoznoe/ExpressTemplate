@@ -11,6 +11,7 @@ import { log } from '@config/logger.js'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const MSG_INTERNAL_SERVER_ERROR = 'Internal Server Error'
@@ -36,7 +37,12 @@ export const setupErrorHandler = (app: Application) => {
  * @param next - The Express NextFunction to pass control to the next middleware.
  */
 const handleNotFound = (req: Request, _: Response, next: NextFunction) => {
-    next(new AppError(`${MSG_ROUTE_NOT_FOUND_PREFIX}: ${req.path}`, 404))
+    next(
+        new AppError(
+            `${MSG_ROUTE_NOT_FOUND_PREFIX}: ${req.path}`,
+            StatusCodes.NOT_FOUND,
+        ),
+    )
 }
 
 /**
@@ -70,5 +76,5 @@ export const globalErrorHandler = (
         log.error(MSG_UNKNOWN_ERROR_TYPE, err)
     }
 
-    sendError(res, 500, MSG_INTERNAL_SERVER_ERROR)
+    sendError(res, StatusCodes.INTERNAL_SERVER_ERROR, MSG_INTERNAL_SERVER_ERROR)
 }

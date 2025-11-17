@@ -4,10 +4,9 @@
  * @file src/schemas/auth.schema.ts
  * @title Auth & User Validation Schemas
  * @description Defines Zod schemas for validating auth and user creation bodies.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 import {
     EmailSchema,

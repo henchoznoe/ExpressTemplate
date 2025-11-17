@@ -7,34 +7,24 @@
  * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import { ROUTE_USERS, TAG_USERS } from '@routes/paths.js'
+import { StatusCodes } from 'http-status-codes'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
 // --- Constants ---
-
-// Paths
 const PATH_USERS = ROUTE_USERS
 const PATH_USERS_ID = `${ROUTE_USERS}/{id}`
-
-// Methods
 const METHOD_GET = 'get'
 const METHOD_POST = 'post'
 const METHOD_PATCH = 'patch'
 const METHOD_DELETE = 'delete'
-
-// Content Type
 const MIME_TYPE_JSON = 'application/json'
-
-// Descriptions
 const DESC_GET_ALL = 'Get all users (Protected)'
 const DESC_GET_BY_ID = 'Get a user by ID (Protected)'
 const DESC_CREATE = 'Create a new user (Protected)'
 const DESC_UPDATE = 'Update an existing user (Protected)'
 const DESC_DELETE = 'Delete a user by ID (Protected)'
-
-// Response Descriptions
 const RESP_200_LIST = 'A list of users'
 const RESP_200_DETAILS = 'User details'
 const RESP_201_CREATED = 'User created successfully'
@@ -57,10 +47,10 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         method: METHOD_GET,
         path: PATH_USERS,
         responses: {
-            200: { description: RESP_200_LIST },
-            401: { description: RESP_401 },
-            404: { description: RESP_404 },
-            500: { description: RESP_500 },
+            [StatusCodes.OK]: { description: RESP_200_LIST },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401 },
+            [StatusCodes.NOT_FOUND]: { description: RESP_404 },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_USERS,
     })
@@ -71,10 +61,10 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         method: METHOD_GET,
         path: PATH_USERS_ID,
         responses: {
-            200: { description: RESP_200_DETAILS },
-            401: { description: RESP_401 },
-            404: { description: RESP_404 },
-            500: { description: RESP_500 },
+            [StatusCodes.OK]: { description: RESP_200_DETAILS },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401 },
+            [StatusCodes.NOT_FOUND]: { description: RESP_404 },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_USERS,
     })
@@ -94,11 +84,11 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             },
         },
         responses: {
-            201: { description: RESP_201_CREATED },
-            400: { description: RESP_400 },
-            401: { description: RESP_401 },
-            409: { description: RESP_409_EMAIL },
-            500: { description: RESP_500 },
+            [StatusCodes.CREATED]: { description: RESP_201_CREATED },
+            [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401 },
+            [StatusCodes.CONFLICT]: { description: RESP_409_EMAIL },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_USERS,
     })
@@ -118,12 +108,12 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             },
         },
         responses: {
-            200: { description: RESP_200_UPDATED },
-            400: { description: RESP_400 },
-            401: { description: RESP_401 },
-            404: { description: RESP_404 },
-            409: { description: RESP_409_EMAIL },
-            500: { description: RESP_500 },
+            [StatusCodes.OK]: { description: RESP_200_UPDATED },
+            [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401 },
+            [StatusCodes.NOT_FOUND]: { description: RESP_404 },
+            [StatusCodes.CONFLICT]: { description: RESP_409_EMAIL },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_USERS,
     })
@@ -134,10 +124,10 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
         method: METHOD_DELETE,
         path: PATH_USERS_ID,
         responses: {
-            200: { description: RESP_200_DELETED },
-            401: { description: RESP_401 },
-            404: { description: RESP_404 },
-            500: { description: RESP_500 },
+            [StatusCodes.OK]: { description: RESP_200_DELETED },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401 },
+            [StatusCodes.NOT_FOUND]: { description: RESP_404 },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_USERS,
     })

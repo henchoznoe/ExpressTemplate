@@ -22,6 +22,7 @@ import type {
 import type { User, UserWithPassword } from '@models/user.model.js'
 import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Defines the fields to select for a "public" user, excluding the password.
@@ -56,7 +57,11 @@ export class PrismaUsersRepository implements IUserRepository {
             select: userSelect,
             where: { id },
         })
-        if (!user) throw new AppError(this.getNotFoundMessage(id), 404)
+        if (!user)
+            throw new AppError(
+                this.getNotFoundMessage(id),
+                StatusCodes.NOT_FOUND,
+            )
         return user
     }
 
@@ -73,7 +78,7 @@ export class PrismaUsersRepository implements IUserRepository {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
-                    throw new AppError(MSG_EMAIL_IN_USE, 409)
+                    throw new AppError(MSG_EMAIL_IN_USE, StatusCodes.CONFLICT)
                 }
             }
             throw e
@@ -90,10 +95,13 @@ export class PrismaUsersRepository implements IUserRepository {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === PrismaErrorCode.RECORD_NOT_FOUND) {
-                    throw new AppError(this.getNotFoundMessage(userId), 404)
+                    throw new AppError(
+                        this.getNotFoundMessage(userId),
+                        StatusCodes.NOT_FOUND,
+                    )
                 }
                 if (e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
-                    throw new AppError(MSG_EMAIL_IN_USE, 409)
+                    throw new AppError(MSG_EMAIL_IN_USE, StatusCodes.CONFLICT)
                 }
             }
             throw e
@@ -109,7 +117,10 @@ export class PrismaUsersRepository implements IUserRepository {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === PrismaErrorCode.RECORD_NOT_FOUND) {
-                    throw new AppError(this.getNotFoundMessage(id), 404)
+                    throw new AppError(
+                        this.getNotFoundMessage(id),
+                        StatusCodes.NOT_FOUND,
+                    )
                 }
             }
             throw e

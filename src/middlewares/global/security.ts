@@ -4,10 +4,9 @@
  * @file src/middlewares/global/security.ts
  * @title Security Middlewares Configuration
  * @description This file aggregates and configures all essential security middlewares.
- * @last-modified 2025-11-13
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import { handleJsonSyntaxError } from '@middlewares/global/json-syntax-handler.js'
 import { sendError } from '@utils/http-responses.js'
@@ -17,13 +16,12 @@ import express, { type Request, type Response } from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 import hpp from 'hpp'
+import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const RATE_LIMIT_MAX_REQUESTS_GENERAL = 200
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429
-const MSG_TOO_MANY_REQUESTS = 'Too many requests, please try again later.'
 const JSON_BODY_SIZE_LIMIT = '2mb'
 
 /**
@@ -33,7 +31,11 @@ const JSON_BODY_SIZE_LIMIT = '2mb'
  * @param res - The Express Response object.
  */
 export const handleRateLimitExceeded = (_: Request, res: Response) => {
-    sendError(res, HTTP_STATUS_TOO_MANY_REQUESTS, MSG_TOO_MANY_REQUESTS)
+    sendError(
+        res,
+        StatusCodes.TOO_MANY_REQUESTS,
+        getReasonPhrase(StatusCodes.TOO_MANY_REQUESTS),
+    )
 }
 
 /**
