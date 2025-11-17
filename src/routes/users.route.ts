@@ -11,8 +11,9 @@ import { UserController } from '@controllers/users.controller.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
 import { validateBody } from '@middlewares/route/validations/validate-body.js'
 import { validateParams } from '@middlewares/route/validations/validate-params.js'
+import { validateQuery } from '@middlewares/route/validations/validate-query.js'
 import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
-import { IdParamSchema } from '@schemas/common.schema.js'
+import { IdParamSchema, PaginationSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
 import { userService } from '@/dependencies.js'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
@@ -24,7 +25,12 @@ const userController = new UserController(userService)
 usersRouter.use(protect)
 
 // GET /users
-usersRouter.get(PATH_ROOT, userController.getAllUsers)
+// Pagination /users?page=1&limit=10
+usersRouter.get(
+    PATH_ROOT,
+    validateQuery(PaginationSchema),
+    userController.getAllUsers,
+)
 
 // GET /users/:id
 usersRouter.get(

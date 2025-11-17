@@ -4,25 +4,24 @@
  * @file src/db/prisma-users.repository.ts
  * @title Prisma User Repository
  * @description Prisma-specific implementation of the IUserRepository.
- * @last-modified 2025-11-15
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { prisma } from '@config/prisma.js'
+import { PrismaErrorCode } from '@db/prisma-errors.enum.js'
+import {
+    MSG_EMAIL_IN_USE,
+    MSG_RESOURCE_NOT_FOUND,
+} from '@db/repo-messages.constants.js'
 import type {
     CreateUserPersistence,
     IUserRepository,
+    PaginationOptions,
     UpdateUserPersistence,
 } from '@db/users.repository.interface.js'
 import type { User, UserWithPassword } from '@models/user.model.js'
 import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
-
-// --- Constants ---
-
-// Error Messages
-const MSG_RESOURCE_NOT_FOUND_PREFIX = 'Resource'
-const MSG_RESOURCE_NOT_FOUND_SUFFIX = 'not found.'
 
 /**
  * Defines the fields to select for a "public" user, excluding the password.
@@ -37,14 +36,18 @@ const userSelect = {
 }
 
 export class PrismaUsersRepository implements IUserRepository {
-    private createNotFoundMessage(contextId?: string): string {
-        const idInfo = contextId ? ` with ID ${contextId}` : ''
-        return `${MSG_RESOURCE_NOT_FOUND_PREFIX}${idInfo} ${MSG_RESOURCE_NOT_FOUND_SUFFIX}`
+    private getNotFoundMessage(id?: string): string {
+        return id
+            ? `${MSG_RESOURCE_NOT_FOUND} (ID: ${id})`
+            : MSG_RESOURCE_NOT_FOUND
     }
 
-    async getAllUsers(): Promise<User[]> {
+    async getAllUsers(options?: PaginationOptions): Promise<User[]> {
+        const { skip = 0, take = 10 } = options || {}
         return prisma.user.findMany({
             select: userSelect,
+            skip,
+            take,
         })
     }
 
@@ -53,18 +56,12 @@ export class PrismaUsersRepository implements IUserRepository {
             select: userSelect,
             where: { id },
         })
-        // findUnique returns null if not found, it doesn't throw.
-        if (!user) {
-            throw new AppError(this.createNotFoundMessage(id), 404)
-        }
+        if (!user) throw new AppError(this.getNotFoundMessage(id), 404)
         return user
     }
 
     async findUserByEmail(email: string): Promise<UserWithPassword | null> {
-        // This is the ONLY method that should return the password.
-        return prisma.user.findUnique({
-            where: { email },
-        })
+        return prisma.user.findUnique({ where: { email } })
     }
 
     async createUser(userData: CreateUserPersistence): Promise<User> {
@@ -75,8 +72,8 @@ export class PrismaUsersRepository implements IUserRepository {
             })
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                if (e.code === 'P2002') {
-                    throw new AppError('Email address already in use.', 409)
+                if (e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
+                    throw new AppError(MSG_EMAIL_IN_USE, 409)
                 }
             }
             throw e
@@ -95,11 +92,11 @@ export class PrismaUsersRepository implements IUserRepository {
             })
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                if (e.code === 'P2025') {
-                    throw new AppError(this.createNotFoundMessage(userId), 404)
+                if (e.code === PrismaErrorCode.RECORD_NOT_FOUND) {
+                    throw new AppError(this.getNotFoundMessage(userId), 404)
                 }
-                if (e.code === 'P2002') {
-                    throw new AppError('Email address already in use.', 409)
+                if (e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
+                    throw new AppError(MSG_EMAIL_IN_USE, 409)
                 }
             }
             throw e
@@ -114,8 +111,8 @@ export class PrismaUsersRepository implements IUserRepository {
             })
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                if (e.code === 'P2025') {
-                    throw new AppError(this.createNotFoundMessage(id), 404)
+                if (e.code === PrismaErrorCode.RECORD_NOT_FOUND) {
+                    throw new AppError(this.getNotFoundMessage(id), 404)
                 }
             }
             throw e

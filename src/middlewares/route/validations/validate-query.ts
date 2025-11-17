@@ -1,9 +1,9 @@
 /**
  * @copyright Copyright (c) 2025 Noé Henchoz
  * @author Noé Henchoz
- * @file src/middlewares/route/validations/validate-params.ts
- * @title Zod Validation Middleware (Params)
- * @description Provides a factory function to create Zod validation middlewares for URL params.
+ * @file src/middlewares/route/validations/validate-query.ts
+ * @title Zod Validation Middleware (Query)
+ * @description Provides a factory function to create Zod validation middlewares for query parameters.
  * @last-modified 2025-11-17
  */
 
@@ -21,19 +21,19 @@ const formatValidationErrors = (error: ZodError): object[] => {
     }))
 }
 
-export const validateParams = <T extends ZodObject>(schema: T) => {
+export const validateQuery = (schema: ZodObject) => {
     return (req: Request, _res: Response, next: NextFunction) => {
-        const result = schema.safeParse(req.params)
+        const result = schema.safeParse(req.query)
         if (!result.success) {
             const errorDetails = formatValidationErrors(result.error)
             const errorMessage =
                 (errorDetails[0] as { message: string })?.message ||
-                'Invalid URL parameters'
+                'Invalid query parameters'
             throw new AppError(errorMessage, HTTP_STATUS_BAD_REQUEST, true, {
                 issues: errorDetails,
             })
         }
-        req.params = { ...req.params, ...result.data }
+        req.validatedQuery = result.data
         next()
     }
 }

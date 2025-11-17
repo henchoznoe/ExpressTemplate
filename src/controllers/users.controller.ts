@@ -7,6 +7,7 @@
  * @last-modified 2025-11-17
  */
 
+import type { PaginationSchemaType } from '@schemas/common.schema.js'
 import type { UserService } from '@services/users.service.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
@@ -21,8 +22,11 @@ const MSG_USER_DELETED = 'User deleted successfully'
 export class UserController {
     constructor(private userService: UserService) {}
 
-    getAllUsers = async (_req: Request, res: Response) => {
-        const users = await this.userService.getAllUsers()
+    getAllUsers = async (req: Request, res: Response) => {
+        const { page, limit } = req.validatedQuery as PaginationSchemaType
+        const skip = (page - 1) * limit
+        const take = limit
+        const users = await this.userService.getAllUsers({ skip, take })
         sendSuccess(res, 200, MSG_USERS_RETRIEVED, users || [])
     }
 

@@ -4,7 +4,7 @@
  * @file src/types/express/index.d.ts
  * @title Express Request Extension
  * @description Extends the Express Request interface to include custom properties
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
 declare module 'express-serve-static-core' {
@@ -18,6 +18,7 @@ declare module 'express-serve-static-core' {
         user?: {
             id: string // The ID (UUID) of the authenticated user.
         }
+        validatedQuery?: unknown
     }
 }
 

@@ -1,7 +1,7 @@
 /**
  * @copyright Copyright (c) 2025 Noé Henchoz
  * @author Noé Henchoz
- * @file src/middlewares/auth.middleware.ts
+ * @file src/middlewares/route/auth.middleware.ts
  * @title Authentication Middleware
  * @description Middleware to protect routes by validating JWT.
  * @last-modified 2025-11-16

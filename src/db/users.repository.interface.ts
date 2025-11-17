@@ -4,7 +4,7 @@
  * @file src/db/users.repository.interface.ts
  * @title User Repository Interface
  * @description Defines the contract for all user repository implementations.
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
 import type { User, UserWithPassword } from '@models/user.model.js'
@@ -30,11 +30,19 @@ export type UpdateUserPersistence = {
 }
 
 /**
+ * Options for pagination when retrieving multiple users.
+ */
+export type PaginationOptions = {
+    skip?: number
+    take?: number
+}
+
+/**
  * Contract for User data persistence.
  * Any class implementing this must provide these methods.
  */
 export interface IUserRepository {
-    getAllUsers(): Promise<User[]>
+    getAllUsers(options?: PaginationOptions): Promise<User[]>
     getUserById(id: string): Promise<User>
     findUserByEmail(email: string): Promise<UserWithPassword | null>
     createUser(data: CreateUserPersistence): Promise<User>

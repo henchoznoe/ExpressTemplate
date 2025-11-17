@@ -4,14 +4,14 @@
  * @file src/services/users.service.ts
  * @title User Service Logic
  * @description Contains the business logic for user operations.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import type {
     CreateUserPersistence,
     IUserRepository,
+    PaginationOptions,
     UpdateUserPersistence,
 } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
@@ -24,8 +24,8 @@ import type {
 export class UserService {
     constructor(private usersRepository: IUserRepository) {}
 
-    async getAllUsers(): Promise<User[] | null> {
-        return this.usersRepository.getAllUsers()
+    async getAllUsers(options?: PaginationOptions): Promise<User[] | null> {
+        return this.usersRepository.getAllUsers(options)
     }
 
     async getUserById(id: string): Promise<User | null> {

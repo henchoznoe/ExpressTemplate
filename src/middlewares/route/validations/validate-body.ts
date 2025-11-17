@@ -1,13 +1,12 @@
 /**
  * @copyright Copyright (c) 2025 Noé Henchoz
  * @author Noé Henchoz
- * @file src/middlewares/validations/validate-body.ts
+ * @file src/middlewares/route/validations/validate-body.ts
  * @title Zod Validation Middleware (Body)
  * @description Provides a factory function to create Zod validation middlewares for request bodies.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
 import type { ZodError, ZodObject } from 'zod'
