@@ -43,7 +43,6 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Create logs directory and set ownership permissions immediately
-# We do this on the empty directory to be fast.
 RUN mkdir -p logs && chown -R node:node /app
 
 # Switch to non-root user for all subsequent operations
@@ -55,12 +54,15 @@ COPY --chown=node:node package*.json ./
 # Install ONLY production dependencies as 'node' user
 RUN npm install --omit=dev --ignore-scripts
 
-# Copy built artifacts and Prisma schema from builder with correct ownership
+# Copy built artifacts from builder
 COPY --from=builder --chown=node:node /app/dist ./dist
-COPY --from=builder --chown=node:node /app/prisma ./prisma
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Copy the GENERATED Prisma Client from builder
+COPY --from=builder --chown=node:node /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=node:node /app/node_modules/@prisma/client ./node_modules/@prisma/client
+
+# Copy Prisma schema (useful for metadata/debugging, though strict runtime usage relies on the generated client)
+COPY --from=builder --chown=node:node /app/prisma ./prisma
 
 # Set environment variables for production.
 ENV NODE_ENV=production

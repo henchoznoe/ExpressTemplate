@@ -7,7 +7,7 @@
  * @last-modified 2025-11-17
  */
 
-import { applyRequestLogger } from '@middlewares/global/request-logger.js'
+import { applyRequestLogger } from '@middlewares/global/logger.js'
 import { securityMiddlewares } from '@middlewares/global/security.js'
 import type { Application } from 'express'
 
