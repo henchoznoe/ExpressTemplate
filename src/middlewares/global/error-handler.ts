@@ -64,7 +64,7 @@ export const globalErrorHandler = (
     // Case 2: Programming Error (Standard Error)
     // These are unexpected errors. We log the full stack but send a generic message.
     if (err instanceof Error) {
-        log.error(`Unexpected error: ${err.message}\n${err.stack}`)
+        log.error('Unexpected error:', err)
     } else {
         // Case 3: Unknown error type
         log.error(MSG_UNKNOWN_ERROR_TYPE, err)

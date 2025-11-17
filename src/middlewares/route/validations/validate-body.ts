@@ -8,24 +8,18 @@
  */
 
 import { AppError } from '@typings/errors/AppError.js'
+import { formatZodError } from '@utils/zod-error-formatter.js'
 import type { NextFunction, Request, Response } from 'express'
-import type { ZodError, ZodObject } from 'zod'
+import type { ZodObject } from 'zod'
 
 // --- Constants ---
 const HTTP_STATUS_BAD_REQUEST = 400
-
-const formatValidationErrors = (error: ZodError): object[] => {
-    return error.issues.map(issue => ({
-        field: issue.path.join('.'),
-        message: issue.message,
-    }))
-}
 
 export const validateBody = (schema: ZodObject) => {
     return (req: Request, _res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body)
         if (!result.success) {
-            const errorDetails = formatValidationErrors(result.error)
+            const errorDetails = formatZodError(result.error)
             const errorMessage =
                 (errorDetails[0] as { message: string })?.message ||
                 'Invalid request body'
