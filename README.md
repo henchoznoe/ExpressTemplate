@@ -1,150 +1,280 @@
 # ExpressTemplate
 
-A lightweight, production-ready Express.js 5 template written in TypeScript. This starter includes common best-practices out of the box: a
-clean project structure, Zod validation, integrated testing with Vitest, OpenAPI docs, centralized logging, security middlewares, and a
-fully-containerized Docker setup.
+A lightweight, production-ready **Express.js 5** template written in **TypeScript**. This project implements a clean
+**Hexagonal/Layered Architecture** with Dependency Injection, robust validation, centralized logging, and a fully
+optimized Docker setup.
 
 ---
 
-## About
-
-This repository is a minimal but well-structured Express + TypeScript template intended to bootstrap small APIs or prototypes while keeping
-sensible defaults for security, validation, testing, and observability.
-
----
-
-## Features
+## 🚀 Features
 
 - **Modern Stack**: TypeScript (ESM) with Express 5.
-- **Zod-based Validation**: For request bodies (`req.body`) and environment variables (`.env`).
-- **Robust Error Handling**:
-    - Leverages **Express 5's native async error handling** (no `try...catch` needed in controllers).
-    - Custom `AppError` class for all operational errors.
-    - Database repository intelligently translates DB errors (e.g., unique constraints) into semantic 4xx `AppError` instances.
-- **Testing Included**: Pre-configured with **Vitest** for unit tests and **Supertest** for integration tests.
-- **Containerized**:
-    - Optimized, multi-stage `Dockerfile` for a small, fast production image.
-    - `docker-compose.yml` for easy local development and orchestration.
+- **Dependency Injection (IoC)**: Managed by `InversifyJS` for loosely coupled, testable code.
+- **Database ORM**: Prisma with PostgreSQL (optimized for production).
+- **Validation**: Strict request validation using `Zod`.
+- **Security**: Pre-configured with `Helmet`, `CORS`, `HPP`, and Rate Limiting.
 - **Observability**:
-    - **Winston** logging with daily rotate files (stored in `logs/`).
-    - **OpenAPI / Swagger UI** documentation automatically generated from Zod schemas at `/api-docs`.
-- **Security**: Includes `helmet`, `cors`, `hpp` (HTTP Parameter Pollution), rate limiting, and `compression` middlewares.
-- **Database**: Includes a `Supabase` client helper (`src/config/supabase.ts`) for easy integration.
-- **Developer Experience (DX)**:
-    - `tsx` for a fast, zero-config TypeScript development server with hot-reload.
-    - `Biome` for extremely fast linting and formatting.
-    - `Lefthook` configured for pre-commit hooks (lint, format, type-check).
-    - `tsconfig.json` path aliases (e.g., `@config/*`) pre-configured.
+    - **Winston** for structured logging (file rotation & console).
+    - **Morgan** for HTTP request logging (piped to Winston).
+- **API Documentation**: Auto-generated **OpenAPI / Swagger** docs (`zod-to-openapi`).
+- **Dockerized**: Multi-stage build reducing image size by excluding dev dependencies (like the Prisma CLI) in
+  production.
+- **Developer Experience**:
+    - `Biome` for ultra-fast linting and formatting.
+    - `Lefthook` for git hooks.
+    - Hot-reloading with `tsx`.
 
 ---
 
-## Requirements
+## 📋 Requirements
 
-- Node.js 22+ (LTS recommended)
-- npm (or compatible package manager)
-- Docker
-
----
-
-## Local Development (Without Docker)
-
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/henchoznoe/ExpressTemplate.git](https://github.com/henchoznoe/ExpressTemplate.git)
-   cd ExpressTemplate
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Rename the `.env.example` file to `.env` and fill in the required environment variables.
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   The server will be accessible at `http://localhost:3000` (or your configured `PORT`).
-
-## Running with Docker
-
-This is the recommended way to run the application in a production-like environment.
-
-1. **Ensure Docker is running**
-2. **Create your environment file**: Copy `.env.example` to `.env` (if not already done) and fill in the variables.
-   ```bash
-   cp .env.example .env
-   # Now, edit .env with your values
-   ```
-   > Note: The `docker-compose.yml` file dynamically uses the `PORT` variable from your `.env` file (defaulting to 3000).
-3. **Build and run the container:**
-   ```bash
-   docker compose build
-   docker compose up -d
-   ```
-   The API will be accessible at `http://localhost:3000` (or your configured `PORT`).
-
-**Useful Docker commands**:
-
-- `docker compose logs -f`: View live logs from the container
-- `docker compose down`: Stop and remove the container
-- `docker compose build --no-cache`: Force a full rebuild of the image.
+- **Node.js**: v22+ (LTS recommended)
+- **Docker**: For containerized execution (recommended).
+- **A PostgreSQL**
 
 ---
 
-## Scripts
+## 🛠️ Getting Started
 
-The following npm scripts are available (from `package.json`):
+### 1. Setup Environment
 
-- `npm run dev` — Run in development mode using `tsx watch`.
-- `npm run build` — Compile TypeScript to `dist/` using `tsc`.
-- `npm run start` — Run the compiled `dist/index.js` (production mode).
-- `npm test` — Run the full test suite (Vitest).
-- `npm run test:watch` — Run tests in interactive watch mode.
-- `npm run lint` — Run Biome linter and auto-fix where possible.
-- `npm run format` — Format code with Biome.
-- `npm run check` — Run Biome type & config checks.
-- `npm run prepare` — Install lefthook git hooks (runs on package install).
+Clone the repository and install dependencies:
 
----
+```bash
+git clone https://github.com/henchoznoe/ExpressTemplate.git
+cd ExpressTemplate
+npm install
+```
 
-## Project structure
+### 2. Configuration
 
-- `src/`
-    - `index.ts` — App entry (starts the HTTP server)
-    - `app.ts` — Express app setup, middlewares and routes mounting
-    - `config/` — App configuration (`env.ts`, `logger.ts`, `supabase.ts`, `openapi-registry.ts`)
-    - `controllers/` — HTTP handlers (logic for routes)
-    - `db/` — Database access / repositories
-    - `middlewares/` — Global and validation middlewares
-    - `routes/` — Route definitions
-    - `schemas/` — Zod schemas for requests/responses
-    - `services/` — Business logic layer
-    - `tests/` — Test files (`*.test.ts`)
-    - `types/` — Custom TypeScript types and interfaces
-    - `utils/` — Helper functions (e.g., `http-responses.ts`)
-- `logs/` — Rotating log files produced by Winston
-- `dist/` — Compiled JS after `npm run build`
+Rename the example environment file and configure your secrets:
 
-> Tip: imports use path aliases (configured via `tsconfig`), e.g. `@config/env.js`.
+```bash
+cp .env.example .env
+```
 
----
+**Important**: Update all necessary environment variables in the `.env` file, especially the database connection string.
 
-## API documentation
+### 3. Database Setup (Local)
 
-OpenAPI documentation is exposed using Swagger UI. Once the server is running, visit:
+If you are not using Docker, ensure your Postgres database is running, then apply migrations:
 
-http://localhost:3000/api-docs
+```bash
+# Generates the Prisma Client
+npx prisma generate
 
----
+# Pushes schema changes to the database
+npx prisma migrate dev --name init
+```
 
-## Logging & Errors
+### 4. Run the Server
 
-- The project uses **Winston** with daily rotate files; logs are stored in `logs/` (`-app.log` and `-error.log`).
-- Centralized error handling middleware (`src/middlewares/global/error-handler.ts`) leverages **Express 5's native async error handling**.
-- The database repository (`src/db/supabase-users.repository.ts`) intelligently translates database-specific errors (e.g., unique constraints) into
-  custom `AppError` classes, ensuring clean 4xx/5xx responses.
+```bash
+# Development mode (Hot Reload)
+npm run dev
+
+# Production build
+npm run build
+npm start
+```
+
+> The server will start at `http://localhost:3000`.
 
 ---
 
-## License
+## 🧩 Architecture & Dependency Injection
 
-This project is licensed under ISC. See the `package.json` `license` field for details.
+This project uses **InversifyJS** to manage dependencies through Inversion of Control (IoC). This pattern decouples
+components, making the application more modular, easier to test, and simpler to maintain. Instead of a controller
+creating its own service instance, the dependency is "injected" by a central container.
+
+### How to Add a New Feature (e.g., "Products")
+
+To maintain the architecture, follow these steps when adding a new feature:
+
+**1. Define Symbols:**
+Add unique identifiers for your new classes in `src/types/ioc.types.ts`. These symbols act as keys for the IoC
+container.
+
+```typescript
+// src/types/ioc.types.ts
+export const TYPES = {
+    // ... existing symbols
+    ProductController: Symbol.for('ProductController'),
+    ProductService: Symbol.for('ProductService'),
+    ProductRepository: Symbol.for('ProductRepository'),
+};
+```
+
+**2. Create the Logic:**
+
+- **Repository**: Create `src/db/products.repository.ts` that implements a clear interface (e.g., `IProductRepository`).
+  This layer is responsible for all database interactions.
+- **Service**: Create `src/services/products.service.ts`. This is where your business logic lives. Inject the repository
+  here.
+- **Controller**: Create `src/controllers/products.controller.ts`. This layer handles HTTP requests and responses.
+  Inject the service here.
+
+*Example of injection in the controller:*
+
+```typescript
+// src/controllers/products.controller.ts
+import {injectable, inject} from 'inversify';
+import {TYPES} from '@/types/ioc.types';
+import {ProductService} from '@services/products.service';
+
+@injectable()
+export class ProductController {
+    constructor(@inject(TYPES.ProductService) private productService: ProductService) {
+    }
+
+    // ... controller methods
+}
+```
+
+**3. Bind Dependencies:**
+Register your new classes in the IoC container at `src/config/container.ts`. This tells InversifyJS how to resolve the
+dependencies.
+
+```typescript
+// src/config/container.ts
+
+// Bind Repository
+container.bind<IProductRepository>(TYPES.ProductRepository).to(PrismaProductRepository).inSingletonScope();
+// Bind Service
+container.bind<ProductService>(TYPES.ProductService).to(ProductService).inSingletonScope();
+// Bind Controller
+container.bind<ProductController>(TYPES.ProductController).to(ProductController).inSingletonScope();
+```
+
+**4. Register the Route:**
+Finally, define your routes in a new file like `src/routes/products.route.ts` and use the IoC container to get an
+instance of your controller.
+
+```typescript
+// src/routes/products.route.ts
+import {container} from '@config/container';
+import {TYPES} from '@/types/ioc.types';
+import {ProductController} from '@controllers/products.controller';
+
+const router = Router();
+const productController = container.get<ProductController>(TYPES.ProductController);
+
+router.get('/', productController.getAll); // Assuming getAll is a method on your controller
+
+export default router;
+```
+
+Then, add this new router to `src/app.ts`.
+
+---
+
+## 🗄️ Database & Prisma Workflow
+
+We use Prisma as the ORM. Here are the essential commands for managing your database schema.
+
+### Modifying the Schema
+
+1. Edit your schema file at `prisma/schema.prisma`.
+2. Create a new migration file and apply the changes to your local database:
+
+```bash
+# Creates a new SQL migration file and applies it
+npx prisma migrate dev --name your_migration_description
+```
+
+This command also automatically regenerates the Prisma Client based on your new schema.
+
+### Regenerating the Client
+
+If you pull changes from Git that include schema updates, you only need to regenerate the typed client:
+
+```bash
+npx prisma generate
+```
+
+### Production & CI/CD
+
+In a production environment, you should not use `migrate dev`. Instead, apply existing migrations:
+
+```bash
+# Applies all pending migrations
+npx prisma migrate deploy
+```
+
+---
+
+## 🐳 Docker & Deployment
+
+The project includes a multi-stage `Dockerfile` optimized for production to create a small and secure image.
+
+**Key Optimizations:**
+
+- **Builder Stage**: Installs all dependencies (including `devDependencies`) to build the TypeScript code and generate
+  the Prisma Client.
+- **Production Stage**: Copies only the compiled code (`dist/`), `node_modules` (production-only), and Prisma schema.
+  Heavy `devDependencies` like the Prisma CLI are excluded, significantly reducing the final image size.
+
+### Running with Docker Compose
+
+```bash
+# Build and start the containers in detached mode
+docker compose up -d --build
+
+# View logs
+docker compose logs -f
+
+# Stop and remove containers
+docker compose down
+```
+
+**Note**: Since the Prisma CLI is not included in the production image, `prisma generate` is run during the build phase.
+If you change the schema, you **must** rebuild the image.
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── app.ts              # Express app configuration (middlewares, routes)
+├── index.ts            # Entry point (server startup)
+├── config/             # Configuration (Env, Logger, Container, Prisma)
+├── controllers/        # HTTP Request Handlers
+├── db/                 # Data Access Layer (Repositories)
+├── docs/               # API Documentation (Swagger setup)
+├── middlewares/        # Express Middlewares (Global & Route-specific)
+├── models/             # Domain Models (Clean Types)
+├── routes/             # Route Definitions
+├── schemas/            # Zod Validation Schemas
+├── services/           # Business Logic
+├── types/              # TypeScript Type Definitions (including IoC types)
+└── utils/              # Helper functions
+```
+
+---
+
+## 📚 API Documentation
+
+Swagger UI is automatically generated from your Zod schemas. Once the server is running, visit:
+
+👉 **http://localhost:3000/api-docs**
+
+---
+
+## ✅ Coding Standards
+
+This project enforces strict coding standards to ensure code quality and consistency.
+
+- **Linting & Formatting**: We use **Biome** for ultra-fast linting and formatting. Run `npm run lint` and
+  `npm run format`.
+- **Git Hooks**: **Lefthook** is configured to run linting and formatting checks automatically before each commit.
+- **Typing**: `any` is strictly forbidden. Use specific types or `unknown`.
+- **Comments**: Write JSDoc/comments in English for all non-trivial logic to ensure clarity.
+
+---
+
+## 📜 License
+
+This project is licensed under the ISC License.
