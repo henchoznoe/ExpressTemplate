@@ -4,18 +4,18 @@
  * @file src/middlewares/route/auth.middleware.ts
  * @title Authentication Middleware
  * @description Middleware to protect routes by validating JWT.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { config } from '@config/env.js'
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 
 // --- Constants ---
 const MSG_NO_TOKEN = 'Access denied. No token provided.'
 const MSG_INVALID_TOKEN = 'Invalid token.'
+const MSG_TOKEN_EXPIRED = 'Token expired.'
 
 /**
  * Middleware to protect routes.
@@ -26,7 +26,7 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
     const token = authHeader?.startsWith('Bearer ')
         ? authHeader.split(' ')[1]
         : undefined
-    if (!token) throw new AppError(MSG_NO_TOKEN, 401)
+    if (!token) return next(new AppError(MSG_NO_TOKEN, 401))
 
     try {
         const decoded = jwt.verify(token, config.jwtSecret)
@@ -42,7 +42,13 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
 
         req.user = { id: decoded.id }
         next()
-    } catch (_) {
-        throw new AppError(MSG_INVALID_TOKEN, 401)
+    } catch (error) {
+        if (error instanceof TokenExpiredError) {
+            return next(new AppError(MSG_TOKEN_EXPIRED, 401))
+        }
+        if (error instanceof JsonWebTokenError) {
+            return next(new AppError(MSG_INVALID_TOKEN, 401))
+        }
+        return next(new AppError(MSG_INVALID_TOKEN, 401))
     }
 }
