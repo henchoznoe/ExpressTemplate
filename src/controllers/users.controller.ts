@@ -9,18 +9,10 @@
 
 import type { PaginationSchemaType } from '@schemas/common.schema.js'
 import type { UserService } from '@services/users.service.js'
-import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '@/types/ioc.types.js'
-
-// --- Constants ---
-const MSG_USERS_RETRIEVED = 'Users retrieved successfully'
-const MSG_USER_RETRIEVED = 'User retrieved successfully'
-const MSG_USER_CREATED = 'User created successfully'
-const MSG_USER_UPDATED = 'User updated successfully'
-const MSG_USER_DELETED = 'User deleted successfully'
 
 @injectable()
 export class UserController {
@@ -31,29 +23,29 @@ export class UserController {
         const skip = (page - 1) * limit
         const take = limit
         const users = await this.userService.getAllUsers({ skip, take })
-        sendSuccess(res, StatusCodes.OK, MSG_USERS_RETRIEVED, users || [])
+        res.status(StatusCodes.OK).json(users || [])
     }
 
     getUserById = async (req: Request, res: Response) => {
         const userId = req.params.id
         const user = await this.userService.getUserById(userId)
-        sendSuccess(res, StatusCodes.OK, MSG_USER_RETRIEVED, user)
+        res.status(StatusCodes.OK).json(user)
     }
 
     createUser = async (req: Request, res: Response) => {
         const newUser = await this.userService.createUser(req.body)
-        sendSuccess(res, StatusCodes.CREATED, MSG_USER_CREATED, newUser)
+        res.status(StatusCodes.CREATED).json(newUser)
     }
 
     updateUser = async (req: Request, res: Response) => {
         const userId = req.params.id
         const updatedUser = await this.userService.updateUser(userId, req.body)
-        sendSuccess(res, StatusCodes.OK, MSG_USER_UPDATED, updatedUser)
+        res.status(StatusCodes.OK).json(updatedUser)
     }
 
     deleteUser = async (req: Request, res: Response) => {
         const userId = req.params.id
         const deletedUser = await this.userService.deleteUser(userId)
-        sendSuccess(res, StatusCodes.OK, MSG_USER_DELETED, deletedUser)
+        res.status(StatusCodes.OK).json(deletedUser)
     }
 }

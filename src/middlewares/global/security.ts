@@ -9,7 +9,6 @@
 
 import { config } from '@config/env.js'
 import { handleJsonSyntaxError } from '@middlewares/global/json-syntax-handler.js'
-import { sendError } from '@utils/http-responses.js'
 import compression from 'compression'
 import cors from 'cors'
 import express, { type Request, type Response } from 'express'
@@ -26,16 +25,20 @@ const JSON_BODY_SIZE_LIMIT = '2mb'
 
 /**
  * Custom handler for when the rate limit is exceeded.
- * Sends a standardized 429 error response.
+ * Sends a standardized RFC 7807 429 error response.
  * @param _ - The Express Request object (unused).
  * @param res - The Express Response object.
  */
 export const handleRateLimitExceeded = (_: Request, res: Response) => {
-    sendError(
-        res,
-        StatusCodes.TOO_MANY_REQUESTS,
-        getReasonPhrase(StatusCodes.TOO_MANY_REQUESTS),
-    )
+    const status = StatusCodes.TOO_MANY_REQUESTS
+    res.status(status)
+        .header('Content-Type', 'application/problem+json')
+        .json({
+            detail: 'Too many requests, please try again later.',
+            status,
+            title: getReasonPhrase(status),
+            type: 'about:blank',
+        })
 }
 
 /**

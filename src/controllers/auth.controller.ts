@@ -8,16 +8,10 @@
  */
 
 import type { AuthService } from '@services/auth.service.js'
-import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '@/types/ioc.types.js'
-
-// --- Constants ---
-const MSG_LOGIN_SUCCESS = 'Login successful'
-const MSG_REGISTER_SUCCESS = 'Registration successful'
-const MSG_REFRESH_SUCCESS = 'Tokens refreshed successfully'
 
 @injectable()
 export class AuthController {
@@ -28,12 +22,7 @@ export class AuthController {
      */
     register = async (req: Request, res: Response) => {
         const userWithToken = await this.authService.register(req.body)
-        sendSuccess(
-            res,
-            StatusCodes.CREATED,
-            MSG_REGISTER_SUCCESS,
-            userWithToken,
-        )
+        res.status(StatusCodes.CREATED).json(userWithToken)
     }
 
     /**
@@ -41,7 +30,7 @@ export class AuthController {
      */
     login = async (req: Request, res: Response) => {
         const userWithToken = await this.authService.login(req.body)
-        sendSuccess(res, StatusCodes.OK, MSG_LOGIN_SUCCESS, userWithToken)
+        res.status(StatusCodes.OK).json(userWithToken)
     }
 
     /**
@@ -50,6 +39,6 @@ export class AuthController {
     refresh = async (req: Request, res: Response) => {
         const { refreshToken } = req.body
         const tokens = await this.authService.refreshAuth(refreshToken)
-        sendSuccess(res, StatusCodes.OK, MSG_REFRESH_SUCCESS, tokens)
+        res.status(StatusCodes.OK).json(tokens)
     }
 }

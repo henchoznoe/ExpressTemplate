@@ -9,9 +9,8 @@
 
 import { log } from '@config/logger.js'
 import { AppError } from '@typings/errors/AppError.js'
-import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
-import { StatusCodes } from 'http-status-codes'
+import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const MSG_INTERNAL_SERVER_ERROR = 'Internal Server Error'
@@ -60,21 +59,33 @@ export const globalErrorHandler = (
     res: Response,
     _next: NextFunction,
 ) => {
+    let status = StatusCodes.INTERNAL_SERVER_ERROR
+    let message = MSG_INTERNAL_SERVER_ERROR
+    let errors: object | undefined
+
     // Case 1: Operational Error (AppError)
-    // These are expected errors (e.g., "User not found") and we can safely send the message.
     if (err instanceof AppError) {
         log.warn(`Operational error: ${err.message}`)
-        return sendError(res, err.status, err.message, err.data)
+        status = err.status
+        message = err.message
+        errors = err.data ? err.data : undefined
     }
-
     // Case 2: Programming Error (Standard Error)
-    // These are unexpected errors. We log the full stack but send a generic message.
-    if (err instanceof Error) {
+    else if (err instanceof Error) {
         log.error('Unexpected error:', err)
-    } else {
-        // Case 3: Unknown error type
+    }
+    // Case 3: Unknown error type
+    else {
         log.error(MSG_UNKNOWN_ERROR_TYPE, err)
     }
 
-    sendError(res, StatusCodes.INTERNAL_SERVER_ERROR, MSG_INTERNAL_SERVER_ERROR)
+    res.status(status)
+        .header('Content-Type', 'application/json')
+        .json({
+            detail: message,
+            status,
+            title: getReasonPhrase(status),
+            type: 'about:blank',
+            ...(errors && { errors }),
+        })
 }

@@ -8,13 +8,9 @@
  */
 
 import { config } from '@config/env.js'
-import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import pkg from '../../package.json' with { type: 'json' }
-
-// --- Constants ---
-const MSG_HEALTH_SUCCESS = 'Health check successful'
 
 /**
  * Handles the health check route (GET /).
@@ -31,5 +27,5 @@ export const handleHealthCheck = (_: Request, res: Response) => {
         uptime: `${process.uptime().toFixed(0)} seconds`,
         version: pkg.version,
     }
-    sendSuccess(res, StatusCodes.OK, MSG_HEALTH_SUCCESS, healthCheckData)
+    res.status(StatusCodes.OK).json(healthCheckData)
 }
