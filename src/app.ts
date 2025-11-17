@@ -4,24 +4,19 @@
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import { setupSwagger } from '@config/swagger.js'
+import { setupSwagger } from '@docs/swagger.js'
 import { setupErrorHandler } from '@middlewares/global/error-handler.js'
 import { setupMiddlewares } from '@middlewares/index.js'
 import { setupRoutes } from '@routes/index.js'
 import express from 'express'
 
-// --- Application Setup ---
+export const app = express()
 
-// Create the main Express app instance
-const app = express()
-
-// --- Trust Proxy Setting ---
+// 0. Trust Proxy
 // Tell Express that it is behind a proxy (e.g., Docker, Nginx, Traefik).
-// Setting 'trust proxy' to 1 means it will trust the first hop (X-Forwarded-For).
 app.set('trust proxy', 1)
 
 // 1. Core Middlewares
@@ -39,6 +34,3 @@ setupRoutes(app)
 // 4. Error Handling
 // Mount the global error handlers (e.g., 404, 500).
 setupErrorHandler(app)
-
-// --- Export ---
-export default app

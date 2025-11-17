@@ -4,30 +4,20 @@
  * @file src/index.ts
  * @title Main application entry point
  * @description This file imports the application and starts the HTTP server.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import config from '@config/env.js'
+import 'reflect-metadata'
+import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
-import app from '@/app.js'
+import { app } from '@/app.js'
 
 // --- Constants ---
-
-/**
- * Standard exit code for unrecoverable failure.
- */
 const EXIT_CODE_FAILURE = 1
-
-/**
- * Log messages for server startup.
- */
-const APP_STARTED_LOG = `⚠️ App running in ${config.nodeEnv} mode`
-const APP_URL_LOG = `🚀 Express server ready at: http://localhost:${config.port}`
-const DOC_URL_LOG = `💻 API docs ready at: http://localhost:${config.port}/api-docs`
-const APP_ERROR_PREFIX = '❌ Server failed to start:'
-
-// --- Server Startup ---
+const APP_URL_LOG = `🚀 Server ready at: \t\thttp://localhost:${config.port}`
+const DOC_URL_LOG = `📗 API docs ready at: \thttp://localhost:${config.port}/api-docs`
+const APP_STARTED_LOG = `🔄 Environment : \t\t${config.nodeEnv.toUpperCase()}`
+const APP_ERROR_PREFIX = '☠️ Server failed to start:'
 
 /**
  * Starts the Express server and binds the success and error handlers.
@@ -41,9 +31,11 @@ const main = () => {
  * Logs the application status and accessible URLs.
  */
 const onServerStarted = () => {
-    log.info(APP_STARTED_LOG)
+    log.info('===========================================================')
     log.info(APP_URL_LOG)
     log.info(DOC_URL_LOG)
+    log.info(APP_STARTED_LOG)
+    log.info('===========================================================')
 }
 
 /**
@@ -55,8 +47,6 @@ const onServerError = (error: Error) => {
     log.error(`${APP_ERROR_PREFIX} ${error.message}`)
     process.exit(EXIT_CODE_FAILURE)
 }
-
-// --- Execution ---
 
 // Run the application
 main()

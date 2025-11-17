@@ -4,7 +4,7 @@
 # File: .editorconfig
 # Title: Editor Configuration
 # Description: Provides consistent editor settings (indentation, charset) for all developers.
-# Last modified: 2025-11-11
+# Last modified: 2025-11-16
 #
 
 # --- Root ---
@@ -27,6 +27,8 @@ indent_style = space
 indent_size = 4
 # Remove trailing whitespace before saving
 trim_trailing_whitespace = true
+# Maximum line length recommendation
+max_line_length = 120
 
 # --- File-Specific Overrides ---
 

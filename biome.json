@@ -1,55 +1,45 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.3.2/schema.json",
-    "assist": {
-        "actions": {
-            "source": {
-                "organizeImports": "on",
-                "useSortedAttributes": "on",
-                "useSortedKeys": "on",
-                "useSortedProperties": "on"
-            }
-        },
-        "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.3.5/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "useSortedAttributes": "on",
+        "useSortedKeys": "on",
+        "useSortedProperties": "on"
+      }
     },
-    "files": {
-        "ignoreUnknown": true,
-        "includes": ["**", "!**/package.json", "!**/dist", "!**/logs"]
-    },
+    "enabled": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": ["**", "!**/package.json", "!**/dist", "!**/logs"]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true
+  },
+  "javascript": {
     "formatter": {
-        "enabled": true,
-        "indentStyle": "space",
-        "indentWidth": 4,
-        "lineWidth": 120
+      "arrowParentheses": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
     },
-    "javascript": {
-        "formatter": {
-            "arrowParentheses": "asNeeded",
-            "quoteStyle": "single",
-            "semicolons": "asNeeded",
-            "trailingCommas": "all"
-        },
-        "globals": [
-            "afterAll",
-            "afterEach",
-            "beforeAll",
-            "beforeEach",
-            "describe",
-            "expect",
-            "it",
-            "jest",
-            "test",
-            "vi"
-        ]
-    },
-    "linter": {
-        "enabled": true,
-        "rules": {
-            "recommended": true
-        }
-    },
-    "vcs": {
-        "clientKind": "git",
-        "enabled": false,
-        "useIgnoreFile": false
+    "globals": [],
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "vcs": {
+    "clientKind": "git",
+    "enabled": false,
+    "useIgnoreFile": false
+  }
 }

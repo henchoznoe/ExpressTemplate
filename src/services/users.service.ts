@@ -3,52 +3,71 @@
  * @author Noé Henchoz
  * @file src/services/users.service.ts
  * @title User Service Logic
- * @description This file contains the business logic for user-related operations.
- * @last-modified 2025-11-11
+ * @description Contains the business logic for user operations.
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import * as usersRepository from '@db/users.repository.js'
-import type { CreateUserSchemaType, UpdateUserSchemaType } from '@/schemas/users.schema.js'
+import { config } from '@config/env.js'
+import type {
+    CreateUserDto,
+    IUserRepository,
+    PaginationOptions,
+    UpdateUserDto,
+} from '@db/users.repository.interface.js'
+import type { User } from '@models/user.model.js'
+import bcrypt from 'bcrypt'
+import { inject, injectable } from 'inversify'
+import type {
+    CreateUserSchemaType,
+    UpdateUserSchemaType,
+} from '@/schemas/auth.schema.js'
+import { TYPES } from '@/types/ioc.types.js'
 
-// --- Service Functions ---
+@injectable()
+export class UserService {
+    constructor(
+        @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
+    ) {}
 
-/**
- * Retrieves a list of all users.
- * @returns A promise that resolves to an array of all users.
- */
-export const getAllUsers = async () => usersRepository.getAllUsers()
+    async getAllUsers(options?: PaginationOptions): Promise<User[] | null> {
+        return this.usersRepository.getAllUsers(options)
+    }
 
-/**
- * Retrieves a single user by their unique ID.
- * @param id - The UUID of the user to retrieve.
- * @returns A promise that resolves to the user object, or throws if not found.
- */
-export const getUserById = async (id: string) => usersRepository.getUserById(id)
+    async getUserById(id: string): Promise<User | null> {
+        return this.usersRepository.getUserById(id)
+    }
 
-/**
- * Creates a new user in the database.
- * @param userData - The user data (name, email, password) matching the schema.
- * @returns A promise that resolves to the newly created user object.
- */
-export const createUser = async (userData: CreateUserSchemaType) => {
-    return usersRepository.createUser(userData)
-}
+    async createUser(userData: CreateUserSchemaType): Promise<User | null> {
+        const hashedPassword = await bcrypt.hash(
+            userData.password,
+            config.bcryptSaltRounds,
+        )
+        const persistenceData: CreateUserDto = {
+            ...userData,
+            password: hashedPassword,
+        }
+        return this.usersRepository.createUser(persistenceData)
+    }
 
-/**
- * Updates an existing user's data by their ID.
- * @param userData - The user data to update, including the user's ID.
- * @returns A promise that resolves to the updated user object.
- */
-export const updateUser = async (userData: UpdateUserSchemaType) => {
-    return usersRepository.updateUser(userData)
-}
+    async updateUser(
+        userId: string,
+        userData: UpdateUserSchemaType,
+    ): Promise<User | null> {
+        const { password, ...rest } = userData
+        let persistenceData: UpdateUserDto = rest
+        if (password) {
+            const hashedPassword = await bcrypt.hash(
+                password,
+                config.bcryptSaltRounds,
+            )
+            persistenceData = { ...rest, password: hashedPassword }
+        }
+        return this.usersRepository.updateUser(userId, persistenceData)
+    }
 
-/**
- * Deletes a user by their unique ID.
- * @param id - The UUID of the user to delete.
- * @returns A promise that resolves to the deleted user object.
- */
-export const deleteUser = async (id: string) => {
-    return usersRepository.deleteUser(id)
+    async deleteUser(id: string): Promise<User | null> {
+        return this.usersRepository.deleteUser(id)
+    }
+
+    // Additional user-related methods can be added here
 }

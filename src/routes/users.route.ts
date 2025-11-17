@@ -4,39 +4,63 @@
  * @file src/routes/users.route.ts
  * @title User API Routes
  * @description This file defines all API routes related to user management.
- * @last-modified 2025-11-11
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import * as usersCtrl from '@controllers/users.controller.js'
-import { validateFields } from '@middlewares/validations/validate-fields.js'
+import { container } from '@config/container.js'
+import type { UserController } from '@controllers/users.controller.js'
+import { protect } from '@middlewares/route/auth.middleware.js'
+import {
+    validateBody,
+    validateParams,
+    validateQuery,
+} from '@middlewares/route/validate-request.js'
+import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
+import { IdParamSchema, PaginationSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
-import { CreateUserSchema, UpdateUserSchema } from '@/schemas/users.schema.js'
+import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
+import { TYPES } from '@/types/ioc.types.js'
 
-// --- Router Setup ---
+export const usersRouter = Router()
+const userController = container.get<UserController>(TYPES.UserController)
 
-// Create a new Express router instance for user-related routes
-const usersRouter = Router()
+// Protect all routes below this line with authentication
+usersRouter.use(protect)
 
 // GET /users
-// Get all users
-usersRouter.get('/', usersCtrl.getAllUsers)
+// Pagination /users?page=1&limit=10
+usersRouter.get(
+    PATH_ROOT,
+    validateQuery(PaginationSchema),
+    userController.getAllUsers,
+)
 
 // GET /users/:id
-// Get a single user by their ID
-usersRouter.get('/:id', usersCtrl.getUserById)
+usersRouter.get(
+    PATH_ID,
+    validateParams(IdParamSchema),
+    userController.getUserById,
+)
 
 // POST /users
-// Create a new user. Applies validation middleware first.
-usersRouter.post('/', validateFields(CreateUserSchema), usersCtrl.createUser)
 
-// PUT /users
-// Update an existing user. Applies validation middleware first.
-usersRouter.put('/', validateFields(UpdateUserSchema), usersCtrl.updateUser)
+usersRouter.post(
+    PATH_ROOT,
+    validateBody(CreateUserSchema),
+    userController.createUser,
+)
+
+// PATCH /users
+usersRouter.patch(
+    PATH_ID,
+    validateParams(IdParamSchema),
+    validateBody(UpdateUserSchema),
+    userController.updateUser,
+)
 
 // DELETE /users/:id
-// Delete a user by their ID
-usersRouter.delete('/:id', usersCtrl.deleteUser)
-
-// --- Export ---
-export default usersRouter
+usersRouter.delete(
+    PATH_ID,
+    validateParams(IdParamSchema),
+    userController.deleteUser,
+)

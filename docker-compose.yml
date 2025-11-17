@@ -4,10 +4,9 @@
 # File: docker-compose.yml
 # Title: Docker Compose Configuration
 # Description: Defines the services, networks, and volumes for the application.
-# Last modified: 2025-11-11
+# Last modified: 2025-11-14
 #
 
-# --- Services ---
 # Defines the containers that make up the application.
 services:
     # --- Express API Service ---
