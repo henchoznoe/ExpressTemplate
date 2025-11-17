@@ -51,7 +51,7 @@ export interface IUserRepository {
     findUserByEmail(email: string): Promise<UserWithPassword | null>
     createUser(data: CreateUserDto): Promise<User>
     updateUser(userId: string, data: UpdateUserDto): Promise<User>
-    deleteUser(id: string): Promise<User>
+    deleteUser(id: string): Promise<User | null>
 
     createRefreshToken(
         id: string,

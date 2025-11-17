@@ -114,7 +114,7 @@ export class PrismaUsersRepository implements IUserRepository {
         }
     }
 
-    async deleteUser(id: string): Promise<User> {
+    async deleteUser(id: string): Promise<User | null> {
         try {
             return await prisma.user.delete({
                 select: userSelect,
@@ -123,10 +123,7 @@ export class PrismaUsersRepository implements IUserRepository {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === PrismaErrorCode.RECORD_NOT_FOUND) {
-                    throw new AppError(
-                        this.getNotFoundMessage(id),
-                        StatusCodes.NOT_FOUND,
-                    )
+                    return null
                 }
             }
             throw e

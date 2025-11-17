@@ -45,7 +45,7 @@ export class UserController {
 
     deleteUser = async (req: Request, res: Response) => {
         const userId = req.params.id
-        const deletedUser = await this.userService.deleteUser(userId)
-        res.status(StatusCodes.OK).json(deletedUser)
+        await this.userService.deleteUser(userId)
+        res.status(StatusCodes.NO_CONTENT).send()
     }
 }
