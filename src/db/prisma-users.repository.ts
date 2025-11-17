@@ -79,7 +79,7 @@ export class PrismaUsersRepository implements IUserRepository {
                     throw new AppError('Email address already in use.', 409)
                 }
             }
-            throw e // Re-throw unexpected errors
+            throw e
         }
     }
 
@@ -115,7 +115,6 @@ export class PrismaUsersRepository implements IUserRepository {
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 if (e.code === 'P2025') {
-                    // Record to delete not found
                     throw new AppError(this.createNotFoundMessage(id), 404)
                 }
             }

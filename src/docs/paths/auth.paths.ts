@@ -9,15 +9,14 @@
 
 // --- Imports ---
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import { ROUTE_AUTH, TAG_AUTH } from '@routes/paths.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 
 // --- Constants ---
-const TAGS_AUTH = ['auth']
 
 // Paths
-const PATH_AUTH = '/auth'
-const PATH_AUTH_REGISTER = `${PATH_AUTH}/register`
-const PATH_AUTH_LOGIN = `${PATH_AUTH}/login`
+const PATH_AUTH_REGISTER = `${ROUTE_AUTH}/register`
+const PATH_AUTH_LOGIN = `${ROUTE_AUTH}/login`
 
 // Methods
 const METHOD_POST = 'post'
@@ -62,7 +61,7 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
             409: { description: RESP_409_EMAIL },
             500: { description: RESP_500 },
         },
-        tags: TAGS_AUTH,
+        tags: TAG_AUTH,
     })
 
     // Register POST /auth/login
@@ -85,7 +84,7 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
             401: { description: RESP_401_LOGIN },
             500: { description: RESP_500 },
         },
-        tags: TAGS_AUTH,
+        tags: TAG_AUTH,
     })
 
     // Additional auth-related paths can be registered here

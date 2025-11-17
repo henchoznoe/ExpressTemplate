@@ -4,19 +4,19 @@
  * @file src/docs/paths/users.paths.ts
  * @title User OpenAPI Path Definitions
  * @description Registers all user-related API paths for OpenAPI documentation.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
 // --- Imports ---
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import { ROUTE_USERS, TAG_USERS } from '@routes/paths.js'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
 // --- Constants ---
-const TAGS_USERS = ['users']
 
 // Paths
-const PATH_USERS = '/users'
-const PATH_USERS_ID = `${PATH_USERS}/{id}`
+const PATH_USERS = ROUTE_USERS
+const PATH_USERS_ID = `${ROUTE_USERS}/{id}`
 
 // Methods
 const METHOD_GET = 'get'
@@ -62,7 +62,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
-        tags: TAGS_USERS,
+        tags: TAG_USERS,
     })
 
     // Register GET /users/{id}
@@ -76,7 +76,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
-        tags: TAGS_USERS,
+        tags: TAG_USERS,
     })
 
     // Register POST /users
@@ -100,7 +100,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             409: { description: RESP_409_EMAIL },
             500: { description: RESP_500 },
         },
-        tags: TAGS_USERS,
+        tags: TAG_USERS,
     })
 
     // Register PATCH /users/{id}
@@ -125,7 +125,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             409: { description: RESP_409_EMAIL },
             500: { description: RESP_500 },
         },
-        tags: TAGS_USERS,
+        tags: TAG_USERS,
     })
 
     // Register DELETE /users/{id}
@@ -139,7 +139,7 @@ export const registerUserPaths = (registry: OpenAPIRegistry) => {
             404: { description: RESP_404 },
             500: { description: RESP_500 },
         },
-        tags: TAGS_USERS,
+        tags: TAG_USERS,
     })
 
     // Additional user-related paths can be registered here
