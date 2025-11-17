@@ -134,6 +134,7 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async createRefreshToken(
+        id: string,
         userId: string,
         tokenHash: string,
         expiresAt: Date,
@@ -141,17 +142,16 @@ export class PrismaUsersRepository implements IUserRepository {
         return prisma.refreshToken.create({
             data: {
                 expiresAt,
+                id,
                 tokenHash,
                 userId,
             },
         })
     }
 
-    async findRefreshTokenByHash(
-        tokenHash: string,
-    ): Promise<RefreshToken | null> {
-        return prisma.refreshToken.findFirst({
-            where: { tokenHash },
+    async findRefreshTokenById(id: string): Promise<RefreshToken | null> {
+        return prisma.refreshToken.findUnique({
+            where: { id },
         })
     }
 

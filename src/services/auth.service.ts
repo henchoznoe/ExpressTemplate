@@ -37,30 +37,31 @@ export class AuthService {
     ) {}
 
     /**
-     * Hashes a token string using SHA-256.
-     * Used for secure storage in the database.
-     */
-    private hashToken(token: string): string {
-        return crypto.createHash('sha256').update(token).digest('hex')
-    }
-
-    /**
-     * Generates a pair of Access and Refresh tokens, and persists the Refresh Token.
+     * Generates a pair of Access and Refresh tokens.
+     * Uses a UUID (jti) for the Refresh Token to allow bcrypt hashing in DB.
      */
     private async generateAuthTokens(userId: string) {
         const now = Date.now()
         const accessDuration = ms(config.jwtAccessExpiresIn as StringValue)
         const refreshDuration = ms(config.jwtRefreshExpiresIn as StringValue)
+
+        // Expiration dates
         const refreshExpiresAt = new Date(now + refreshDuration)
 
+        // Generate a unique ID for the refresh token (JTI)
+        const refreshTokenId = crypto.randomUUID()
+
+        // Payloads
         const accessTokenPayload = {
             exp: Math.floor((now + accessDuration) / 1000),
             id: userId,
         }
 
+        // We embed the token ID (jti) in the payload to find it later in DB
         const refreshTokenPayload = {
             exp: Math.floor(refreshExpiresAt.getTime() / 1000),
             id: userId,
+            jti: refreshTokenId,
         }
 
         const accessToken = jwt.sign(accessTokenPayload, config.jwtAccessSecret)
@@ -69,8 +70,15 @@ export class AuthService {
             config.jwtRefreshSecret,
         )
 
-        const tokenHash = this.hashToken(refreshToken)
+        // Securely hash the token for storage using bcrypt
+        const tokenHash = await bcrypt.hash(
+            refreshToken,
+            config.bcryptSaltRounds,
+        )
+
+        // Persist with the specific ID
         await this.usersRepository.createRefreshToken(
+            refreshTokenId,
             userId,
             tokenHash,
             refreshExpiresAt,
@@ -123,13 +131,19 @@ export class AuthService {
      * Verifies the token, checks the DB, revokes the old one, and issues a new pair.
      */
     async refreshAuth(incomingRefreshToken: string) {
+        // Verify JWT Signature & Extract JTI
         let userId: string
+        let tokenId: string
         try {
             const decoded = jwt.verify(
                 incomingRefreshToken,
                 config.jwtRefreshSecret,
-            ) as { id: string }
+            ) as { id: string; jti: string }
+
             userId = decoded.id
+            tokenId = decoded.jti
+
+            if (!tokenId) throw new Error('Missing JTI')
         } catch {
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
@@ -137,20 +151,33 @@ export class AuthService {
             )
         }
 
-        const tokenHash = this.hashToken(incomingRefreshToken)
+        // Find by ID
         const existingToken =
-            await this.usersRepository.findRefreshTokenByHash(tokenHash)
+            await this.usersRepository.findRefreshTokenById(tokenId)
 
         if (!existingToken) {
-            // Reuse Detection: The token is valid (JWT) but not in DB.
-            // This means it was likely already used and rotated. Potential theft.
-            // TODO: In v2.1, implement "Delete All Tokens" for this user here.
+            // Token valid (crypto) but not found in DB => Replay/Theft attempt
+            // TODO v2.1: Trigger global revocation for this user
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
                 StatusCodes.UNAUTHORIZED,
             )
         }
 
+        // Secure Compare (Bcrypt)
+        // Verify that the incoming token matches the stored hash
+        const isValid = await bcrypt.compare(
+            incomingRefreshToken,
+            existingToken.tokenHash,
+        )
+        if (!isValid) {
+            throw new AppError(
+                MSG_INVALID_REFRESH_TOKEN,
+                StatusCodes.UNAUTHORIZED,
+            )
+        }
+
+        // 4. Check Expiration (DB Safety net)
         if (existingToken.expiresAt < new Date()) {
             await this.usersRepository.deleteRefreshToken(existingToken.id)
             throw new AppError(
@@ -159,8 +186,10 @@ export class AuthService {
             )
         }
 
+        // 5. Rotation: Consume the token
         await this.usersRepository.deleteRefreshToken(existingToken.id)
 
+        // 6. Issue new pair
         return this.generateAuthTokens(userId)
     }
 

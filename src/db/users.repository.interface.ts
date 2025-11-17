@@ -54,11 +54,12 @@ export interface IUserRepository {
     deleteUser(id: string): Promise<User>
 
     createRefreshToken(
+        id: string,
         userId: string,
         tokenHash: string,
         expiresAt: Date,
     ): Promise<RefreshToken>
-    findRefreshTokenByHash(tokenHash: string): Promise<RefreshToken | null>
+    findRefreshTokenById(id: string): Promise<RefreshToken | null>
     deleteRefreshToken(id: string): Promise<RefreshToken>
     deleteAllRefreshTokensForUser(userId: string): Promise<void>
     // Additional methods can be added as needed
