@@ -7,7 +7,8 @@
  * @last-modified 2025-11-17
  */
 
-import { UserController } from '@controllers/users.controller.js'
+import { container } from '@config/container.js'
+import type { UserController } from '@controllers/users.controller.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
 import {
     validateBody,
@@ -17,11 +18,11 @@ import {
 import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
 import { IdParamSchema, PaginationSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
-import { userService } from '@/dependencies.js'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
+import { TYPES } from '@/types/ioc.types.js'
 
 export const usersRouter = Router()
-const userController = new UserController(userService)
+const userController = container.get<UserController>(TYPES.UserController)
 
 // Protect all routes below this line with authentication
 usersRouter.use(protect)

@@ -11,14 +11,17 @@ import type { AuthService } from '@services/auth.service.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
+import { inject, injectable } from 'inversify'
+import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 const MSG_LOGIN_SUCCESS = 'Login successful'
 const MSG_REGISTER_SUCCESS = 'Registration successful'
 const MSG_REFRESH_SUCCESS = 'Tokens refreshed successfully'
 
+@injectable()
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(@inject(TYPES.AuthService) private authService: AuthService) {}
 
     /**
      * Controller to handle user register.

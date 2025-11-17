@@ -26,7 +26,10 @@
       "semicolons": "asNeeded",
       "trailingCommas": "all"
     },
-    "globals": []
+    "globals": [],
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
   },
   "linter": {
     "enabled": true,

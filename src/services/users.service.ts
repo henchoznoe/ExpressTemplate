@@ -16,13 +16,18 @@ import type {
 } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
 import bcrypt from 'bcrypt'
+import { inject, injectable } from 'inversify'
 import type {
     CreateUserSchemaType,
     UpdateUserSchemaType,
 } from '@/schemas/auth.schema.js'
+import { TYPES } from '@/types/ioc.types.js'
 
+@injectable()
 export class UserService {
-    constructor(private usersRepository: IUserRepository) {}
+    constructor(
+        @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
+    ) {}
 
     async getAllUsers(options?: PaginationOptions): Promise<User[] | null> {
         return this.usersRepository.getAllUsers(options)

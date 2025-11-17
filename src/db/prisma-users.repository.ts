@@ -27,6 +27,7 @@ import type {
 import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { StatusCodes } from 'http-status-codes'
+import { injectable } from 'inversify'
 
 /**
  * Defines the fields to select for a "public" user, excluding the password.
@@ -40,6 +41,7 @@ const userSelect = {
     updatedAt: true,
 }
 
+@injectable()
 export class PrismaUsersRepository implements IUserRepository {
     private getNotFoundMessage(id?: string): string {
         return id

@@ -7,6 +7,7 @@
  * @last-modified 2025-11-17
  */
 
+import 'reflect-metadata'
 import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
 import { app } from '@/app.js'

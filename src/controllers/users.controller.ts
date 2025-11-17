@@ -12,6 +12,8 @@ import type { UserService } from '@services/users.service.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
+import { inject, injectable } from 'inversify'
+import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 const MSG_USERS_RETRIEVED = 'Users retrieved successfully'
@@ -20,8 +22,9 @@ const MSG_USER_CREATED = 'User created successfully'
 const MSG_USER_UPDATED = 'User updated successfully'
 const MSG_USER_DELETED = 'User deleted successfully'
 
+@injectable()
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(@inject(TYPES.UserService) private userService: UserService) {}
 
     getAllUsers = async (req: Request, res: Response) => {
         const { page, limit } = req.validatedQuery as PaginationSchemaType

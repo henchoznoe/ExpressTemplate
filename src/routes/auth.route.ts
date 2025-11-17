@@ -7,7 +7,8 @@
  * @last-modified 2025-11-17
  */
 
-import { AuthController } from '@controllers/auth.controller.js'
+import { container } from '@config/container.js'
+import type { AuthController } from '@controllers/auth.controller.js'
 import { handleRateLimitExceeded } from '@middlewares/global/security.js'
 import { validateBody } from '@middlewares/route/validate-request.js'
 import { PATH_LOGIN, PATH_REFRESH, PATH_REGISTER } from '@routes/paths.js'
@@ -18,7 +19,7 @@ import {
 } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
-import { authService } from '@/dependencies.js'
+import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 const AUTH_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -31,7 +32,7 @@ const authRateLimiter = rateLimit({
 })
 
 export const authRouter = Router()
-const authController = new AuthController(authService)
+const authController = container.get<AuthController>(TYPES.AuthController)
 
 // POST /auth/register
 authRouter.post(

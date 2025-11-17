@@ -20,16 +20,21 @@ import type {
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'
+import { inject, injectable } from 'inversify'
 import jwt from 'jsonwebtoken'
 import ms, { type StringValue } from 'ms'
+import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 const MSG_INVALID_CREDENTIALS = 'Invalid email or password'
 const MSG_REGISTRATION_FAILED = 'User registration failed'
 const MSG_INVALID_REFRESH_TOKEN = 'Invalid refresh token'
 
+@injectable()
 export class AuthService {
-    constructor(private usersRepository: IUserRepository) {}
+    constructor(
+        @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
+    ) {}
 
     /**
      * Hashes a token string using SHA-256.
