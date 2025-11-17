@@ -102,7 +102,7 @@ if (!parsedEnv.success) {
  * The type-safe, validated configuration object.
  * This is the "single source of truth" for all environment-based settings.
  */
-const config = {
+export const config = {
     bcryptSaltRounds: parsedEnv.data.BCRYPT_SALT_ROUNDS,
     corsAllowedHeaders: parsedEnv.data.CORS_ALLOWED_HEADERS,
     corsMethods: parsedEnv.data.CORS_METHODS,
@@ -114,5 +114,3 @@ const config = {
     nodeEnv: parsedEnv.data.NODE_ENV,
     port: parsedEnv.data.PORT,
 }
-
-export default config

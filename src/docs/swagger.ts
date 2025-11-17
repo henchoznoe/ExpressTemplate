@@ -9,7 +9,7 @@
 
 // --- Imports ---
 import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi'
-import registry from '@docs/openapi-registry.js'
+import { registry } from '@docs/openapi-registry.js'
 import type { Application } from 'express'
 import swaggerUi from 'swagger-ui-express'
 import pkg from '../../package.json' with { type: 'json' }

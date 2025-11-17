@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import config from '@config/env.js'
+import { config } from '@config/env.js'
 import { handleJsonSyntaxError } from '@middlewares/global/json-syntax-handler.js'
 import { sendError } from '@utils/http-responses.js'
 import compression from 'compression'

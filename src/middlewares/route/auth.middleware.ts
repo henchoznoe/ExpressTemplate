@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import config from '@config/env.js'
+import { config } from '@config/env.js'
 import { AppError } from '@typings/errors/AppError.js'
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'

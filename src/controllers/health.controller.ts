@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import config from '@config/env.js'
+import { config } from '@config/env.js'
 import { sendSuccess } from '@utils/http-responses.js'
 import type { Request, Response } from 'express'
 import pkg from '../../package.json' with { type: 'json' }

@@ -18,7 +18,7 @@ import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
 // --- Router Setup ---
 
-const usersRouter = Router()
+export const usersRouter = Router()
 
 // --- Protected routes ---
 
@@ -49,5 +49,3 @@ usersRouter.patch(
 // DELETE /users/:id
 // Delete a user by their ID
 usersRouter.delete('/:id', validateParams(IdParamSchema), usersCtrl.deleteUser)
-
-export default usersRouter

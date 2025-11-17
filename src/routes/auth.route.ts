@@ -27,7 +27,7 @@ const authRateLimiter = rateLimit({
 
 // --- Router Setup ---
 
-const authRouter = Router()
+export const authRouter = Router()
 
 // --- Public routes ---
 
@@ -48,5 +48,3 @@ authRouter.post(
     validateBody(LoginSchema),
     authCtrl.login,
 )
-
-export default authRouter

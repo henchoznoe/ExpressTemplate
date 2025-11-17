@@ -16,11 +16,9 @@ import { registerUserPaths } from '@docs/paths/users.paths.js'
  * The OpenAPI registry instance.
  * It holds all registered paths and component definitions (from Zod schemas).
  */
-const registry = new OpenAPIRegistry()
+export const registry = new OpenAPIRegistry()
 
 // Register all path definitions
 registerAuthPaths(registry)
 registerUserPaths(registry)
 // ... register other paths as needed
-
-export default registry

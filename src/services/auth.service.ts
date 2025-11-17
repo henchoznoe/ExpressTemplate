@@ -8,7 +8,7 @@
  */
 
 // --- Imports ---
-import config from '@config/env.js'
+import { config } from '@config/env.js'
 import type {
     CreateUserPersistence,
     IUserRepository,

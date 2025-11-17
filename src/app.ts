@@ -14,7 +14,7 @@ import { setupMiddlewares } from '@middlewares/index.js'
 import { setupRoutes } from '@routes/index.js'
 import express from 'express'
 
-const app = express()
+export const app = express()
 
 // 0. Trust Proxy
 // Tell Express that it is behind a proxy (e.g., Docker, Nginx, Traefik).
@@ -35,5 +35,3 @@ setupRoutes(app)
 // 4. Error Handling
 // Mount the global error handlers (e.g., 404, 500).
 setupErrorHandler(app)
-
-export default app

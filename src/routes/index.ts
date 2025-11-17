@@ -9,9 +9,9 @@
 
 import { handleHealthCheck } from '@controllers/health.controller.js'
 // --- Imports ---
-import authRouter from '@routes/auth.route.js'
+import { authRouter } from '@routes/auth.route.js'
 import { ROUTE_AUTH, ROUTE_HEALTH, ROUTE_USERS } from '@routes/paths.js'
-import usersRouter from '@routes/users.route.js'
+import { usersRouter } from '@routes/users.route.js'
 import type { Application } from 'express'
 
 /**
