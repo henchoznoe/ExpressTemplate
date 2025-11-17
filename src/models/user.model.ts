@@ -7,14 +7,18 @@
  * @last-modified 2025-11-17
  */
 
-import type { User as PrismaUser } from '@prisma/client'
+import type {
+    RefreshToken as PrismaRefreshToken,
+    User as PrismaUser,
+} from '@prisma/client'
 
 // Represents the public-facing data for a User.
-// We use Omit to exclude the 'password' field from the Prisma-generated type.
 export type User = Omit<PrismaUser, 'password'>
 
 // Represents a User including internal data (e.g., hashed password).
-// This is simply the full Prisma-generated User type.
 export type UserWithPassword = PrismaUser
+
+// Export RefreshToken type
+export type RefreshToken = PrismaRefreshToken
 
 // Additional domain models related to User can be added here as needed.

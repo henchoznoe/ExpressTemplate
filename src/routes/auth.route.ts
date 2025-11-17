@@ -10,8 +10,12 @@
 import { AuthController } from '@controllers/auth.controller.js'
 import { handleRateLimitExceeded } from '@middlewares/global/security.js'
 import { validateBody } from '@middlewares/route/validate-request.js'
-import { PATH_LOGIN, PATH_REGISTER } from '@routes/paths.js'
-import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
+import { PATH_LOGIN, PATH_REFRESH, PATH_REGISTER } from '@routes/paths.js'
+import {
+    LoginSchema,
+    RefreshTokenSchema,
+    RegisterSchema,
+} from '@schemas/auth.schema.js'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import { authService } from '@/dependencies.js'
@@ -43,4 +47,13 @@ authRouter.post(
     authRateLimiter,
     validateBody(LoginSchema),
     authController.login,
+)
+
+// POST /auth/refresh
+// Rotate refresh token and get a new access token.
+authRouter.post(
+    PATH_REFRESH,
+    authRateLimiter,
+    validateBody(RefreshTokenSchema),
+    authController.refresh,
 )

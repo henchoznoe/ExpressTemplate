@@ -9,17 +9,25 @@
 
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import { ROUTE_AUTH, TAG_AUTH } from '@routes/paths.js'
-import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
+import {
+    LoginSchema,
+    RefreshTokenSchema,
+    RegisterSchema,
+} from '@schemas/auth.schema.js'
 import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
 const PATH_AUTH_REGISTER = `${ROUTE_AUTH}/register`
 const PATH_AUTH_LOGIN = `${ROUTE_AUTH}/login`
+const PATH_AUTH_REFRESH = `${ROUTE_AUTH}/refresh`
 const METHOD_POST = 'post'
 const MIME_TYPE_JSON = 'application/json'
 const DESC_REGISTER = 'Register a new user'
 const DESC_LOGIN = 'Log in a user'
+const DESC_REFRESH = 'Refresh access token'
 const RESP_201_REGISTER = 'Registration successful'
+const RESP_200_REFRESH = 'Token refreshed successfully'
+const RESP_401_REFRESH = 'Invalid or expired refresh token'
 const RESP_200_LOGIN = 'Login successful'
 const RESP_400 = 'Validation error'
 const RESP_401_LOGIN = 'Invalid email or password'
@@ -72,6 +80,29 @@ export const registerAuthPaths = (registry: OpenAPIRegistry) => {
             [StatusCodes.OK]: { description: RESP_200_LOGIN },
             [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
             [StatusCodes.UNAUTHORIZED]: { description: RESP_401_LOGIN },
+            [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
+        },
+        tags: TAG_AUTH,
+    })
+
+    // Refresh Access Token
+    registry.registerPath({
+        description: DESC_REFRESH,
+        method: METHOD_POST,
+        path: PATH_AUTH_REFRESH,
+        request: {
+            body: {
+                content: {
+                    [MIME_TYPE_JSON]: {
+                        schema: RefreshTokenSchema,
+                    },
+                },
+            },
+        },
+        responses: {
+            [StatusCodes.OK]: { description: RESP_200_REFRESH },
+            [StatusCodes.BAD_REQUEST]: { description: RESP_400 },
+            [StatusCodes.UNAUTHORIZED]: { description: RESP_401_REFRESH },
             [StatusCodes.INTERNAL_SERVER_ERROR]: { description: RESP_500 },
         },
         tags: TAG_AUTH,

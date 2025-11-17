@@ -19,7 +19,11 @@ import type {
     PaginationOptions,
     UpdateUserDto,
 } from '@db/users.repository.interface.js'
-import type { User, UserWithPassword } from '@models/user.model.js'
+import type {
+    RefreshToken,
+    User,
+    UserWithPassword,
+} from '@models/user.model.js'
 import { Prisma } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { StatusCodes } from 'http-status-codes'
@@ -125,6 +129,53 @@ export class PrismaUsersRepository implements IUserRepository {
             }
             throw e
         }
+    }
+
+    async createRefreshToken(
+        userId: string,
+        tokenHash: string,
+        expiresAt: Date,
+    ): Promise<RefreshToken> {
+        return prisma.refreshToken.create({
+            data: {
+                expiresAt,
+                tokenHash,
+                userId,
+            },
+        })
+    }
+
+    async findRefreshTokenByHash(
+        tokenHash: string,
+    ): Promise<RefreshToken | null> {
+        return prisma.refreshToken.findFirst({
+            where: { tokenHash },
+        })
+    }
+
+    async deleteRefreshToken(id: string): Promise<RefreshToken> {
+        try {
+            return await prisma.refreshToken.delete({
+                where: { id },
+            })
+        } catch (e) {
+            if (
+                e instanceof Prisma.PrismaClientKnownRequestError &&
+                e.code === PrismaErrorCode.RECORD_NOT_FOUND
+            ) {
+                throw new AppError(
+                    MSG_RESOURCE_NOT_FOUND,
+                    StatusCodes.NOT_FOUND,
+                )
+            }
+            throw e
+        }
+    }
+
+    async deleteAllRefreshTokensForUser(userId: string): Promise<void> {
+        await prisma.refreshToken.deleteMany({
+            where: { userId },
+        })
     }
 
     // Additional repository methods can be added here as needed.

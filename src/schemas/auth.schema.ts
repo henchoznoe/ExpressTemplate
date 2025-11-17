@@ -15,6 +15,10 @@ import {
 } from '@schemas/common.schema.js'
 import { z } from 'zod'
 
+// --- Constants ---
+const REFRESH_TOKEN_MIN = 1
+const REFRESH_TOKEN_MIN_ERR = 'Refresh token is required'
+
 // Extend Zod with OpenAPI capabilities
 extendZodWithOpenApi(z)
 
@@ -51,3 +55,14 @@ export const LoginSchema = z
     })
     .strict()
 export type LoginSchemaType = z.infer<typeof LoginSchema>
+
+// --- Token Schemas ---
+
+export const RefreshTokenSchema = z
+    .object({
+        refreshToken: z
+            .string()
+            .min(REFRESH_TOKEN_MIN, { error: REFRESH_TOKEN_MIN_ERR }),
+    })
+    .strict()
+export type RefreshTokenSchemaType = z.infer<typeof RefreshTokenSchema>

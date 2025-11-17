@@ -13,10 +13,12 @@ import type { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
 
+const { JsonWebTokenError, TokenExpiredError } = jwt
+
 // --- Constants ---
 const MSG_NO_TOKEN = 'Access denied. No token provided.'
 const MSG_INVALID_TOKEN = 'Invalid token.'
-//const MSG_TOKEN_EXPIRED = 'Token expired.'
+const MSG_TOKEN_EXPIRED = 'Token expired.'
 
 /**
  * Middleware to protect routes.
@@ -31,7 +33,7 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
         return next(new AppError(MSG_NO_TOKEN, StatusCodes.UNAUTHORIZED))
 
     try {
-        const decoded = jwt.verify(token, config.jwtSecret)
+        const decoded = jwt.verify(token, config.jwtAccessSecret)
 
         if (
             typeof decoded !== 'object' ||
@@ -44,13 +46,17 @@ export const protect = (req: Request, _res: Response, next: NextFunction) => {
 
         req.user = { id: decoded.id }
         next()
-    } catch (_error) {
-        /*if (error instanceof TokenExpiredError) {
-            return next(new AppError(MSG_TOKEN_EXPIRED, StatusCodes.UNAUTHORIZED))
-        }*/
-        /*if (error instanceof JsonWebTokenError) {
-            return next(new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED))
-        }*/
+    } catch (error) {
+        if (error instanceof TokenExpiredError) {
+            return next(
+                new AppError(MSG_TOKEN_EXPIRED, StatusCodes.UNAUTHORIZED),
+            )
+        }
+        if (error instanceof JsonWebTokenError) {
+            return next(
+                new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED),
+            )
+        }
         return next(new AppError(MSG_INVALID_TOKEN, StatusCodes.UNAUTHORIZED))
     }
 }

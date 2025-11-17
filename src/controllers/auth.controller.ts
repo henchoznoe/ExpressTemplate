@@ -15,6 +15,7 @@ import { StatusCodes } from 'http-status-codes'
 // --- Constants ---
 const MSG_LOGIN_SUCCESS = 'Login successful'
 const MSG_REGISTER_SUCCESS = 'Registration successful'
+const MSG_REFRESH_SUCCESS = 'Tokens refreshed successfully'
 
 export class AuthController {
     constructor(private authService: AuthService) {}
@@ -38,5 +39,14 @@ export class AuthController {
     login = async (req: Request, res: Response) => {
         const userWithToken = await this.authService.login(req.body)
         sendSuccess(res, StatusCodes.OK, MSG_LOGIN_SUCCESS, userWithToken)
+    }
+
+    /**
+     * Controller to handle token refresh.
+     */
+    refresh = async (req: Request, res: Response) => {
+        const { refreshToken } = req.body
+        const tokens = await this.authService.refreshAuth(refreshToken)
+        sendSuccess(res, StatusCodes.OK, MSG_REFRESH_SUCCESS, tokens)
     }
 }

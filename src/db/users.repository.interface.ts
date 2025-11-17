@@ -7,7 +7,11 @@
  * @last-modified 2025-11-17
  */
 
-import type { User, UserWithPassword } from '@models/user.model.js'
+import type {
+    RefreshToken,
+    User,
+    UserWithPassword,
+} from '@models/user.model.js'
 
 /**
  * Data shape for creating a user (requires a hashed password).
@@ -48,5 +52,14 @@ export interface IUserRepository {
     createUser(data: CreateUserDto): Promise<User>
     updateUser(userId: string, data: UpdateUserDto): Promise<User>
     deleteUser(id: string): Promise<User>
+
+    createRefreshToken(
+        userId: string,
+        tokenHash: string,
+        expiresAt: Date,
+    ): Promise<RefreshToken>
+    findRefreshTokenByHash(tokenHash: string): Promise<RefreshToken | null>
+    deleteRefreshToken(id: string): Promise<RefreshToken>
+    deleteAllRefreshTokensForUser(userId: string): Promise<void>
     // Additional methods can be added as needed
 }
