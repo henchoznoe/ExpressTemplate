@@ -4,20 +4,18 @@
  * @file src/middlewares/global/error-handler.ts
  * @title Global Error Handlers
  * @description Configures and provides the final error handling middlewares (404 and 500).
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
 import { log } from '@config/logger.js'
 import { AppError } from '@typings/errors/AppError.js'
 import { sendError } from '@utils/http-responses.js'
 import type { Application, NextFunction, Request, Response } from 'express'
 
 // --- Constants ---
-
 const MSG_INTERNAL_SERVER_ERROR = 'Internal Server Error'
 const MSG_UNKNOWN_ERROR_TYPE = 'Unknown error type'
-const MSG_ROUTE_NOT_FOUND_PREFIX = 'Route not found:'
+const MSG_ROUTE_NOT_FOUND_PREFIX = 'Route not found'
 
 /**
  * Mounts the final error handling middlewares onto the Express app.

@@ -13,6 +13,12 @@ export const ROUTE_AUTH = '/auth'
 export const ROUTE_USERS = '/users'
 // Additional route paths can be added here
 
+// --- Sub-Path Constants ---
+export const PATH_ROOT = '/'
+export const PATH_ID = '/:id'
+export const PATH_REGISTER = '/register'
+export const PATH_LOGIN = '/login'
+
 // --- Route Tag Constants ---
 export const TAG_AUTH = ['Authentication']
 export const TAG_USERS = ['Users']

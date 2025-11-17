@@ -4,16 +4,17 @@
  * @file src/routes/auth.route.ts
  * @title Auth API Routes
  * @description Defines all API routes related to authentication (login, etc.).
- * @last-modified 2025-11-14
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import * as authCtrl from '@controllers/auth.controller.js'
+import { AuthController } from '@controllers/auth.controller.js'
 import { handleRateLimitExceeded } from '@middlewares/global/security.js'
 import { validateBody } from '@middlewares/route/validations/validate-body.js'
+import { PATH_LOGIN, PATH_REGISTER } from '@routes/paths.js'
 import { LoginSchema, RegisterSchema } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
+import { authService } from '@/dependencies.js'
 
 // --- Constants ---
 const AUTH_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -25,26 +26,21 @@ const authRateLimiter = rateLimit({
     windowMs: AUTH_RATE_LIMIT_WINDOW_MS,
 })
 
-// --- Router Setup ---
-
 export const authRouter = Router()
-
-// --- Public routes ---
+const authController = new AuthController(authService)
 
 // POST /auth/register
-// Register a new user.
 authRouter.post(
-    '/register',
+    PATH_REGISTER,
     authRateLimiter,
     validateBody(RegisterSchema),
-    authCtrl.register,
+    authController.register,
 )
 
 // POST /auth/login
-// Log in a user and get a token.
 authRouter.post(
-    '/login',
+    PATH_LOGIN,
     authRateLimiter,
     validateBody(LoginSchema),
-    authCtrl.login,
+    authController.login,
 )

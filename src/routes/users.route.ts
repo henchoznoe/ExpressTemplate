@@ -4,48 +4,54 @@
  * @file src/routes/users.route.ts
  * @title User API Routes
  * @description This file defines all API routes related to user management.
- * @last-modified 2025-11-16
+ * @last-modified 2025-11-17
  */
 
-// --- Imports ---
-import * as usersCtrl from '@controllers/users.controller.js'
+import { UserController } from '@controllers/users.controller.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
 import { validateBody } from '@middlewares/route/validations/validate-body.js'
 import { validateParams } from '@middlewares/route/validations/validate-params.js'
+import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
 import { IdParamSchema } from '@schemas/common.schema.js'
 import { Router } from 'express'
+import { userService } from '@/dependencies.js'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
 
-// --- Router Setup ---
-
 export const usersRouter = Router()
-
-// --- Protected routes ---
+const userController = new UserController(userService)
 
 // Protect all routes below this line with authentication
 usersRouter.use(protect)
 
 // GET /users
-// Get all users
-usersRouter.get('/', usersCtrl.getAllUsers)
+usersRouter.get(PATH_ROOT, userController.getAllUsers)
 
 // GET /users/:id
-// Get a single user by their ID
-usersRouter.get('/:id', validateParams(IdParamSchema), usersCtrl.getUserById)
+usersRouter.get(
+    PATH_ID,
+    validateParams(IdParamSchema),
+    userController.getUserById,
+)
 
 // POST /users
-// Create a new user.
-usersRouter.post('/', validateBody(CreateUserSchema), usersCtrl.createUser)
+
+usersRouter.post(
+    PATH_ROOT,
+    validateBody(CreateUserSchema),
+    userController.createUser,
+)
 
 // PATCH /users
-// Update a user by their ID
 usersRouter.patch(
-    '/:id',
+    PATH_ID,
     validateParams(IdParamSchema),
     validateBody(UpdateUserSchema),
-    usersCtrl.updateUser,
+    userController.updateUser,
 )
 
 // DELETE /users/:id
-// Delete a user by their ID
-usersRouter.delete('/:id', validateParams(IdParamSchema), usersCtrl.deleteUser)
+usersRouter.delete(
+    PATH_ID,
+    validateParams(IdParamSchema),
+    userController.deleteUser,
+)
