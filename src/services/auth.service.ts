@@ -20,7 +20,8 @@ import type {
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'
-import jwt, { type SignOptions } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
+import ms, { type StringValue } from 'ms'
 
 // --- Constants ---
 const MSG_INVALID_CREDENTIALS = 'Invalid email or password'
@@ -42,27 +43,32 @@ export class AuthService {
      * Generates a pair of Access and Refresh tokens, and persists the Refresh Token.
      */
     private async generateAuthTokens(userId: string) {
-        // Generate Access Token
-        const accessToken = jwt.sign({ id: userId }, config.jwtAccessSecret, {
-            expiresIn: config.jwtAccessExpiresIn,
-        } as SignOptions)
+        const now = Date.now()
+        const accessDuration = ms(config.jwtAccessExpiresIn as StringValue)
+        const refreshDuration = ms(config.jwtRefreshExpiresIn as StringValue)
+        const refreshExpiresAt = new Date(now + refreshDuration)
 
-        // Generate Refresh Token
-        const refreshToken = jwt.sign({ id: userId }, config.jwtRefreshSecret, {
-            expiresIn: config.jwtRefreshExpiresIn,
-        } as SignOptions)
+        const accessTokenPayload = {
+            exp: Math.floor((now + accessDuration) / 1000),
+            id: userId,
+        }
 
-        // Calculate expiration date for the database
-        // We decode the token to get the 'exp' claim (unix timestamp) computed by jsonwebtoken
-        const decoded = jwt.decode(refreshToken) as { exp: number }
-        const expiresAt = new Date(decoded.exp * 1000)
+        const refreshTokenPayload = {
+            exp: Math.floor(refreshExpiresAt.getTime() / 1000),
+            id: userId,
+        }
 
-        // Persist the hashed refresh token
+        const accessToken = jwt.sign(accessTokenPayload, config.jwtAccessSecret)
+        const refreshToken = jwt.sign(
+            refreshTokenPayload,
+            config.jwtRefreshSecret,
+        )
+
         const tokenHash = this.hashToken(refreshToken)
         await this.usersRepository.createRefreshToken(
             userId,
             tokenHash,
-            expiresAt,
+            refreshExpiresAt,
         )
 
         return { accessToken, refreshToken }
@@ -112,7 +118,6 @@ export class AuthService {
      * Verifies the token, checks the DB, revokes the old one, and issues a new pair.
      */
     async refreshAuth(incomingRefreshToken: string) {
-        // Verify JWT Signature
         let userId: string
         try {
             const decoded = jwt.verify(
@@ -127,7 +132,6 @@ export class AuthService {
             )
         }
 
-        // Verify existence in DB (Protection against reuse/revocation)
         const tokenHash = this.hashToken(incomingRefreshToken)
         const existingToken =
             await this.usersRepository.findRefreshTokenByHash(tokenHash)
@@ -142,7 +146,6 @@ export class AuthService {
             )
         }
 
-        // Check DB Expiration (Safety net)
         if (existingToken.expiresAt < new Date()) {
             await this.usersRepository.deleteRefreshToken(existingToken.id)
             throw new AppError(
@@ -151,10 +154,8 @@ export class AuthService {
             )
         }
 
-        // Rotation: Revoke (delete) the used token
         await this.usersRepository.deleteRefreshToken(existingToken.id)
 
-        // Issue new pair
         return this.generateAuthTokens(userId)
     }
 
