@@ -14,10 +14,10 @@ import {
     MSG_RESOURCE_NOT_FOUND,
 } from '@db/repo-messages.constants.js'
 import type {
-    CreateUserPersistence,
+    CreateUserDto,
     IUserRepository,
     PaginationOptions,
-    UpdateUserPersistence,
+    UpdateUserDto,
 } from '@db/users.repository.interface.js'
 import type { User, UserWithPassword } from '@models/user.model.js'
 import { Prisma } from '@prisma/client'
@@ -64,7 +64,7 @@ export class PrismaUsersRepository implements IUserRepository {
         return prisma.user.findUnique({ where: { email } })
     }
 
-    async createUser(userData: CreateUserPersistence): Promise<User> {
+    async createUser(userData: CreateUserDto): Promise<User> {
         try {
             return await prisma.user.create({
                 data: userData,
@@ -80,10 +80,7 @@ export class PrismaUsersRepository implements IUserRepository {
         }
     }
 
-    async updateUser(
-        userId: string,
-        userData: UpdateUserPersistence,
-    ): Promise<User> {
+    async updateUser(userId: string, userData: UpdateUserDto): Promise<User> {
         try {
             return await prisma.user.update({
                 data: userData,

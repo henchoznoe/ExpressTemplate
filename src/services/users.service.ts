@@ -9,10 +9,10 @@
 
 import { config } from '@config/env.js'
 import type {
-    CreateUserPersistence,
+    CreateUserDto,
     IUserRepository,
     PaginationOptions,
-    UpdateUserPersistence,
+    UpdateUserDto,
 } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
 import bcrypt from 'bcrypt'
@@ -37,7 +37,7 @@ export class UserService {
             userData.password,
             config.bcryptSaltRounds,
         )
-        const persistenceData: CreateUserPersistence = {
+        const persistenceData: CreateUserDto = {
             ...userData,
             password: hashedPassword,
         }
@@ -49,7 +49,7 @@ export class UserService {
         userData: UpdateUserSchemaType,
     ): Promise<User | null> {
         const { password, ...rest } = userData
-        let persistenceData: UpdateUserPersistence = rest
+        let persistenceData: UpdateUserDto = rest
         if (password) {
             const hashedPassword = await bcrypt.hash(
                 password,

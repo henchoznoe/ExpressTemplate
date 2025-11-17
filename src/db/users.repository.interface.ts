@@ -13,7 +13,7 @@ import type { User, UserWithPassword } from '@models/user.model.js'
  * Data shape for creating a user (requires a hashed password).
  * The service layer is responsible for hashing.
  */
-export type CreateUserPersistence = {
+export type CreateUserDto = {
     name: string
     email: string
     password: string // Must be hashed by the service
@@ -23,7 +23,7 @@ export type CreateUserPersistence = {
  * Data shape for updating a user (password is optional).
  * If provided, it must be hashed by the service.
  */
-export type UpdateUserPersistence = {
+export type UpdateUserDto = {
     name?: string
     email?: string
     password?: string // Must be hashed by the service
@@ -45,8 +45,8 @@ export interface IUserRepository {
     getAllUsers(options?: PaginationOptions): Promise<User[]>
     getUserById(id: string): Promise<User>
     findUserByEmail(email: string): Promise<UserWithPassword | null>
-    createUser(data: CreateUserPersistence): Promise<User>
-    updateUser(userId: string, data: UpdateUserPersistence): Promise<User>
+    createUser(data: CreateUserDto): Promise<User>
+    updateUser(userId: string, data: UpdateUserDto): Promise<User>
     deleteUser(id: string): Promise<User>
     // Additional methods can be added as needed
 }

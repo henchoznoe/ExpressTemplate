@@ -10,7 +10,7 @@
 // --- Imports ---
 import { config } from '@config/env.js'
 import type {
-    CreateUserPersistence,
+    CreateUserDto,
     IUserRepository,
 } from '@db/users.repository.interface.js'
 import type {
@@ -54,7 +54,7 @@ export class AuthService {
             credentials.password,
             config.bcryptSaltRounds,
         )
-        const persistenceData: CreateUserPersistence = {
+        const persistenceData: CreateUserDto = {
             ...credentials,
             password: hashedPassword,
         }
