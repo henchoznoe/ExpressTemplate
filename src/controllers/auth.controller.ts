@@ -4,10 +4,10 @@
  * @file src/controllers/auth.controller.ts
  * @title Auth Route Controllers
  * @description HTTP request handlers for authentication routes.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-18
  */
 
-import type { AuthService } from '@services/auth.service.js'
+import type { IAuthService } from '@services/auth.service.interface.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'
@@ -15,7 +15,7 @@ import { TYPES } from '@/types/ioc.types.js'
 
 @injectable()
 export class AuthController {
-    constructor(@inject(TYPES.AuthService) private authService: AuthService) {}
+    constructor(@inject(TYPES.AuthService) private authService: IAuthService) {}
 
     /**
      * Controller to handle user register.

@@ -4,7 +4,7 @@
  * @file src/services/users.service.ts
  * @title User Service Logic
  * @description Contains the business logic for user operations.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-18
  */
 
 import { config } from '@config/env.js'
@@ -15,6 +15,7 @@ import type {
     UpdateUserDto,
 } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
+import type { IUserService } from '@services/users.service.interface.js'
 import bcrypt from 'bcrypt'
 import { inject, injectable } from 'inversify'
 import type {
@@ -24,7 +25,7 @@ import type {
 import { TYPES } from '@/types/ioc.types.js'
 
 @injectable()
-export class UserService {
+export class UserService implements IUserService {
     constructor(
         @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
     ) {}

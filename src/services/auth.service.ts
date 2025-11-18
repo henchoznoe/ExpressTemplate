@@ -4,7 +4,7 @@
  * @file src/services/auth.service.ts
  * @title Authentication Service Logic
  * @description Handles login, registration, and JWT generation.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-18
  */
 
 import crypto from 'node:crypto'
@@ -17,6 +17,11 @@ import type {
     LoginSchemaType,
     RegisterSchemaType,
 } from '@schemas/auth.schema.js'
+import type {
+    AuthResponse,
+    IAuthService,
+    RefreshResponse,
+} from '@services/auth.service.interface.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'
@@ -31,7 +36,7 @@ const MSG_REGISTRATION_FAILED = 'User registration failed'
 const MSG_INVALID_REFRESH_TOKEN = 'Invalid refresh token'
 
 @injectable()
-export class AuthService {
+export class AuthService implements IAuthService {
     constructor(
         @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
     ) {}
@@ -87,7 +92,7 @@ export class AuthService {
         return { accessToken, refreshToken }
     }
 
-    async login(credentials: LoginSchemaType) {
+    async login(credentials: LoginSchemaType): Promise<AuthResponse> {
         const { email, password } = credentials
         const user = await this.usersRepository.findUserByEmail(email)
 
@@ -104,7 +109,7 @@ export class AuthService {
         return { user: userWithoutPassword, ...tokens }
     }
 
-    async register(credentials: RegisterSchemaType) {
+    async register(credentials: RegisterSchemaType): Promise<AuthResponse> {
         const hashedPassword = await bcrypt.hash(
             credentials.password,
             config.bcryptSaltRounds,
@@ -130,8 +135,7 @@ export class AuthService {
      * Handles Refresh Token Rotation.
      * Verifies the token, checks the DB, revokes the old one, and issues a new pair.
      */
-    async refreshAuth(incomingRefreshToken: string) {
-        // Verify JWT Signature & Extract JTI
+    async refreshAuth(incomingRefreshToken: string): Promise<RefreshResponse> {
         let userId: string
         let tokenId: string
         try {
