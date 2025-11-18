@@ -9,6 +9,7 @@
 
 import crypto from 'node:crypto'
 import { config } from '@config/env.js'
+import { log } from '@config/logger.js'
 import type {
     CreateUserDto,
     IUserRepository,
@@ -34,6 +35,8 @@ import { TYPES } from '@/types/ioc.types.js'
 const MSG_INVALID_CREDENTIALS = 'Invalid email or password'
 const MSG_REGISTRATION_FAILED = 'User registration failed'
 const MSG_INVALID_REFRESH_TOKEN = 'Invalid refresh token'
+const MSG_TOKEN_REUSE_DETECTED =
+    'Security Alert: Refresh token reuse detected. All sessions revoked for user.'
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -134,6 +137,7 @@ export class AuthService implements IAuthService {
     /**
      * Handles Refresh Token Rotation.
      * Verifies the token, checks the DB, revokes the old one, and issues a new pair.
+     * Implements Token Reuse Detection: if a valid token is missing from DB, revoke all user tokens.
      */
     async refreshAuth(incomingRefreshToken: string): Promise<RefreshResponse> {
         let userId: string
@@ -160,8 +164,11 @@ export class AuthService implements IAuthService {
             await this.usersRepository.findRefreshTokenById(tokenId)
 
         if (!existingToken) {
-            // Token valid (crypto) but not found in DB => Replay/Theft attempt
-            // TODO v2.1: Trigger global revocation for this user
+            // Token valid (crypto) but not found in DB => Reuse attempt!
+            // Security measure: Revoke ALL sessions for this user immediately.
+            log.warn(`${MSG_TOKEN_REUSE_DETECTED} User ID: ${userId}`)
+            await this.usersRepository.deleteAllRefreshTokensForUser(userId)
+
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
                 StatusCodes.UNAUTHORIZED,
@@ -175,6 +182,8 @@ export class AuthService implements IAuthService {
             existingToken.tokenHash,
         )
         if (!isValid) {
+            // If hash doesn't match, it's also suspicious, but could be corruption.
+            // Safe default: just fail this request.
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
                 StatusCodes.UNAUTHORIZED,
@@ -190,7 +199,7 @@ export class AuthService implements IAuthService {
             )
         }
 
-        // 5. Rotation: Consume the token
+        // 5. Rotation: Consume the token (delete it so it can't be used again)
         await this.usersRepository.deleteRefreshToken(existingToken.id)
 
         // 6. Issue new pair
