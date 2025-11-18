@@ -4,15 +4,18 @@
  * @file src/config/container.ts
  * @title Inversify IoC Container Configuration
  * @description Sets up dependency injection bindings using InversifyJS.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-18
  */
 
+// Database
+import { prisma } from '@config/prisma.js'
 import { AuthController } from '@controllers/auth.controller.js'
 import { UserController } from '@controllers/users.controller.js'
 // Implementations
 import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
 // Interfaces
 import type { IUserRepository } from '@db/users.repository.interface.js'
+import type { PrismaClient } from '@prisma/client'
 import { AuthService } from '@services/auth.service.js'
 import { UserService } from '@services/users.service.js'
 import { Container } from 'inversify'
@@ -20,11 +23,17 @@ import { TYPES } from '@/types/ioc.types.js'
 
 const container = new Container()
 
-// Bindings
+// --- Database Bindings ---
+// Bind the Prisma instance as a constant value since it's a singleton.
+container.bind<PrismaClient>(TYPES.PrismaClient).toConstantValue(prisma)
+
+// --- Repository Bindings ---
 container
     .bind<IUserRepository>(TYPES.UserRepository)
     .to(PrismaUsersRepository)
     .inSingletonScope()
+
+// --- Service Bindings ---
 container
     .bind<AuthService>(TYPES.AuthService)
     .to(AuthService)
@@ -33,6 +42,8 @@ container
     .bind<UserService>(TYPES.UserService)
     .to(UserService)
     .inSingletonScope()
+
+// --- Controller Bindings ---
 container
     .bind<AuthController>(TYPES.AuthController)
     .to(AuthController)

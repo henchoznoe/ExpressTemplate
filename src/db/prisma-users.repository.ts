@@ -3,11 +3,10 @@
  * @author Noé Henchoz
  * @file src/db/prisma-users.repository.ts
  * @title Prisma User Repository
- * @description Prisma-specific implementation of the IUserRepository.
- * @last-modified 2025-11-17
+ * @description Prisma-specific implementation of the IUserRepository using Dependency Injection.
+ * @last-modified 2025-11-18
  */
 
-import { prisma } from '@config/prisma.js'
 import { PrismaErrorCode } from '@db/prisma-errors.enum.js'
 import {
     MSG_EMAIL_IN_USE,
@@ -24,10 +23,11 @@ import type {
     User,
     UserWithPassword,
 } from '@models/user.model.js'
-import { Prisma } from '@prisma/client'
+import { Prisma, type PrismaClient } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { StatusCodes } from 'http-status-codes'
-import { injectable } from 'inversify'
+import { inject, injectable } from 'inversify'
+import { TYPES } from '@/types/ioc.types.js'
 
 /**
  * Defines the fields to select for a "public" user, excluding the password.
@@ -43,6 +43,9 @@ const userSelect = {
 
 @injectable()
 export class PrismaUsersRepository implements IUserRepository {
+    // Inject the PrismaClient via constructor instead of importing the global instance.
+    constructor(@inject(TYPES.PrismaClient) private prisma: PrismaClient) {}
+
     private getNotFoundMessage(id?: string): string {
         return id
             ? `${MSG_RESOURCE_NOT_FOUND} (ID: ${id})`
@@ -51,7 +54,7 @@ export class PrismaUsersRepository implements IUserRepository {
 
     async getAllUsers(options?: PaginationOptions): Promise<User[]> {
         const { skip = 0, take = 10 } = options || {}
-        return prisma.user.findMany({
+        return this.prisma.user.findMany({
             select: userSelect,
             skip,
             take,
@@ -59,7 +62,7 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async getUserById(id: string): Promise<User> {
-        const user = await prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             select: userSelect,
             where: { id },
         })
@@ -72,12 +75,12 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async findUserByEmail(email: string): Promise<UserWithPassword | null> {
-        return prisma.user.findUnique({ where: { email } })
+        return this.prisma.user.findUnique({ where: { email } })
     }
 
     async createUser(userData: CreateUserDto): Promise<User> {
         try {
-            return await prisma.user.create({
+            return await this.prisma.user.create({
                 data: userData,
                 select: userSelect,
             })
@@ -93,7 +96,7 @@ export class PrismaUsersRepository implements IUserRepository {
 
     async updateUser(userId: string, userData: UpdateUserDto): Promise<User> {
         try {
-            return await prisma.user.update({
+            return await this.prisma.user.update({
                 data: userData,
                 select: userSelect,
                 where: { id: userId },
@@ -116,7 +119,7 @@ export class PrismaUsersRepository implements IUserRepository {
 
     async deleteUser(id: string): Promise<User | null> {
         try {
-            return await prisma.user.delete({
+            return await this.prisma.user.delete({
                 select: userSelect,
                 where: { id },
             })
@@ -136,7 +139,7 @@ export class PrismaUsersRepository implements IUserRepository {
         tokenHash: string,
         expiresAt: Date,
     ): Promise<RefreshToken> {
-        return prisma.refreshToken.create({
+        return this.prisma.refreshToken.create({
             data: {
                 expiresAt,
                 id,
@@ -147,14 +150,14 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async findRefreshTokenById(id: string): Promise<RefreshToken | null> {
-        return prisma.refreshToken.findUnique({
+        return this.prisma.refreshToken.findUnique({
             where: { id },
         })
     }
 
     async deleteRefreshToken(id: string): Promise<RefreshToken> {
         try {
-            return await prisma.refreshToken.delete({
+            return await this.prisma.refreshToken.delete({
                 where: { id },
             })
         } catch (e) {
@@ -172,7 +175,7 @@ export class PrismaUsersRepository implements IUserRepository {
     }
 
     async deleteAllRefreshTokensForUser(userId: string): Promise<void> {
-        await prisma.refreshToken.deleteMany({
+        await this.prisma.refreshToken.deleteMany({
             where: { userId },
         })
     }
