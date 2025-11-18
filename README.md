@@ -30,7 +30,7 @@ optimized Docker setup.
 
 - **Node.js**: v22+ (LTS recommended)
 - **Docker**: For containerized execution (recommended).
-- **A PostgreSQL**
+- **A PostgreSQL Database**: I recommend using Supabase for easy setup.
 
 ---
 
@@ -94,13 +94,13 @@ creating its own service instance, the dependency is "injected" by a central con
 To maintain the architecture, follow these steps when adding a new feature:
 
 **1. Define Symbols:**
-Add unique identifiers for your new classes in `src/types/ioc.types.ts`. These symbols act as keys for the IoC
-container.
+Add unique identifiers for your new classes in `src/types/ioc.types.ts`.
 
 ```typescript
 // src/types/ioc.types.ts
 export const TYPES = {
     // ... existing symbols
+    PrismaClient: Symbol.for('PrismaClient'), // Core dependency
     ProductController: Symbol.for('ProductController'),
     ProductService: Symbol.for('ProductService'),
     ProductRepository: Symbol.for('ProductRepository'),
@@ -109,42 +109,67 @@ export const TYPES = {
 
 **2. Create the Logic:**
 
-- **Repository**: Create `src/db/products.repository.ts` that implements a clear interface (e.g., `IProductRepository`).
-  This layer is responsible for all database interactions.
-- **Service**: Create `src/services/products.service.ts`. This is where your business logic lives. Inject the repository
-  here.
-- **Controller**: Create `src/controllers/products.controller.ts`. This layer handles HTTP requests and responses.
-  Inject the service here.
+- **Repository**: Create an interface `IProductRepository` and its implementation `PrismaProductRepository`. Inject the `PrismaClient here.
 
-*Example of injection in the controller:*
+```typescript
+// src/db/products.repository.interface.ts
+export interface IProductRepository {
+    findAll(): Promise<Product[]>;
+}
+
+// src/db/prisma-products.repository.ts
+import { injectable, inject } from 'inversify';
+import { TYPES } from '@/types/ioc.types';
+import type { PrismaClient } from '@prisma/client';
+
+@injectable()
+export class PrismaProductRepository implements IProductRepository {
+    constructor(@inject(TYPES.PrismaClient) private prisma: PrismaClient) {}
+
+    async findAll() {
+        return this.prisma.product.findMany();
+    }
+}
+```
+
+- **Service** : Create an interface `IProductService` and its implementation `ProductService`. Inject the repository interface here.
+- **Controller** : Create `src/controllers/products.controller.ts`. Inject the **service interface** here (not the concrete class).
+
+_Example of injection in the controller:_
 
 ```typescript
 // src/controllers/products.controller.ts
-import {injectable, inject} from 'inversify';
-import {TYPES} from '@/types/ioc.types';
-import {ProductService} from '@services/products.service';
+import { injectable, inject } from 'inversify';
+import { TYPES } from '@/types/ioc.types';
+import type { IProductService } from '@services/products.service.interface';
 
 @injectable()
 export class ProductController {
-    constructor(@inject(TYPES.ProductService) private productService: ProductService) {
-    }
+    constructor(@inject(TYPES.ProductService) private productService: IProductService) {}
 
-    // ... controller methods
+    getAll = async (req: Request, res: Response) => {
+        const products = await this.productService.getAll();
+        res.json(products);
+    };
 }
 ```
 
 **3. Bind Dependencies:**
-Register your new classes in the IoC container at `src/config/container.ts`. This tells InversifyJS how to resolve the
-dependencies.
+Register your new classes in the IoC container at `src/config/container.ts`.
 
 ```typescript
 // src/config/container.ts
 
-// Bind Repository
+// Database (already bound)
+container.bind<PrismaClient>(TYPES.PrismaClient).toConstantValue(prisma);
+
+// Bind Repository (Interface -> Implementation)
 container.bind<IProductRepository>(TYPES.ProductRepository).to(PrismaProductRepository).inSingletonScope();
-// Bind Service
-container.bind<ProductService>(TYPES.ProductService).to(ProductService).inSingletonScope();
-// Bind Controller
+
+// Bind Service (Interface -> Implementation)
+container.bind<IProductService>(TYPES.ProductService).to(ProductService).inSingletonScope();
+
+// Bind Controller (Concrete class)
 container.bind<ProductController>(TYPES.ProductController).to(ProductController).inSingletonScope();
 ```
 
@@ -154,16 +179,8 @@ instance of your controller.
 
 ```typescript
 // src/routes/products.route.ts
-import {container} from '@config/container';
-import {TYPES} from '@/types/ioc.types';
-import {ProductController} from '@controllers/products.controller';
-
-const router = Router();
 const productController = container.get<ProductController>(TYPES.ProductController);
-
-router.get('/', productController.getAll); // Assuming getAll is a method on your controller
-
-export default router;
+router.get('/', productController.getAll);
 ```
 
 Then, add this new router to `src/app.ts`.
