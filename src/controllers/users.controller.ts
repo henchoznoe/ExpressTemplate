@@ -4,11 +4,11 @@
  * @file src/controllers/users.controller.ts
  * @title User Route Controllers
  * @description This file contains the HTTP request handlers for all user-related routes.
- * @last-modified 2025-11-18
+ * @last-modified 2025-11-20
  */
 
 import type { PaginationSchemaType } from '@schemas/common.schema.js'
-import type { IUserService } from '@services/users.service.interface.js'
+import type { IUserService } from '@services/users/users.service.interface.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'

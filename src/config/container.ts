@@ -4,7 +4,7 @@
  * @file src/config/container.ts
  * @title Inversify IoC Container Configuration
  * @description Sets up dependency injection bindings using InversifyJS.
- * @last-modified 2025-11-18
+ * @last-modified 2025-11-20
  */
 
 // Database

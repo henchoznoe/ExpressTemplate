@@ -4,10 +4,10 @@
  * @file src/controllers/auth.controller.ts
  * @title Auth Route Controllers
  * @description HTTP request handlers for authentication routes.
- * @last-modified 2025-11-18
+ * @last-modified 2025-11-20
  */
 
-import type { IAuthService } from '@services/auth.service.interface.js'
+import type { IAuthService } from '@services/auth/auth.service.interface.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'
