@@ -1,8 +1,8 @@
 # ExpressTemplate
 
 A lightweight, production-ready **Express.js 5** template written in **TypeScript**. This project implements a clean
-**Hexagonal/Layered Architecture** with Dependency Injection, robust validation, centralized logging, and a fully
-optimized Docker setup.
+**Hexagonal/Layered Architecture** with Dependency Injection, robust validation, centralized logging, transactional
+emailing, and a fully optimized Docker setup.
 
 ---
 
@@ -12,7 +12,10 @@ optimized Docker setup.
 - **Dependency Injection (IoC)**: Managed by `InversifyJS` for loosely coupled, testable code.
 - **Database ORM**: Prisma with PostgreSQL (Dockerized setup included).
 - **Validation**: Strict request validation using `Zod`.
-- **Security**: Pre-configured with `Helmet`, `CORS`, `HPP`, and Rate Limiting.
+- **Security**:
+    - Pre-configured with `Helmet`, `CORS`, `HPP`, and Rate Limiting.
+    - **Secure Auth Flow**: Mandatory email verification and secure password reset.
+- **📧 Emailing**: Integrated with **Resend** for transactional emails (extensible via `IMailService`).
 - **Observability**:
     - **Winston** for structured logging (file rotation & console).
     - **Morgan** for HTTP request logging (piped to Winston).
@@ -31,6 +34,7 @@ optimized Docker setup.
 - **Node.js**: v22+ (LTS recommended)
 - **Docker**: For containerized execution (recommended).
 - **A PostgreSQL Database**: If not using Docker, ensure you have a running Postgres instance.
+- **Resend API Key**: For sending emails (you can get one for free at [resend.com](https://resend.com)).
 
 ---
 
@@ -70,12 +74,12 @@ We use a Dockerized PostgreSQL database for development to ensure strictly isola
     ```bash
     npx prisma migrate dev
     ```
-   
+
 3. **Stop the local database (optional):**
    ```bash
    npm run db:down
    ```
-   
+
 _Note: Your `.env` file is configured by default to connect to this local Docker instance (`localhost:5432`)._
 
 ### 4. Run the Server
@@ -89,7 +93,18 @@ npm run build
 npm start
 ```
 
-> The server will start at `http://localhost:3000`.
+> The server will start at `http://localhost:3000`. API documentation is available at `http://localhost:3000/api-docs`.
+
+---
+
+## 📧 Email Architecture
+
+This template uses an `IMailService` interface to decouple the business logic from the email provider. By default, it implements **Resend**.
+
+- **Interface**: `src/services/mail/mail.service.interface.ts`
+- **Implementation**: `src/services/mail/resend.mail.service.ts`
+
+To switch providers (e.g., SendGrid, Nodemailer), simply implement the interface and bind your new class in `src/config/container.ts`.
 
 ---
 
