@@ -16,10 +16,6 @@ services:
         restart: unless-stopped
         env_file:
             - .env
-        # Surcharge environment variables for database connection
-        environment:
-          - DATABASE_URL=postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public
-          - DIRECT_URL=postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public
         # Port mapping (HOST:CONTAINER)
         ports:
           - '${PORT:-3000}:${PORT:-3000}'
