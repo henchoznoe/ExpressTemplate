@@ -10,7 +10,7 @@ optimized Docker setup.
 
 - **Modern Stack**: TypeScript (ESM) with Express 5.
 - **Dependency Injection (IoC)**: Managed by `InversifyJS` for loosely coupled, testable code.
-- **Database ORM**: Prisma with PostgreSQL (optimized for production).
+- **Database ORM**: Prisma with PostgreSQL (Dockerized setup included).
 - **Validation**: Strict request validation using `Zod`.
 - **Security**: Pre-configured with `Helmet`, `CORS`, `HPP`, and Rate Limiting.
 - **Observability**:
@@ -30,7 +30,7 @@ optimized Docker setup.
 
 - **Node.js**: v22+ (LTS recommended)
 - **Docker**: For containerized execution (recommended).
-- **A PostgreSQL Database**: I recommend using Supabase for easy setup.
+- **A PostgreSQL Database**: If not using Docker, ensure you have a running Postgres instance.
 
 ---
 
@@ -54,19 +54,29 @@ Rename the example environment file and configure your secrets:
 cp .env.example .env
 ```
 
-**Important**: Update all necessary environment variables in the `.env` file, especially the database connection string.
+**Important**: Update all necessary environment variables in the `.env` file.
 
 ### 3. Database Setup (Local)
 
-If you are not using Docker, ensure your Postgres database is running, then apply migrations:
+We use a Dockerized PostgreSQL database for development to ensure strictly isolated environments.
 
-```bash
-# Generates the Prisma Client
-npx prisma generate
+1. **Start the local database:**
+   ```bash
+   # Starts the Postgres container in the background
+   npm run db:up
+    ```
 
-# Pushes schema changes to the database
-npx prisma migrate dev --name init
-```
+2. **Apply Migrations:** Since the local database starts empty, push the schema:
+    ```bash
+    npx prisma migrate dev
+    ```
+   
+3. **Stop the local database (optional):**
+   ```bash
+   npm run db:down
+   ```
+   
+_Note: Your `.env` file is configured by default to connect to this local Docker instance (`localhost:5432`)._
 
 ### 4. Run the Server
 
@@ -109,7 +119,8 @@ export const TYPES = {
 
 **2. Create the Logic:**
 
-- **Repository**: Create an interface `IProductRepository` and its implementation `PrismaProductRepository`. Inject the `PrismaClient here.
+- **Repository**: Create an interface `IProductRepository` and its implementation `PrismaProductRepository`. Inject
+  the `PrismaClient here.
 
 ```typescript
 // src/db/products.repository.interface.ts
@@ -118,13 +129,14 @@ export interface IProductRepository {
 }
 
 // src/db/prisma-products.repository.ts
-import { injectable, inject } from 'inversify';
-import { TYPES } from '@/types/ioc.types';
-import type { PrismaClient } from '@prisma/client';
+import {injectable, inject} from 'inversify';
+import {TYPES} from '@/types/ioc.types';
+import type {PrismaClient} from '@prisma/client';
 
 @injectable()
 export class PrismaProductRepository implements IProductRepository {
-    constructor(@inject(TYPES.PrismaClient) private prisma: PrismaClient) {}
+    constructor(@inject(TYPES.PrismaClient) private prisma: PrismaClient) {
+    }
 
     async findAll() {
         return this.prisma.product.findMany();
@@ -132,20 +144,23 @@ export class PrismaProductRepository implements IProductRepository {
 }
 ```
 
-- **Service** : Create an interface `IProductService` and its implementation `ProductService`. Inject the repository interface here.
-- **Controller** : Create `src/controllers/products.controller.ts`. Inject the **service interface** here (not the concrete class).
+- **Service** : Create an interface `IProductService` and its implementation `ProductService`. Inject the repository
+  interface here.
+- **Controller** : Create `src/controllers/products.controller.ts`. Inject the **service interface** here (not the
+  concrete class).
 
 _Example of injection in the controller:_
 
 ```typescript
 // src/controllers/products.controller.ts
-import { injectable, inject } from 'inversify';
-import { TYPES } from '@/types/ioc.types';
-import type { IProductService } from '@services/products.service.interface';
+import {injectable, inject} from 'inversify';
+import {TYPES} from '@/types/ioc.types';
+import type {IProductService} from '@services/products.service.interface';
 
 @injectable()
 export class ProductController {
-    constructor(@inject(TYPES.ProductService) private productService: IProductService) {}
+    constructor(@inject(TYPES.ProductService) private productService: IProductService) {
+    }
 
     getAll = async (req: Request, res: Response) => {
         const products = await this.productService.getAll();
@@ -213,10 +228,10 @@ npx prisma generate
 
 ### Production & CI/CD
 
-In a production environment, you should not use `migrate dev`. Instead, apply existing migrations:
+In a production environment, do not use `migrate dev`. Instead, apply existing migrations:
 
 ```bash
-# Applies all pending migrations
+# Applies all pending migrations without resetting the DB
 npx prisma migrate deploy
 ```
 
@@ -253,11 +268,17 @@ If you change the schema, you **must** rebuild the image.
 
 ## 🧪 Tests
 
-This project implements a robust testing strategy using **Vitest** and **Supertest**, ensuring reliability from unit logic to HTTP responses.
+This project implements a robust testing strategy using **Vitest** and **Supertest**, ensuring reliability from unit
+logic to HTTP responses.
 
 ### Strategy
-1.  **Unit Tests** (`src/tests/**/*.service.spec.ts`): Focus on **Services**. We verify business logic in isolation by injecting mocked Repositories manually.
-2.  **Integration/E2E Tests** (`src/tests/**/*.e2e.test.ts`): Focus on **Controllers & Routes**. We boot the Express app but use `vi.spyOn()` to intercept calls to the Dependency Injection container's singletons. This allows us to mock the database layer (Repositories) while testing the rest of the HTTP chain (Middlewares, Controllers, Zod Validation) without requiring a running database.
+
+1. **Unit Tests** (`src/tests/**/*.service.spec.ts`): Focus on **Services**. We verify business logic in isolation by
+   injecting mocked Repositories manually.
+2. **Integration/E2E Tests** (`src/tests/**/*.e2e.test.ts`): Focus on **Controllers & Routes**. We boot the Express app
+   but use `vi.spyOn()` to intercept calls to the Dependency Injection container's singletons. This allows us to mock
+   the database layer (Repositories) while testing the rest of the HTTP chain (Middlewares, Controllers, Zod Validation)
+   without requiring a running database.
 
 ### Running Tests
 
@@ -277,6 +298,7 @@ npm run test:cov
 ## 📂 Project Structure
 
 ```
+prisma/                 # Prisma schema & migrations
 src/
 ├── app.ts              # Express app configuration (middlewares, routes)
 ├── index.ts            # Entry point (server startup)
@@ -289,6 +311,7 @@ src/
 ├── routes/             # Route Definitions
 ├── schemas/            # Zod Validation Schemas
 ├── services/           # Business Logic
+├── tests/              # Unit & Integration Tests
 ├── types/              # TypeScript Type Definitions (including IoC types)
 └── utils/              # Helper functions
 ```

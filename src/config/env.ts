@@ -4,7 +4,7 @@
  * @file src/config/env.ts
  * @title Environment Variable Configuration
  * @description Validates environment variables using Zod and exports a type-safe config object.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-20
  */
 
 import { log } from '@config/logger.js'
@@ -64,7 +64,7 @@ const EnvSchema = z.object({
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
     NODE_ENV: z
-        .enum(['development', 'production', 'test'], {
+        .enum(['development', 'production'], {
             error: ERROR_MSG_APP_MODE,
         })
         .default('development'),
