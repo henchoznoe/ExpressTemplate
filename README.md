@@ -251,6 +251,29 @@ If you change the schema, you **must** rebuild the image.
 
 ---
 
+## 🧪 Tests
+
+This project implements a robust testing strategy using **Vitest** and **Supertest**, ensuring reliability from unit logic to HTTP responses.
+
+### Strategy
+1.  **Unit Tests** (`src/tests/**/*.service.spec.ts`): Focus on **Services**. We verify business logic in isolation by injecting mocked Repositories manually.
+2.  **Integration/E2E Tests** (`src/tests/**/*.e2e.test.ts`): Focus on **Controllers & Routes**. We boot the Express app but use `vi.spyOn()` to intercept calls to the Dependency Injection container's singletons. This allows us to mock the database layer (Repositories) while testing the rest of the HTTP chain (Middlewares, Controllers, Zod Validation) without requiring a running database.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Generate code coverage report
+npm run test:cov
+```
+
+---
+
 ## 📂 Project Structure
 
 ```
