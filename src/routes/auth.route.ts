@@ -4,18 +4,28 @@
  * @file src/routes/auth.route.ts
  * @title Auth API Routes
  * @description Defines all API routes related to authentication (login, etc.).
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-20
  */
 
 import { container } from '@config/container.js'
 import type { AuthController } from '@controllers/auth.controller.js'
 import { handleRateLimitExceeded } from '@middlewares/global/security.js'
 import { validateBody } from '@middlewares/route/validate-request.js'
-import { PATH_LOGIN, PATH_REFRESH, PATH_REGISTER } from '@routes/paths.js'
 import {
+    PATH_FORGOT_PASSWORD,
+    PATH_LOGIN,
+    PATH_REFRESH,
+    PATH_REGISTER,
+    PATH_RESET_PASSWORD,
+    PATH_VERIFY_EMAIL,
+} from '@routes/paths.js'
+import {
+    ForgotPasswordSchema,
     LoginSchema,
     RefreshTokenSchema,
     RegisterSchema,
+    ResetPasswordSchema,
+    VerifyEmailSchema,
 } from '@schemas/auth.schema.js'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
@@ -57,4 +67,28 @@ authRouter.post(
     authRateLimiter,
     validateBody(RefreshTokenSchema),
     authController.refresh,
+)
+
+// POST /auth/verify-email
+authRouter.post(
+    PATH_VERIFY_EMAIL,
+    authRateLimiter,
+    validateBody(VerifyEmailSchema),
+    authController.verifyEmail,
+)
+
+// POST /auth/forgot-password
+authRouter.post(
+    PATH_FORGOT_PASSWORD,
+    authRateLimiter,
+    validateBody(ForgotPasswordSchema),
+    authController.forgotPassword,
+)
+
+// POST /auth/reset-password
+authRouter.post(
+    PATH_RESET_PASSWORD,
+    authRateLimiter,
+    validateBody(ResetPasswordSchema),
+    authController.resetPassword,
 )

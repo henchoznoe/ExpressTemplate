@@ -3,8 +3,8 @@
  * @author Noé Henchoz
  * @file src/services/auth.service.ts
  * @title Authentication Service Logic
- * @description Handles login, registration, and JWT generation.
- * @last-modified 2025-11-18
+ * @description Handles login, registration, JWT generation, and email flows.
+ * @last-modified 2025-11-20
  */
 
 import crypto from 'node:crypto'
@@ -17,12 +17,14 @@ import type {
 import type {
     LoginSchemaType,
     RegisterSchemaType,
+    ResetPasswordSchemaType,
 } from '@schemas/auth.schema.js'
 import type {
     AuthResponse,
     IAuthService,
     RefreshResponse,
 } from '@services/auth/auth.service.interface.js'
+import type { IMailService } from '@services/mail/mail.service.interface.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'
@@ -37,11 +39,17 @@ const MSG_REGISTRATION_FAILED = 'User registration failed'
 const MSG_INVALID_REFRESH_TOKEN = 'Invalid refresh token'
 const MSG_TOKEN_REUSE_DETECTED =
     'Security Alert: Refresh token reuse detected. All sessions revoked for user.'
+const MSG_EMAIL_NOT_VERIFIED =
+    'Please verify your email address before logging in.'
+const MSG_INVALID_VERIF_TOKEN = 'Invalid or expired verification token.'
+const MSG_INVALID_RESET_TOKEN = 'Invalid or expired reset token.'
+const RESET_TOKEN_EXPIRES_IN_HOURS = 1
 
 @injectable()
 export class AuthService implements IAuthService {
     constructor(
         @inject(TYPES.UserRepository) private usersRepository: IUserRepository,
+        @inject(TYPES.MailService) private mailService: IMailService,
     ) {}
 
     /**
@@ -95,6 +103,9 @@ export class AuthService implements IAuthService {
         return { accessToken, refreshToken }
     }
 
+    /**
+     * Authenticates a user. Checks for email verification status.
+     */
     async login(credentials: LoginSchemaType): Promise<AuthResponse> {
         const { email, password } = credentials
         const user = await this.usersRepository.findUserByEmail(email)
@@ -106,39 +117,107 @@ export class AuthService implements IAuthService {
             )
         }
 
+        // Enforce email verification
+        if (!user.isVerified) {
+            throw new AppError(MSG_EMAIL_NOT_VERIFIED, StatusCodes.FORBIDDEN)
+        }
+
         const tokens = await this.generateAuthTokens(user.id)
         const { password: _, ...userWithoutPassword } = user
 
         return { user: userWithoutPassword, ...tokens }
     }
 
+    /**
+     * Registers a new user, generates a verification token, and sends an email.
+     * Does NOT return JWT tokens immediately.
+     */
     async register(credentials: RegisterSchemaType): Promise<AuthResponse> {
         const hashedPassword = await bcrypt.hash(
             credentials.password,
             config.bcryptSaltRounds,
         )
+        const verificationToken = crypto.randomUUID()
         const persistenceData: CreateUserDto = {
             ...credentials,
+            isVerified: false,
             password: hashedPassword,
+            verificationToken,
         }
         const newUser = await this.usersRepository.createUser(persistenceData)
-
         if (!newUser) {
             throw new AppError(
                 MSG_REGISTRATION_FAILED,
                 StatusCodes.INTERNAL_SERVER_ERROR,
             )
         }
+        await this.mailService.sendVerificationEmail(
+            newUser.email,
+            verificationToken,
+        )
 
-        const tokens = await this.generateAuthTokens(newUser.id)
-        return { user: newUser, ...tokens }
+        // We do not return tokens here anymore, forcing the user to check emails.
+        // The interface AuthResponse implies tokens, but we can make them optional or return empty strings temporarily
+        // ideally, we should update the Interface return type, but for now let's return empty to signify "no session yet".
+        return {
+            accessToken: '',
+            refreshToken: '',
+            user: newUser,
+        }
     }
 
-    /**
-     * Handles Refresh Token Rotation.
-     * Verifies the token, checks the DB, revokes the old one, and issues a new pair.
-     * Implements Token Reuse Detection: if a valid token is missing from DB, revoke all user tokens.
-     */
+    async verifyEmail(token: string): Promise<void> {
+        const user =
+            await this.usersRepository.findUserByVerificationToken(token)
+        if (!user) {
+            throw new AppError(MSG_INVALID_VERIF_TOKEN, StatusCodes.BAD_REQUEST)
+        }
+
+        await this.usersRepository.updateUser(user.id, {
+            isVerified: true,
+            verificationToken: null,
+        })
+    }
+
+    async forgotPassword(email: string): Promise<void> {
+        const user = await this.usersRepository.findUserByEmail(email)
+        if (!user) {
+            // Silently fail to prevent email enumeration
+            return
+        }
+
+        const token = crypto.randomUUID()
+        const expiresAt = new Date()
+        expiresAt.setHours(expiresAt.getHours() + RESET_TOKEN_EXPIRES_IN_HOURS)
+
+        await this.usersRepository.updateUser(user.id, {
+            passwordResetExpires: expiresAt,
+            passwordResetToken: token,
+        })
+
+        await this.mailService.sendPasswordResetEmail(user.email, token)
+    }
+
+    async resetPassword(payload: ResetPasswordSchemaType): Promise<void> {
+        const { token, password } = payload
+        const user = await this.usersRepository.findUserByResetToken(token)
+
+        if (!user) {
+            throw new AppError(MSG_INVALID_RESET_TOKEN, StatusCodes.BAD_REQUEST)
+        }
+
+        const hashedPassword = await bcrypt.hash(
+            password,
+            config.bcryptSaltRounds,
+        )
+
+        await this.usersRepository.updateUser(user.id, {
+            password: hashedPassword,
+            passwordResetExpires: null,
+            passwordResetToken: null,
+        })
+    }
+
     async refreshAuth(incomingRefreshToken: string): Promise<RefreshResponse> {
         let userId: string
         let tokenId: string
@@ -146,11 +225,12 @@ export class AuthService implements IAuthService {
             const decoded = jwt.verify(
                 incomingRefreshToken,
                 config.jwtRefreshSecret,
-            ) as { id: string; jti: string }
-
+            ) as {
+                id: string
+                jti: string
+            }
             userId = decoded.id
             tokenId = decoded.jti
-
             if (!tokenId) throw new Error('Missing JTI')
         } catch {
             throw new AppError(
@@ -159,38 +239,29 @@ export class AuthService implements IAuthService {
             )
         }
 
-        // Find by ID
         const existingToken =
             await this.usersRepository.findRefreshTokenById(tokenId)
 
         if (!existingToken) {
-            // Token valid (crypto) but not found in DB => Reuse attempt!
-            // Security measure: Revoke ALL sessions for this user immediately.
             log.warn(`${MSG_TOKEN_REUSE_DETECTED} User ID: ${userId}`)
             await this.usersRepository.deleteAllRefreshTokensForUser(userId)
-
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
                 StatusCodes.UNAUTHORIZED,
             )
         }
 
-        // Secure Compare (Bcrypt)
-        // Verify that the incoming token matches the stored hash
         const isValid = await bcrypt.compare(
             incomingRefreshToken,
             existingToken.tokenHash,
         )
         if (!isValid) {
-            // If hash doesn't match, it's also suspicious, but could be corruption.
-            // Safe default: just fail this request.
             throw new AppError(
                 MSG_INVALID_REFRESH_TOKEN,
                 StatusCodes.UNAUTHORIZED,
             )
         }
 
-        // 4. Check Expiration (DB Safety net)
         if (existingToken.expiresAt < new Date()) {
             await this.usersRepository.deleteRefreshToken(existingToken.id)
             throw new AppError(
@@ -199,10 +270,8 @@ export class AuthService implements IAuthService {
             )
         }
 
-        // 5. Rotation: Consume the token (delete it so it can't be used again)
         await this.usersRepository.deleteRefreshToken(existingToken.id)
 
-        // 6. Issue new pair
         return this.generateAuthTokens(userId)
     }
 

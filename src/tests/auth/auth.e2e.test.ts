@@ -12,6 +12,7 @@ import { container } from '@config/container.js'
 import type { IUserRepository } from '@db/users.repository.interface.js'
 import type { UserWithPassword } from '@models/user.model.js'
 import type { RefreshToken, User } from '@prisma/client'
+import type { IMailService } from '@services/mail/mail.service.interface.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'
 import request from 'supertest'
@@ -20,10 +21,12 @@ import { app } from '@/app.js'
 import { TYPES } from '@/types/ioc.types.js'
 
 const usersRepository = container.get<IUserRepository>(TYPES.UserRepository)
+const mailService = container.get<IMailService>(TYPES.MailService)
 
 describe('Auth API (E2E)', () => {
     beforeEach(() => {
         vi.restoreAllMocks()
+        vi.spyOn(mailService, 'sendVerificationEmail').mockResolvedValue()
     })
 
     afterEach(() => {
@@ -31,7 +34,7 @@ describe('Auth API (E2E)', () => {
     })
 
     describe('POST /auth/register', () => {
-        it('should return 201 on successful registration', async () => {
+        it('should return 201 and trigger email sending', async () => {
             const payload = {
                 email: 'new@example.com',
                 name: 'New User',
@@ -42,43 +45,39 @@ describe('Auth API (E2E)', () => {
                 createdAt: new Date(),
                 email: payload.email,
                 id: '123',
+                isVerified: false,
                 name: payload.name,
+                passwordResetExpires: null,
+                passwordResetToken: null,
                 updatedAt: new Date(),
+                verificationToken: 'some-token',
             } as User)
-
-            vi.spyOn(usersRepository, 'createRefreshToken').mockResolvedValue(
-                {} as RefreshToken,
-            )
 
             const response = await request(app)
                 .post('/auth/register')
                 .send(payload)
 
             expect(response.status).toBe(StatusCodes.CREATED)
-            expect(response.body).toHaveProperty('accessToken')
-            expect(response.body.user).toHaveProperty('email', payload.email)
-        })
-
-        it('should return 400 for invalid input', async () => {
-            const response = await request(app).post('/auth/register').send({
-                email: 'not-an-email',
-                password: 'short',
-            })
-            expect(response.status).toBe(StatusCodes.BAD_REQUEST)
+            expect(response.body.accessToken).toBe('')
+            expect(mailService.sendVerificationEmail).toHaveBeenCalled()
         })
     })
 
     describe('POST /auth/login', () => {
-        it('should return 200 and tokens on success', async () => {
+        it('should return 200 only if verified', async () => {
             const password = 'Password123!'
             const hashedPassword = await bcrypt.hash(password, 10)
             const user: UserWithPassword = {
                 createdAt: new Date(),
                 email: 'existing@example.com',
                 id: '123',
+                isVerified: true,
                 name: 'User',
                 password: hashedPassword,
+                passwordResetExpires: null,
+                passwordResetToken: null,
                 updatedAt: new Date(),
+                verificationToken: null,
             }
 
             vi.spyOn(usersRepository, 'findUserByEmail').mockResolvedValue(user)

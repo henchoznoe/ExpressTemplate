@@ -46,6 +46,7 @@ describe('Users API (E2E)', () => {
                     createdAt: new Date(),
                     email: 'test@test.com',
                     id: '123',
+                    isVerified: true,
                     name: 'Test User',
                     updatedAt: new Date(),
                 },

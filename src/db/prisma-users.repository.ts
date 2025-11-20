@@ -4,7 +4,7 @@
  * @file src/db/prisma-users.repository.ts
  * @title Prisma User Repository
  * @description Prisma-specific implementation of the IUserRepository using Dependency Injection.
- * @last-modified 2025-11-18
+ * @last-modified 2025-11-20
  */
 
 import { PrismaErrorCode } from '@db/prisma-errors.enum.js'
@@ -37,6 +37,7 @@ const userSelect = {
     createdAt: true,
     email: true,
     id: true,
+    isVerified: true,
     name: true,
     updatedAt: true,
 }
@@ -72,6 +73,24 @@ export class PrismaUsersRepository implements IUserRepository {
                 StatusCodes.NOT_FOUND,
             )
         return user
+    }
+
+    async findUserByVerificationToken(token: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            select: userSelect,
+            where: { verificationToken: token },
+        })
+    }
+
+    async findUserByResetToken(
+        token: string,
+    ): Promise<UserWithPassword | null> {
+        return this.prisma.user.findFirst({
+            where: {
+                passwordResetExpires: { gt: new Date() },
+                passwordResetToken: token,
+            },
+        })
     }
 
     async findUserByEmail(email: string): Promise<UserWithPassword | null> {

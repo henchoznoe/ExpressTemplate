@@ -34,6 +34,7 @@ describe('UserService', () => {
                     createdAt: new Date(),
                     email: 'john@example.com',
                     id: '123',
+                    isVerified: false,
                     name: 'John Doe',
                     updatedAt: new Date(),
                 },
@@ -60,6 +61,7 @@ describe('UserService', () => {
                 createdAt: new Date(),
                 email: input.email,
                 id: '456',
+                isVerified: false,
                 name: input.name,
                 updatedAt: new Date(),
             }

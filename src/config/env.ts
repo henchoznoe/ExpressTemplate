@@ -51,6 +51,10 @@ const EnvSchema = z.object({
     DIRECT_URL: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    EMAIL_FROM: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    FRONTEND_URL: z.url({ message: ERROR_MSG_URL }),
     JWT_ACCESS_EXPIRES_IN: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
@@ -75,6 +79,9 @@ const EnvSchema = z.object({
         .refine(val => !Number.isNaN(val) && val > 0, {
             error: ERROR_MSG_POSITIVE_INTEGER,
         }),
+    RESEND_API_KEY: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
 })
 type EnvSchemaType = z.infer<typeof EnvSchema>
 
@@ -114,10 +121,13 @@ export const config = {
     corsOrigin: parsedEnv.data.CORS_ORIGIN,
     databaseUrl: parsedEnv.data.DATABASE_URL,
     directUrl: parsedEnv.data.DIRECT_URL,
+    emailFrom: parsedEnv.data.EMAIL_FROM,
+    frontendUrl: parsedEnv.data.FRONTEND_URL,
     jwtAccessExpiresIn: parsedEnv.data.JWT_ACCESS_EXPIRES_IN,
     jwtAccessSecret: parsedEnv.data.JWT_ACCESS_SECRET,
     jwtRefreshExpiresIn: parsedEnv.data.JWT_REFRESH_EXPIRES_IN,
     jwtRefreshSecret: parsedEnv.data.JWT_REFRESH_SECRET,
     nodeEnv: parsedEnv.data.NODE_ENV,
     port: parsedEnv.data.PORT,
+    resendApiKey: parsedEnv.data.RESEND_API_KEY,
 }

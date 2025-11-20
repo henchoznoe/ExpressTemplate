@@ -7,17 +7,16 @@
  * @last-modified 2025-11-20
  */
 
-// Database
 import { prisma } from '@config/prisma.js'
 import { AuthController } from '@controllers/auth.controller.js'
 import { UserController } from '@controllers/users.controller.js'
-// Implementations
 import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
-// Interfaces
 import type { IUserRepository } from '@db/users.repository.interface.js'
 import type { PrismaClient } from '@prisma/client'
 import type { IAuthService } from '@services/auth/auth.service.interface.js'
 import { AuthService } from '@services/auth/auth.service.js'
+import type { IMailService } from '@services/mail/mail.service.interface.js'
+import { ResendMailService } from '@services/mail/resend-mail.service.js'
 import type { IUserService } from '@services/users/users.service.interface.js'
 import { UserService } from '@services/users/users.service.js'
 import { Container } from 'inversify'
@@ -39,6 +38,10 @@ container
 container
     .bind<IAuthService>(TYPES.AuthService)
     .to(AuthService)
+    .inSingletonScope()
+container
+    .bind<IMailService>(TYPES.MailService)
+    .to(ResendMailService)
     .inSingletonScope()
 container
     .bind<IUserService>(TYPES.UserService)

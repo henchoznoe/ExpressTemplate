@@ -4,7 +4,7 @@
  * @file src/schemas/auth.schema.ts
  * @title Auth & User Validation Schemas
  * @description Defines Zod schemas for validating auth and user creation bodies.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-20
  */
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
@@ -18,6 +18,8 @@ import { z } from 'zod'
 // --- Constants ---
 const REFRESH_TOKEN_MIN = 1
 const REFRESH_TOKEN_MIN_ERR = 'Refresh token is required'
+const TOKEN_MIN = 1
+const TOKEN_ERR = 'Token is required'
 
 // Extend Zod with OpenAPI capabilities
 extendZodWithOpenApi(z)
@@ -66,3 +68,25 @@ export const RefreshTokenSchema = z
     })
     .strict()
 export type RefreshTokenSchemaType = z.infer<typeof RefreshTokenSchema>
+
+export const VerifyEmailSchema = z
+    .object({
+        token: z.string().min(TOKEN_MIN, { error: TOKEN_ERR }),
+    })
+    .strict()
+export type VerifyEmailSchemaType = z.infer<typeof VerifyEmailSchema>
+
+export const ForgotPasswordSchema = z
+    .object({
+        email: EmailSchema,
+    })
+    .strict()
+export type ForgotPasswordSchemaType = z.infer<typeof ForgotPasswordSchema>
+
+export const ResetPasswordSchema = z
+    .object({
+        password: PasswordSchema,
+        token: z.string().min(TOKEN_MIN, { error: TOKEN_ERR }),
+    })
+    .strict()
+export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>

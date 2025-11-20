@@ -4,7 +4,7 @@
  * @file src/models/user.model.ts
  * @title User Domain Models
  * @description Defines the core User data structures for the application derived from the Prisma schema.
- * @last-modified 2025-11-17
+ * @last-modified 2025-11-20
  */
 
 import type {
@@ -13,7 +13,13 @@ import type {
 } from '@prisma/client'
 
 // Represents the public-facing data for a User.
-export type User = Omit<PrismaUser, 'password'>
+export type User = Omit<
+    PrismaUser,
+    | 'password'
+    | 'verificationToken'
+    | 'passwordResetToken'
+    | 'passwordResetExpires'
+>
 
 // Represents a User including internal data (e.g., hashed password).
 export type UserWithPassword = PrismaUser
