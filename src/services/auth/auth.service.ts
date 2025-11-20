@@ -22,7 +22,7 @@ import type {
     AuthResponse,
     IAuthService,
     RefreshResponse,
-} from '@services/auth.service.interface.js'
+} from '@services/auth/auth.service.interface.js'
 import { AppError } from '@typings/errors/AppError.js'
 import bcrypt from 'bcrypt'
 import { StatusCodes } from 'http-status-codes'

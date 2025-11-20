@@ -15,7 +15,7 @@ import type {
     UpdateUserDto,
 } from '@db/users.repository.interface.js'
 import type { User } from '@models/user.model.js'
-import type { IUserService } from '@services/users.service.interface.js'
+import type { IUserService } from '@services/users/users.service.interface.js'
 import bcrypt from 'bcrypt'
 import { inject, injectable } from 'inversify'
 import type {

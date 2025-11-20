@@ -11,7 +11,10 @@
     "lint": "biome lint --write",
     "format": "biome format --write",
     "check": "biome check --write",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -47,6 +50,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.5",
+    "@swc/core": "^1.15.2",
     "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
@@ -57,16 +61,22 @@
     "@types/ms": "^2.1.0",
     "@types/node": "^24.10.1",
     "@types/statuses": "^2.0.6",
+    "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "dotenv": "^17.2.3",
-    "prisma": "^6.19.0",
     "globals": "^16.5.0",
     "lefthook": "^2.0.4",
+    "prisma": "^6.19.0",
+    "supertest": "^7.1.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.5.1",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "unplugin-swc": "^1.5.8",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.12",
+    "vitest-mock-extended": "^3.1.0"
   }
 }
