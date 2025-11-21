@@ -8,39 +8,39 @@ emailing, and a fully optimized Docker setup.
 
 ## 🚀 Features
 
-- **Modern Stack**: TypeScript (ESM) with Express 5.
-- **Dependency Injection (IoC)**: Managed by `InversifyJS` for loosely coupled, testable code.
-- **Database ORM**: Prisma with PostgreSQL (Dockerized setup included).
-- **Validation**: Strict request validation using `Zod`.
-- **Security**:
+- ⚡ **Modern Stack**: TypeScript (ESM) with Express 5.
+- 💉 **Dependency Injection (IoC)**: Managed by `InversifyJS` for loosely coupled, testable code.
+- 🗄️ **Database ORM**: Prisma with PostgreSQL (Dockerized setup included).
+- ✅ **Validation**: Strict request validation using `Zod`.
+- 🔒 **Security**:
     - Pre-configured with `Helmet`, `CORS`, `HPP`, and Rate Limiting.
-    - **Secure Auth Flow**: Mandatory email verification and secure password reset.
-- **📧 Emailing**: Integrated with **Resend** for transactional emails (extensible via `IMailService`).
-- **Observability**:
+    - Secure Auth Flow: Mandatory email verification and secure password reset.
+- 📧 **Emailing**: Integrated with **Resend** for transactional emails (extensible via `IMailService`).
+- 📊 **Observability**:
     - **Winston** for structured logging (file rotation & console).
     - **Morgan** for HTTP request logging (piped to Winston).
-- **API Documentation**: Auto-generated **OpenAPI / Swagger** docs (`zod-to-openapi`).
-- **Dockerized**: Multi-stage build reducing image size by excluding dev dependencies (like the Prisma CLI) in
-  production.
-- **Developer Experience**:
+- 📚 **API Documentation**: Auto-generated **OpenAPI / Swagger** docs (`zod-to-openapi`).
+- 🐳 **Dockerized**: Multi-stage build reducing image size by excluding dev dependencies in production.
+- 🛠️ **Developer Experience**:
     - `Biome` for ultra-fast linting and formatting.
     - `Lefthook` for git hooks.
     - Hot-reloading with `tsx`.
+- 🧪 **Testing**: Complete testing strategy with **Vitest** and **Supertest** (Unit & E2E tests).
 
 ---
 
 ## 📋 Requirements
 
 - **Node.js**: v22+ (LTS recommended)
-- **Docker**: For containerized execution (recommended).
-- **A PostgreSQL Database**: If not using Docker, ensure you have a running Postgres instance.
-- **Resend API Key**: For sending emails (you can get one for free at [resend.com](https://resend.com)).
+- **Docker**: For containerized execution (optional for development, required for production)
+- **PostgreSQL**: Included in Docker setup; if not using Docker, provide your own instance
+- **Resend API Key**: For sending emails ([get one for free](https://resend.com))
 
 ---
 
 ## 🛠️ Getting Started
 
-### 1. Setup Environment
+### 1. Clone & Install
 
 Clone the repository and install dependencies:
 
@@ -50,50 +50,105 @@ cd ExpressTemplate
 npm install
 ```
 
-### 2. Configuration
-
-Rename the example environment file and configure your secrets:
-
-```bash
-cp .env.example .env
-```
-
-**Important**: Update all necessary environment variables in the `.env` file.
-
-### 3. Database Setup (Local)
-
-We use a Dockerized PostgreSQL database for development to ensure strictly isolated environments.
-
-1. **Start the local database:**
-   ```bash
-   # Starts the Postgres container in the background
-   npm run db:up
-    ```
-
-2. **Apply Migrations:** Since the local database starts empty, push the schema:
-    ```bash
-    npx prisma migrate dev
-    ```
-
-3. **Stop the local database (optional):**
-   ```bash
-   npm run db:down
-   ```
-
-_Note: Your `.env` file is configured by default to connect to this local Docker instance (`localhost:5432`)._
-
-### 4. Run the Server
+### 2. Development Mode (Recommended)
+Run the Node.js app on your machine, with the database in Docker.
 
 ```bash
-# Development mode (Hot Reload)
+# 1. Start the database container
+npm run db:up
+
+# 2. Sync the schema (creates tables)
+npx prisma migrate dev
+
+# 3. Start the server (Hot Reload)
 npm run dev
-
-# Production build
-npm run build
-npm start
 ```
 
 > The server will start at `http://localhost:3000`. API documentation is available at `http://localhost:3000/api-docs`.
+
+**Stop the database when done:**
+```bash
+npm run db:down
+```
+
+### 3. Full Docker Mode (Production Preview)
+
+Run both the app and database inside Docker. Useful to test the final build.
+
+```bash
+# Build and start all services
+docker compose up --build
+```
+
+---
+
+## 🗄️ Database & Prisma Workflow
+
+We use **Prisma** as the ORM. Here is how to manage your schema during development.
+
+**Modifying the Schema**
+
+1. Edit `prisma/schema.prisma`.
+2. Create a migration and apply changes:
+
+```bash
+npx prisma migrate dev --name describe_your_change
+```
+
+> This command automatically regenerates the Prisma Client.
+
+**Resetting the Database**
+
+If you need a fresh start (wipes all data):
+
+```bash
+npm run db:reset
+```
+
+**Studio UI**
+
+To inspect your data visually:
+
+```bash
+npx prisma studio
+```
+
+---
+
+## 🚀 Production Deployment
+
+Follow these steps to deploy your application safely.
+
+1. **Build the image**:
+
+The Dockerfile uses a multi-stage build to optimize size and security.
+
+```bash
+docker build -t express-template .
+```
+
+> Note: `prisma generate` is automatically executed during the build.
+
+2. **Configure Environment**:
+
+Ensure your production environment variables are set.
+
+- `DATABASE_URL`: Must point to your production database (e.g., AWS RDS, or the service name postgres if using Docker Compose).
+- `NODE_ENV`: Set to `production`.
+
+3. **Apply Migrations**:
+
+⚠️ Never use `migrate dev` in production (it tries to reset the database). Instead, use the deploy command to apply pending migrations safely:
+
+```bash
+npx prisma migrate deploy
+```
+
+If running via Docker, execute it inside a temporary container before starting traffic:
+
+```bash
+docker run --rm --env-file .env express-template npx prisma migrate deploy
+```
 
 ---
 
@@ -217,70 +272,6 @@ Then, add this new router to `src/app.ts`.
 
 ---
 
-## 🗄️ Database & Prisma Workflow
-
-We use Prisma as the ORM. Here are the essential commands for managing your database schema.
-
-### Modifying the Schema
-
-1. Edit your schema file at `prisma/schema.prisma`.
-2. Create a new migration file and apply the changes to your local database:
-
-```bash
-# Creates a new SQL migration file and applies it
-npx prisma migrate dev --name your_migration_description
-```
-
-This command also automatically regenerates the Prisma Client based on your new schema.
-
-### Regenerating the Client
-
-If you pull changes from Git that include schema updates, you only need to regenerate the typed client:
-
-```bash
-npx prisma generate
-```
-
-### Production & CI/CD
-
-In a production environment, do not use `migrate dev`. Instead, apply existing migrations:
-
-```bash
-# Applies all pending migrations without resetting the DB
-npx prisma migrate deploy
-```
-
----
-
-## 🐳 Docker & Deployment
-
-The project includes a multi-stage `Dockerfile` optimized for production to create a small and secure image.
-
-**Key Optimizations:**
-
-- **Builder Stage**: Installs all dependencies (including `devDependencies`) to build the TypeScript code and generate
-  the Prisma Client.
-- **Production Stage**: Copies only the compiled code (`dist/`), `node_modules` (production-only), and Prisma schema.
-  Heavy `devDependencies` like the Prisma CLI are excluded, significantly reducing the final image size.
-
-### Running with Docker Compose
-
-```bash
-# Build and start the containers in detached mode
-docker compose up -d --build
-
-# View logs
-docker compose logs -f
-
-# Stop and remove containers
-docker compose down
-```
-
-**Note**: Since the Prisma CLI is not included in the production image, `prisma generate` is run during the build phase.
-If you change the schema, you **must** rebuild the image.
-
----
-
 ## 🧪 Tests
 
 This project implements a robust testing strategy using **Vitest** and **Supertest**, ensuring reliability from unit
@@ -330,26 +321,6 @@ src/
 ├── types/              # TypeScript Type Definitions (including IoC types)
 └── utils/              # Helper functions
 ```
-
----
-
-## 📚 API Documentation
-
-Swagger UI is automatically generated from your Zod schemas. Once the server is running, visit:
-
-👉 **http://localhost:3000/api-docs**
-
----
-
-## ✅ Coding Standards
-
-This project enforces strict coding standards to ensure code quality and consistency.
-
-- **Linting & Formatting**: We use **Biome** for ultra-fast linting and formatting. Run `npm run lint` and
-  `npm run format`.
-- **Git Hooks**: **Lefthook** is configured to run linting and formatting checks automatically before each commit.
-- **Typing**: `any` is strictly forbidden. Use specific types or `unknown`.
-- **Comments**: Write JSDoc/comments in English for all non-trivial logic to ensure clarity.
 
 ---
 
