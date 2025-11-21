@@ -13,14 +13,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": [
-      "src/**",
-      "package.json",
-      "biome.json",
-      "tsconfig.json",
-      "!**/dist",
-      "!**/logs"
-    ]
+    "includes": ["src/**", "package.json", "biome.json", "tsconfig.json"]
   },
   "formatter": {
     "enabled": true,
@@ -41,7 +34,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "useNodejsImportProtocol": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error"
+      }
     }
   },
   "vcs": {
