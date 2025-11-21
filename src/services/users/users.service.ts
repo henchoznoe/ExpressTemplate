@@ -56,12 +56,22 @@ export class UserService implements IUserService {
     ): Promise<User | null> {
         const { password, ...rest } = userData
         let persistenceData: UpdateUserDto = rest
+
+        // Security: If email is being changed, reset verification status
+        if (rest.email) {
+            // Note: getUserById throws AppError if user not found
+            const currentUser = await this.usersRepository.getUserById(userId)
+            if (currentUser.email !== rest.email) {
+                persistenceData = { ...persistenceData, isVerified: false }
+            }
+        }
+
         if (password) {
             const hashedPassword = await bcrypt.hash(
                 password,
                 config.bcryptSaltRounds,
             )
-            persistenceData = { ...rest, password: hashedPassword }
+            persistenceData = { ...persistenceData, password: hashedPassword }
         }
         return this.usersRepository.updateUser(userId, persistenceData)
     }
