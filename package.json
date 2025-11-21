@@ -1,6 +1,6 @@
 {
   "name": "express-template",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "A Node.js/Express.js template with TypeScript, Prisma, Zod, InversifyJS, and more.",
   "homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
   "scripts": {
