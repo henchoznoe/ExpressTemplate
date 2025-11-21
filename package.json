@@ -1,6 +1,6 @@
 {
   "name": "express-template",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "A Node.js/Express.js template with TypeScript, Prisma, Zod, InversifyJS, and more.",
   "homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
   "scripts": {
@@ -54,8 +54,8 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.5",
-    "@swc/core": "^1.15.2",
+    "@biomejs/biome": "^2.3.6",
+    "@swc/core": "^1.15.3",
     "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
