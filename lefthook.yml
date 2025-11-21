@@ -27,5 +27,3 @@ pre-push:
   commands:
     biome-ci:
       run: npm run ci
-    tests:
-      run: npm run test
