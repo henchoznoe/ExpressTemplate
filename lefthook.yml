@@ -2,25 +2,30 @@
 # Copyright (c) 2025 Noé Henchoz
 # Author: Noé Henchoz
 # File: lefthook.yml
-# Title: Lefthook Git Hooks Configuration
-# Description: Configures Git hooks (pre-commit, pre-push) managed by Lefthook.
-# Last modified: 2025-11-11
+# Title: Lefthook Configuration
+# Description: Git hooks definition.
+# Last modified: 2025-11-21
 #
 
-# 'pre-commit': Runs before a commit is created.
-# If any command fails, the commit is aborted.
+# Runs on files that are staged for commit.
+# It attempts to auto-fix issues using Biome and stages the changes.
 pre-commit:
+  parallel: true
   commands:
-    biome-fix:
+    biome-check:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed: true
     type-check:
       run: npx tsc --noEmit --skipLibCheck
 
-# 'pre-push': Runs before 'git push' is executed.
-# This is a final safeguard to ensure no bad code reaches the remote repository.
+# Runs before pushing to remote.
+# It runs a full check (read-only) to ensure the repository state is clean.
+# This mimics what the CI pipeline will do.
 pre-push:
+  parallel: true
   commands:
-    biome-verify:
-      run: npx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off
+    biome-ci:
+      run: npm run ci
+    tests:
+      run: npm run test

@@ -13,7 +13,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/package.json", "!**/dist", "!**/logs"]
+    "includes": [
+      "src/**",
+      "package.json",
+      "biome.json",
+      "tsconfig.json",
+      "!**/dist",
+      "!**/logs"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -39,7 +46,7 @@
   },
   "vcs": {
     "clientKind": "git",
-    "enabled": false,
-    "useIgnoreFile": false
+    "enabled": true,
+    "useIgnoreFile": true
   }
 }
