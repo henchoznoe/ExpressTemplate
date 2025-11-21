@@ -40,78 +40,71 @@ emailing, and a fully optimized Docker setup.
 
 ## 🛠️ Getting Started
 
-### 1. Clone & Install
+This template supports two distinct workflows: Local Development and Production Deployment.
 
-Clone the repository and install dependencies:
+### 1. Local Development
 
-```bash
-git clone https://github.com/henchoznoe/ExpressTemplate.git
-cd ExpressTemplate
-npm install
-```
+In this mode, the Node.js application runs on your machine (for hot-reloading), and the database runs in a Docker
+container to keep your system clean.
 
-### 2. Development Mode (Recommended)
-Run the Node.js app on your machine, with the database in Docker.
+**Setup:**
 
-```bash
-# 1. Start the database container
-npm run db:up
+1. **Configure Environment:** Ensure your `.env` file points to `localhost` (the local Docker container):
+   ```dotenv
+   DATABASE_URL="postgresql://dev_user:dev_password@localhost:5432/dev_db?schema=public"
+   DIRECT_URL="postgresql://dev_user:dev_password@localhost:5432/dev_db?schema=public"
+   ```
+2. **Start Local Database:**
+   ```bash
+   npm run db:up
+   ```
+3. **Sync Schema:** Create tables in the new local DB:
+   ```bash
+   npx prisma migrate dev
+   ```
+4. **Start App:**
+   ```bash
+   npm run dev
+   ```
 
-# 2. Sync the schema (creates tables)
-npx prisma migrate dev
+> **Stop the local database when done:** `npm run db:down`
 
-# 3. Start the server (Hot Reload)
-npm run dev
-```
+### 2. Production Deployment (VPS)
 
-> The server will start at `http://localhost:3000`. API documentation is available at `http://localhost:3000/api-docs`.
+In production, we run the application inside Docker using Compose, but we connect to an **external database** (e.g.,
+Supabase, Neon, RDS, or a managed VPS DB).
 
-**Stop the database when done:**
-```bash
-npm run db:down
-```
+**Setup:**
 
-### 3. Full Docker Mode (Production Preview)
+1. **Configure Environment:** On your VPS, create a `.env` file with your **external** database credentials:
+   ```dotenv
+   # Example for Supabase (ensure "Transaction Mode" port 6543 or 5432 is used)
+   DATABASE_URL="postgresql://user:pass@aws-0-eu-central-1.pooler.supabase.com:5432/postgres?pgbouncer=true&schema=public"
+   DIRECT_URL="postgresql://user:pass@aws-0-eu-central-1.pooler.supabase.com:5432/postgres?schema=public"
+   NODE_ENV=production
+   ```
 
-Run both the app and database inside Docker. Useful to test the final build.
+2. **Start the Application:**
+   Run Docker Compose targeting *only* the application service (we don't need the local postgres container):
+   ```bash
+   docker compose up -d --build express_template
+   ```
 
-```bash
-# Build and start all services
-docker compose up --build
-```
+3. **Apply Migrations:**
+   Execute the migration command *inside* the running container to sync your external DB schema:
+   ```bash
+   docker compose exec express_template npx prisma migrate deploy
+   ```
 
 ---
 
-## 🗄️ Database & Prisma Workflow
+## 🗄️ Database Workflow (Development)
 
-We use **Prisma** as the ORM. Here is how to manage your schema during development.
+Commands for managing your schema during development:
 
-**Modifying the Schema**
-
-1. Edit `prisma/schema.prisma`.
-2. Create a migration and apply changes:
-
-```bash
-npx prisma migrate dev --name describe_your_change
-```
-
-> This command automatically regenerates the Prisma Client.
-
-**Resetting the Database**
-
-If you need a fresh start (wipes all data):
-
-```bash
-npm run db:reset
-```
-
-**Studio UI**
-
-To inspect your data visually:
-
-```bash
-npx prisma studio
-```
+- **Modify Schema**: Edit `prisma/schema.prisma` then run `npx prisma migrate dev --name desc`.
+- **Reset Data**: Run `npm run db:reset` to wipe the local DB and re-seed.
+- **GUI**: Run `npx prisma studio` to view data.
 
 ---
 
@@ -133,12 +126,14 @@ docker build -t express-template .
 
 Ensure your production environment variables are set.
 
-- `DATABASE_URL`: Must point to your production database (e.g., AWS RDS, or the service name postgres if using Docker Compose).
+- `DATABASE_URL`: Must point to your production database (e.g., AWS RDS, or the service name postgres if using Docker
+  Compose).
 - `NODE_ENV`: Set to `production`.
 
 3. **Apply Migrations**:
 
-⚠️ Never use `migrate dev` in production (it tries to reset the database). Instead, use the deploy command to apply pending migrations safely:
+⚠️ Never use `migrate dev` in production (it tries to reset the database). Instead, use the deploy command to apply
+pending migrations safely:
 
 ```bash
 npx prisma migrate deploy
@@ -154,12 +149,14 @@ docker run --rm --env-file .env express-template npx prisma migrate deploy
 
 ## 📧 Email Architecture
 
-This template uses an `IMailService` interface to decouple the business logic from the email provider. By default, it implements **Resend**.
+This template uses an `IMailService` interface to decouple the business logic from the email provider. By default, it
+implements **Resend**.
 
 - **Interface**: `src/services/mail/mail.service.interface.ts`
 - **Implementation**: `src/services/mail/resend.mail.service.ts`
 
-To switch providers (e.g., SendGrid, Nodemailer), simply implement the interface and bind your new class in `src/config/container.ts`.
+To switch providers (e.g., SendGrid, Nodemailer), simply implement the interface and bind your new class in
+`src/config/container.ts`.
 
 ---
 
