@@ -13,7 +13,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["src/**", "package.json", "biome.json", "tsconfig.json"]
+    "includes": ["src/**", "!**/package.json", "biome.json", "tsconfig.json"]
   },
   "formatter": {
     "enabled": true,
