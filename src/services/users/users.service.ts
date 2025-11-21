@@ -59,6 +59,7 @@ export class UserService implements IUserService {
 
         // Security: If email is being changed, reset verification status
         if (rest.email) {
+            // Note: getUserById throws AppError if user not found
             const currentUser = await this.usersRepository.getUserById(userId)
             if (currentUser.email !== rest.email) {
                 persistenceData = { ...persistenceData, isVerified: false }
