@@ -68,7 +68,7 @@ const EnvSchema = z.object({
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
     NODE_ENV: z
-        .enum(['development', 'production'], {
+        .enum(['development', 'production', 'test'], {
             error: ERROR_MSG_APP_MODE,
         })
         .default('development'),
