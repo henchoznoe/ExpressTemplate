@@ -1,31 +1,5 @@
 {
-  "name": "express-template",
-  "version": "2.5.2",
-  "description": "A Node.js/Express.js template with TypeScript, Prisma, Zod, InversifyJS, and more.",
-  "homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
-  "scripts": {
-    "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsup src/index.ts --format esm --splitting --sourcemap --out-dir dist --clean",
-    "start": "node dist/index.js",
-    "db:deploy": "prisma migrate deploy",
-    "lint": "biome lint --write",
-    "format": "biome format --write",
-    "check": "biome check --write",
-    "prepare": "lefthook install",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:cov": "vitest run --coverage",
-    "db:up": "docker compose up -d postgres",
-    "db:down": "docker compose down",
-    "db:reset": "npm run db:down && npm run db:up && sleep 2 && npx prisma migrate dev --name init"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/henchoznoe/ExpressTemplate.git"
-  },
   "author": "Noé Henchoz",
-  "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/henchoznoe/ExpressTemplate/issues"
   },
@@ -53,6 +27,7 @@
     "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.1.12"
   },
+  "description": "A Node.js/Express.js template with TypeScript, Prisma, Zod, InversifyJS, and more.",
   "devDependencies": {
     "@biomejs/biome": "^2.3.6",
     "@swc/core": "^1.15.3",
@@ -84,5 +59,31 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.12",
     "vitest-mock-extended": "^3.1.0"
-  }
+  },
+  "homepage": "https://github.com/henchoznoe/ExpressTemplate#readme",
+  "license": "ISC",
+  "name": "express-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henchoznoe/ExpressTemplate.git"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --splitting --sourcemap --out-dir dist --clean",
+    "check": "biome check --write",
+    "ci": "biome check",
+    "db:deploy": "prisma migrate deploy",
+    "db:down": "docker compose down",
+    "db:reset": "npm run db:down && npm run db:up && sleep 2 && npx prisma migrate dev --name init",
+    "db:up": "docker compose up -d postgres",
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "format": "biome format --write",
+    "lint": "biome lint --write",
+    "prepare": "lefthook install",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "type": "module",
+  "version": "2.5.3"
 }
