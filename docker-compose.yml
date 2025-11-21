@@ -4,7 +4,7 @@
 # File: docker-compose.yml
 # Title: Docker Compose Configuration
 # Description: Docker Compose file to set up the Express API service and PostgreSQL database.
-# Last modified: 2025-11-20
+# Last modified: 2025-11-21
 #
 
 services:
@@ -16,6 +16,10 @@ services:
         restart: unless-stopped
         env_file:
             - .env
+        environment:
+          # OVERRIDE: Force connection to the 'postgres' service container instead of localhost
+          - DATABASE_URL=postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public
+          - DIRECT_URL=postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public
         # Port mapping (HOST:CONTAINER)
         ports:
           - '${PORT:-3000}:${PORT:-3000}'
@@ -23,7 +27,8 @@ services:
         volumes:
             - ./logs:/app/logs
         depends_on:
-          - postgres
+          postgres:
+            condition: service_healthy
 
     # --- PostgreSQL Database Service ---
     # A local, isolated database for development.
@@ -39,6 +44,11 @@ services:
         - '5432:5432'
       volumes:
         - postgres_data:/var/lib/postgresql/data
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-dev_user} -d ${DB_NAME:-dev_db}" ]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
 volumes:
   postgres_data:
