@@ -8,13 +8,20 @@
  * @copyright (c) 2025 Noé Henchoz
  */
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import pg from 'pg'
+import { PrismaClient } from '../../prisma/generated/client.js'
 
 // --- Singleton ---
+
+const connectionString = process.env.DATABASE_URL
+
+const pool = new pg.Pool({ connectionString })
+const adapter = new PrismaPg(pool)
 
 /**
  * The singleton Prisma client instance.
  * This client should be imported by any service or repository
  * needing database access.
  */
-export const prisma = new PrismaClient()
+export const prisma = new PrismaClient({ adapter })

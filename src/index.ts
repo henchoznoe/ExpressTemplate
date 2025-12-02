@@ -11,6 +11,7 @@
 import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
 import { app } from '@/app.js'
+import 'dotenv/config'
 import 'reflect-metadata'
 
 // --- Constants ---

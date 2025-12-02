@@ -24,11 +24,11 @@ import type {
     User,
     UserWithPassword,
 } from '@models/user.model.js'
-import { Prisma, type PrismaClient } from '@prisma/client'
 import { AppError } from '@typings/errors/AppError.js'
 import { StatusCodes } from 'http-status-codes'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '@/types/ioc.types.js'
+import { Prisma, type PrismaClient } from '../../prisma/generated/client.js'
 
 /**
  * Defines the fields to select for a "public" user, excluding the password.

@@ -11,7 +11,7 @@
 import type {
     RefreshToken as PrismaRefreshToken,
     User as PrismaUser,
-} from '@prisma/client'
+} from '../../prisma/generated/client.js'
 
 // Represents the public-facing data for a User.
 export type User = Omit<PrismaUser, 'password'>

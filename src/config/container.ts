@@ -13,13 +13,13 @@ import { AuthController } from '@controllers/auth.controller.js'
 import { UserController } from '@controllers/users.controller.js'
 import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
 import type { IUserRepository } from '@db/users.repository.interface.js'
-import type { PrismaClient } from '@prisma/client'
 import type { IAuthService } from '@services/auth/auth.service.interface.js'
 import { AuthService } from '@services/auth/auth.service.js'
 import type { IUserService } from '@services/users/users.service.interface.js'
 import { UserService } from '@services/users/users.service.js'
 import { Container } from 'inversify'
 import { TYPES } from '@/types/ioc.types.js'
+import type { PrismaClient } from '../../prisma/generated/client.js'
 
 const container = new Container()
 
