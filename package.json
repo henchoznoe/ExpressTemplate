@@ -13,9 +13,6 @@
     "check": "biome check --write",
     "ci": "biome check",
     "prepare": "lefthook install",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:cov": "vitest run --coverage",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "db:reset": "npm run db:down && npm run db:up && sleep 2 && npx prisma migrate dev --name init"
@@ -80,10 +77,6 @@
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.5.1",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "unplugin-swc": "^1.5.8",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.12",
-    "vitest-mock-extended": "^3.1.0"
+    "typescript": "^5.9.3"
   }
 }
