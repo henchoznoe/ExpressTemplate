@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
- * @file src/config/swagger.ts
+ * @file src/docs/swagger.ts
  * @title Swagger/OpenAPI Setup
  * @description Configures and mounts the Swagger UI for API documentation.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi'

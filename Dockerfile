@@ -1,11 +1,10 @@
-#
-# Copyright (c) 2025 Noé Henchoz
-# Author: Noé Henchoz
-# File: Dockerfile
-# Title: Application Dockerfile
-# Description: Multi-stage Dockerfile for building and running the Node.js application.
-# Last modified: 2025-11-17
-#
+# @file Dockerfile
+# @title Application Dockerfile
+# @description Multi-stage Dockerfile for building and running the Node.js application.
+# @author Noé Henchoz
+# @date 2025-12-02
+# @license MIT
+# @copyright (c) 2025 Noé Henchoz
 
 # --- Constants ---
 ARG PORT=3000

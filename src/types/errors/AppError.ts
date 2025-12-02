@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/types/errors/AppError.ts
  * @title Custom Application Error Class
  * @description Defines a custom Error class for handling operational errors.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 

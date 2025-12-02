@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/models/user.model.ts
  * @title User Domain Models
  * @description Defines the core User data structures for the application derived from the Prisma schema.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import type {

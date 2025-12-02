@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/app.ts
  * @title Express Application Factory
  * @description This file creates and configures the main Express application instance.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { setupSwagger } from '@docs/swagger.js'

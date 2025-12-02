@@ -1,16 +1,17 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/index.ts
  * @title Main application entry point
  * @description This file imports the application and starts the HTTP server.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
-import 'reflect-metadata'
 import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
 import { app } from '@/app.js'
+import 'reflect-metadata'
 
 // --- Constants ---
 const EXIT_CODE_FAILURE = 1

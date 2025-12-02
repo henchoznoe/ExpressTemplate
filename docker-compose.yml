@@ -1,11 +1,10 @@
-#
-# Copyright (c) 2025 Noé Henchoz
-# Author: Noé Henchoz
-# File: docker-compose.yml
-# Title: Docker Compose Configuration
-# Description: Docker Compose file to set up the Express API service and PostgreSQL database.
-# Last modified: 2025-11-21
-#
+# @file docker-compose.yml
+# @title Docker Compose Configuration
+# @description Docker Compose file to set up the Express API service and PostgreSQL database.
+# @author Noé Henchoz
+# @date 2025-12-02
+# @license MIT
+# @copyright (c) 2025 Noé Henchoz
 
 services:
     # --- Express API Service ---

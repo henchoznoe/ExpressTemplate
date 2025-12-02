@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/controllers/users.controller.ts
  * @title User Route Controllers
  * @description This file contains the HTTP request handlers for all user-related routes.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import type { PaginationSchemaType } from '@schemas/common.schema.js'

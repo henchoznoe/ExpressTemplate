@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
- * @file src/services/users.service.ts
+ * @file src/services/users/users.service.ts
  * @title User Service Logic
  * @description Contains the business logic for user operations.
- * @last-modified 2025-11-18
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { config } from '@config/env.js'

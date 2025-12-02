@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/config/container.ts
  * @title Inversify IoC Container Configuration
  * @description Sets up dependency injection bindings using InversifyJS.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { prisma } from '@config/prisma.js'

@@ -1,11 +1,10 @@
-#
-# Copyright (c) 2025 Noé Henchoz
-# Author: Noé Henchoz
-# File: .gitignore
-# Title: Git Ignore File
-# Description: Specifies files and directories to exclude from the Git repository.
-# Last modified: 2025-11-15
-#
+# @file .gitignore
+# @title Git Ignore File
+# @description Specifies files and directories to exclude from the Git repository.
+# @author Noé Henchoz
+# @date 2025-12-02
+# @license MIT
+# @copyright (c) 2025 Noé Henchoz
 
 # --- IDE Config ---
 # Exclude editor-specific configuration and metadata files.

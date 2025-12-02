@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/services/mail/resend-mail.service.ts
  * @title Resend Mail Service Implementation
  * @description Implementation of IMailService using the Resend API.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { config } from '@config/env.js'

@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/middlewares/global/logger.ts
  * @title Request Logger Middleware
  * @description Applies the Morgan request logger to the Express app, piping output to Winston.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { log } from '@config/logger.js'

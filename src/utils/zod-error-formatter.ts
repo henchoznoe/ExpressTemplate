@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/utils/zod-error-formatter.ts
  * @title Zod Error Formatter
  * @description Utility function to format Zod validation errors into a clean array of objects.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import type { ZodError } from 'zod'

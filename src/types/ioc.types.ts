@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/types/ioc.types.ts
  * @title IoC Types
  * @description Defines unique symbols for Dependency Injection binding identifiers.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 export const TYPES = {

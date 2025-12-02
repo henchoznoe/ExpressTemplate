@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/controllers/auth.controller.ts
  * @title Auth Route Controllers
  * @description HTTP request handlers for authentication routes.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import type { IAuthService } from '@services/auth/auth.service.interface.js'

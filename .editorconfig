@@ -1,11 +1,10 @@
-#
-# Copyright (c) 2025 Noé Henchoz
-# Author: Noé Henchoz
-# File: .editorconfig
-# Title: Editor Configuration
-# Description: Provides consistent editor settings (indentation, charset) for all developers.
-# Last modified: 2025-11-16
-#
+# @file .editorconfig
+# @title Editor Configuration
+# @description Provides consistent editor settings (indentation, charset) for all developers.
+# @author Noé Henchoz
+# @date 2025-12-02
+# @license MIT
+# @copyright (c) 2025 Noé Henchoz
 
 # --- Root ---
 # This file is the root-level configuration.

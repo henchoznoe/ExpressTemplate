@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
- * @file src/services/auth.service.ts
+ * @file src/services/auth/auth.service.ts
  * @title Authentication Service Logic
  * @description Handles login, registration, JWT generation, and email flows.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import crypto from 'node:crypto'

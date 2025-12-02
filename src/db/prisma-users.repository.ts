@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/db/prisma-users.repository.ts
  * @title Prisma User Repository
  * @description Prisma-specific implementation of the IUserRepository using Dependency Injection.
- * @last-modified 2025-11-20
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { PrismaErrorCode } from '@db/prisma-errors.enum.js'

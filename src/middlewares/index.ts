@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/middlewares/index.ts
  * @title Core Middleware Orchestrator
  * @description This file exports a single function to apply all core middlewares to the Express app.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { applyRequestLogger } from '@middlewares/global/logger.js'

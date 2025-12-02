@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/docs/paths/users.paths.ts
  * @title User OpenAPI Path Definitions
  * @description Registers all user-related API paths for OpenAPI documentation.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'

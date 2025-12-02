@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/schemas/common.schema.ts
  * @title Common Validation Schemas
  * @description Defines Zod schemas for common validations.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'

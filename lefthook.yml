@@ -1,11 +1,10 @@
-#
-# Copyright (c) 2025 Noé Henchoz
-# Author: Noé Henchoz
-# File: lefthook.yml
-# Title: Lefthook Configuration
-# Description: Git hooks definition.
-# Last modified: 2025-11-21
-#
+# @file lefthook.yml
+# @title Lefthook Configuration
+# @description Configuration for git hooks.
+# @author Noé Henchoz
+# @date 2025-12-02
+# @license MIT
+# @copyright (c) 2025 Noé Henchoz
 
 # Runs on files that are staged for commit.
 # It attempts to auto-fix issues using Biome and stages the changes.

@@ -1,10 +1,11 @@
 /**
- * @copyright Copyright (c) 2025 Noé Henchoz
- * @author Noé Henchoz
  * @file src/middlewares/route/validate-request.ts
  * @title Zod Request Validation Middlewares
  * @description Consolidated middlewares to validate body, params, and query using Zod.
- * @last-modified 2025-11-17
+ * @author Noé Henchoz
+ * @date 2025-12-02
+ * @license MIT
+ * @copyright (c) 2025 Noé Henchoz
  */
 
 import { AppError } from '@typings/errors/AppError.js'
