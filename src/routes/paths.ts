@@ -20,9 +20,6 @@ export const PATH_ID = '/:id'
 export const PATH_REGISTER = '/register'
 export const PATH_LOGIN = '/login'
 export const PATH_REFRESH = '/refresh'
-export const PATH_VERIFY_EMAIL = '/verify-email'
-export const PATH_FORGOT_PASSWORD = '/forgot-password'
-export const PATH_RESET_PASSWORD = '/reset-password'
 
 // --- Route Tag Constants ---
 export const TAG_AUTH = ['Authentication']

@@ -14,13 +14,7 @@ import type {
 } from '@prisma/client'
 
 // Represents the public-facing data for a User.
-export type User = Omit<
-    PrismaUser,
-    | 'password'
-    | 'verificationToken'
-    | 'passwordResetToken'
-    | 'passwordResetExpires'
->
+export type User = Omit<PrismaUser, 'password'>
 
 // Represents a User including internal data (e.g., hashed password).
 export type UserWithPassword = PrismaUser

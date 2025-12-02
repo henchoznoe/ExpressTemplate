@@ -22,8 +22,6 @@ export type CreateUserDto = {
     name: string
     email: string
     password: string // Must be hashed by the service
-    verificationToken?: string | null
-    isVerified?: boolean
 }
 
 /**
@@ -34,10 +32,6 @@ export type UpdateUserDto = {
     name?: string
     email?: string
     password?: string // Must be hashed by the service
-    isVerified?: boolean
-    verificationToken?: string | null
-    passwordResetToken?: string | null
-    passwordResetExpires?: Date | null
 }
 
 /**
@@ -56,8 +50,6 @@ export interface IUserRepository {
     getAllUsers(options?: PaginationOptions): Promise<User[]>
     getUserById(id: string): Promise<User>
     findUserByEmail(email: string): Promise<UserWithPassword | null>
-    findUserByVerificationToken(token: string): Promise<User | null>
-    findUserByResetToken(token: string): Promise<User | null>
     createUser(data: CreateUserDto): Promise<User>
     updateUser(userId: string, data: UpdateUserDto): Promise<User>
     deleteUser(id: string): Promise<User | null>

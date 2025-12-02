@@ -12,7 +12,6 @@ import type { User } from '@models/user.model.js'
 import type {
     LoginSchemaType,
     RegisterSchemaType,
-    ResetPasswordSchemaType,
 } from '@schemas/auth.schema.js'
 
 export type AuthResponse = {
@@ -30,7 +29,4 @@ export interface IAuthService {
     register(credentials: RegisterSchemaType): Promise<AuthResponse>
     login(credentials: LoginSchemaType): Promise<AuthResponse>
     refreshAuth(incomingRefreshToken: string): Promise<RefreshResponse>
-    verifyEmail(token: string): Promise<void>
-    forgotPassword(email: string): Promise<void>
-    resetPassword(payload: ResetPasswordSchemaType): Promise<void>
 }
