@@ -10,6 +10,7 @@
 
 import { config } from '@config/env.js'
 import { log } from '@config/logger.js'
+import { prisma } from '@config/prisma.js'
 import { app } from '@/app.js'
 import 'dotenv/config'
 import 'reflect-metadata'
@@ -25,7 +26,33 @@ const APP_ERROR_PREFIX = '☠️ Server failed to start:'
  * Starts the Express server and binds the success and error handlers.
  */
 const main = () => {
-    app.listen(config.port, onServerStarted).on('error', onServerError)
+    const server = app
+        .listen(config.port, onServerStarted)
+        .on('error', onServerError)
+
+    const gracefulShutdown = async (signal: string) => {
+        log.info(`Received ${signal}. Closing server...`)
+        server.close(async () => {
+            log.info('HTTP server closed.')
+            try {
+                await prisma.$disconnect()
+                log.info('Database connection closed.')
+                process.exit(0)
+            } catch (err) {
+                log.error('Error during database disconnection', err)
+                process.exit(1)
+            }
+        })
+        setTimeout(() => {
+            log.error(
+                'Could not close connections in time, forcefully shutting down',
+            )
+            process.exit(1)
+        }, 10000)
+    }
+
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 }
 
 /**

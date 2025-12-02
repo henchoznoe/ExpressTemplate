@@ -31,7 +31,6 @@ dist/
 
 # --- Logs ---
 # Exclude application logs from the image.
-logs/
 
 # --- Docker Files ---
 # Exclude the Dockerfiles themselves from the build context.

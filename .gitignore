@@ -34,7 +34,6 @@ dist/
 # --- Logs ---
 # Exclude all log files.
 *.log
-logs/
 
 # --- Prisma ---
 /src/generated/prisma

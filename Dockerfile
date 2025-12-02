@@ -22,7 +22,7 @@ COPY package*.json ./
 COPY prisma/schema.prisma ./prisma/
 
 # Install ALL dependencies (including devDependencies) needed for the build.
-RUN npm install --ignore-scripts
+RUN npm ci --ignore-scripts
 
 # Generate Prisma Client BEFORE copying source code
 # This prevents re-generating client if only source code changes
@@ -42,7 +42,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Create logs directory and set ownership permissions immediately
-RUN mkdir -p logs && chown -R node:node /app
+RUN chown -R node:node /app
 
 # Switch to non-root user for all subsequent operations
 USER node
@@ -51,7 +51,7 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install ONLY production dependencies as 'node' user
-RUN npm install --omit=dev --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy built artifacts from builder
 COPY --from=builder --chown=node:node /app/dist ./dist
