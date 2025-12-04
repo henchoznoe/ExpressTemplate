@@ -49,6 +49,9 @@ const EnvSchema = z.object({
     DATABASE_URL: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
+    DIRECT_URL: z
+        .string({ error: ERROR_MSG_NOT_PROVIDED })
+        .min(1, { error: ERROR_MSG_IS_EMPTY }),
     JWT_ACCESS_EXPIRES_IN: z
         .string({ error: ERROR_MSG_NOT_PROVIDED })
         .min(1, { error: ERROR_MSG_IS_EMPTY }),
@@ -111,6 +114,7 @@ export const config = {
     corsMethods: parsedEnv.data.CORS_METHODS,
     corsOrigin: parsedEnv.data.CORS_ORIGIN,
     databaseUrl: parsedEnv.data.DATABASE_URL,
+    directUrl: parsedEnv.data.DIRECT_URL,
     jwtAccessExpiresIn: parsedEnv.data.JWT_ACCESS_EXPIRES_IN,
     jwtAccessSecret: parsedEnv.data.JWT_ACCESS_SECRET,
     jwtRefreshExpiresIn: parsedEnv.data.JWT_REFRESH_EXPIRES_IN,

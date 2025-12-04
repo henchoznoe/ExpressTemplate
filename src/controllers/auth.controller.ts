@@ -13,7 +13,6 @@ import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 // --- Constants ---
-// --- Constants ---
 
 export class AuthController {
     constructor(private authService: IAuthService) {}
