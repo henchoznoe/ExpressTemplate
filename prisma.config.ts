@@ -15,6 +15,7 @@ import 'dotenv/config'
 export default defineConfig({
     datasource: {
         url: env('DATABASE_URL'),
+        shadowDatabaseUrl: env('DIRECT_URL')
     },
     migrations: {
         path: 'prisma/migrations',
