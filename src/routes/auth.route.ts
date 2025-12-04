@@ -8,8 +8,9 @@
  * @copyright (c) 2025 Noé Henchoz
  */
 
-import { container } from '@config/container.js'
-import type { AuthController } from '@controllers/auth.controller.js'
+import { prisma } from '@config/prisma.js'
+import { AuthController } from '@controllers/auth.controller.js'
+import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
 import { handleRateLimitExceeded } from '@middlewares/global/security.js'
 import { validateBody } from '@middlewares/route/validate-request.js'
 import { PATH_LOGIN, PATH_REFRESH, PATH_REGISTER } from '@routes/paths.js'
@@ -18,9 +19,9 @@ import {
     RefreshTokenSchema,
     RegisterSchema,
 } from '@schemas/auth.schema.js'
+import { AuthService } from '@services/auth/auth.service.js'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
-import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 const AUTH_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
@@ -33,7 +34,10 @@ const authRateLimiter = rateLimit({
 })
 
 export const authRouter = Router()
-const authController = container.get<AuthController>(TYPES.AuthController)
+
+const userRepository = new PrismaUsersRepository(prisma)
+const authService = new AuthService(userRepository)
+const authController = new AuthController(authService)
 
 // POST /auth/register
 authRouter.post(

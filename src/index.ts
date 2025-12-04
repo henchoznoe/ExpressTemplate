@@ -13,7 +13,6 @@ import { log } from '@config/logger.js'
 import { prisma } from '@config/prisma.js'
 import { app } from '@/app.js'
 import 'dotenv/config'
-import 'reflect-metadata'
 
 // --- Constants ---
 const EXIT_CODE_FAILURE = 1

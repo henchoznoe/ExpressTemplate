@@ -26,8 +26,6 @@ import type {
 } from '@models/user.model.js'
 import { AppError } from '@typings/errors/AppError.js'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'inversify'
-import { TYPES } from '@/types/ioc.types.js'
 import { Prisma, type PrismaClient } from '../../prisma/generated/client.js'
 
 /**
@@ -42,10 +40,9 @@ const userSelect = {
     updatedAt: true,
 }
 
-@injectable()
 export class PrismaUsersRepository implements IUserRepository {
     // Inject the PrismaClient via constructor instead of importing the global instance.
-    constructor(@inject(TYPES.PrismaClient) private prisma: PrismaClient) {}
+    constructor(private prisma: PrismaClient) {}
 
     private getNotFoundMessage(id?: string): string {
         return id

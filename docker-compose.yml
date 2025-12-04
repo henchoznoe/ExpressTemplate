@@ -25,43 +25,43 @@ services:
     # --- PostgreSQL Database Service ---
     # In Development: Used by 'npm run db:up' to provide a local DB.
     # In Production: Ignored if using an external DB (Supabase, RDS, etc).
-    postgres:
-      image: postgres:18-alpine
-      container_name: express-template-db
-      restart: unless-stopped
-      environment:
-        POSTGRES_USER: ${DB_USER:-dev_user}
-        POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
-        POSTGRES_DB: ${DB_NAME:-dev_db}
-      ports:
-        - '5432:5432'
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-dev_user} -d ${DB_NAME:-dev_db}" ]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+    # postgres:
+    #   image: postgres:18-alpine
+    #   container_name: express-template-db
+    #   restart: unless-stopped
+    #   environment:
+    #     POSTGRES_USER: ${DB_USER:-dev_user}
+    #     POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
+    #     POSTGRES_DB: ${DB_NAME:-dev_db}
+    #   ports:
+    #     - '5432:5432'
+    #   volumes:
+    #     - postgres_data:/var/lib/postgresql/data
+    #   healthcheck:
+    #     test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-dev_user} -d ${DB_NAME:-dev_db}" ]
+    #     interval: 5s
+    #     timeout: 5s
+    #     retries: 5
 
-    studio:
-        container_name: express-template-studio
-        image: node:22-alpine
-        restart: unless-stopped
-        working_dir: /app
-        volumes:
-            - ./prisma:/app/prisma
-            - ./.env:/app/.env
-        environment:
-            POSTGRES_USER: ${DB_USER:-dev_user}
-            POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
-            POSTGRES_DB: ${DB_NAME:-dev_db}
-            DATABASE_URL: "postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public"
-        ports:
-            - "5555:5555"
-        command: sh -c "npm install prisma -g && npx prisma studio --port 5555 --browser none"
-        depends_on:
-            postgres:
-                condition: service_healthy
+    # studio:
+    #     container_name: express-template-studio
+    #     image: node:22-alpine
+    #     restart: unless-stopped
+    #     working_dir: /app
+    #     volumes:
+    #         - ./prisma:/app/prisma
+    #         - ./.env:/app/.env
+    #     environment:
+    #         POSTGRES_USER: ${DB_USER:-dev_user}
+    #         POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
+    #         POSTGRES_DB: ${DB_NAME:-dev_db}
+    #         DATABASE_URL: "postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-dev_password}@postgres:5432/${DB_NAME:-dev_db}?schema=public"
+    #     ports:
+    #         - "5555:5555"
+    #     command: sh -c "npm install prisma -g && npx prisma studio --port 5555 --browser none"
+    #     depends_on:
+    #         postgres:
+    #             condition: service_healthy
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:

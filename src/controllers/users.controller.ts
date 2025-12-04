@@ -12,12 +12,9 @@ import type { PaginationSchemaType } from '@schemas/common.schema.js'
 import type { IUserService } from '@services/users/users.service.interface.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'inversify'
-import { TYPES } from '@/types/ioc.types.js'
 
-@injectable()
 export class UserController {
-    constructor(@inject(TYPES.UserService) private userService: IUserService) {}
+    constructor(private userService: IUserService) {}
 
     getAllUsers = async (req: Request, res: Response) => {
         const { page, limit } = req.validatedQuery as PaginationSchemaType

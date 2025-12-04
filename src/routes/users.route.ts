@@ -8,8 +8,9 @@
  * @copyright (c) 2025 Noé Henchoz
  */
 
-import { container } from '@config/container.js'
-import type { UserController } from '@controllers/users.controller.js'
+import { prisma } from '@config/prisma.js'
+import { UserController } from '@controllers/users.controller.js'
+import { PrismaUsersRepository } from '@db/prisma-users.repository.js'
 import { protect } from '@middlewares/route/auth.middleware.js'
 import {
     validateBody,
@@ -18,12 +19,15 @@ import {
 } from '@middlewares/route/validate-request.js'
 import { PATH_ID, PATH_ROOT } from '@routes/paths.js'
 import { IdParamSchema, PaginationSchema } from '@schemas/common.schema.js'
+import { UserService } from '@services/users/users.service.js'
 import { Router } from 'express'
 import { CreateUserSchema, UpdateUserSchema } from '@/schemas/auth.schema.js'
-import { TYPES } from '@/types/ioc.types.js'
 
 export const usersRouter = Router()
-const userController = container.get<UserController>(TYPES.UserController)
+
+const userRepository = new PrismaUsersRepository(prisma)
+const userService = new UserService(userRepository)
+const userController = new UserController(userService)
 
 // Protect all routes below this line with authentication
 usersRouter.use(protect)

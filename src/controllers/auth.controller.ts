@@ -11,15 +11,12 @@
 import type { IAuthService } from '@services/auth/auth.service.interface.js'
 import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'inversify'
-import { TYPES } from '@/types/ioc.types.js'
 
 // --- Constants ---
 // --- Constants ---
 
-@injectable()
 export class AuthController {
-    constructor(@inject(TYPES.AuthService) private authService: IAuthService) {}
+    constructor(private authService: IAuthService) {}
 
     /**
      * Controller to handle user register.
